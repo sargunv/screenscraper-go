@@ -62,6 +62,50 @@ Use "scraper [command] --help" for more information about a command.
     c := client.NewClient(devID, devPassword, "my-app/1.0", ssID, ssPassword)
     game, err := client.GetGame(client.GetGameParams{GameID: "12345"})
 
+## API Endpoint Implementation Status
+
+### Core Information
+
+- [x] `ssinfraInfos.php` - Infrastructure/server information
+- [x] `ssuserInfos.php` - User information and quotas
+
+### Metadata Lists
+
+- [x] `regionsListe.php` - List of regions
+- [x] `languesListe.php` - List of languages
+- [x] `genresListe.php` - List of genres
+- [x] `mediasSystemeListe.php` - List of system media types
+- [x] `mediasJeuListe.php` - List of game media types
+- [x] `systemesListe.php` - List of systems/consoles
+- [ ] `userlevelsListe.php` - List of user levels
+- [ ] `nbJoueursListe.php` - List of player counts
+- [ ] `supportTypesListe.php` - List of support types
+- [ ] `romTypesListe.php` - List of ROM types
+- [ ] `famillesListe.php` - List of families
+- [ ] `classificationsListe.php` - List of classifications
+- [ ] `infosJeuListe.php` - List of game info types
+- [ ] `infosRomListe.php` - List of ROM info types
+
+### Game Data
+
+- [x] `jeuRecherche.php` - Search for games by name
+- [x] `jeuInfos.php` - Get detailed game information
+
+### Media Downloads
+
+- [x] `mediaJeu.php` - Download game image media
+- [x] `mediaSysteme.php` - Download system image media
+- [ ] `mediaVideoSysteme.php` - Download system video media
+- [ ] `mediaVideoJeu.php` - Download game video media
+- [ ] `mediaManuelJeu.php` - Download game manuals (PDF)
+- [ ] `mediaGroup.php` - Download group image media (genres, modes, etc.)
+- [ ] `mediaCompagnie.php` - Download company image media
+
+### Community Features
+
+- [ ] `botNote.php` - Submit game ratings
+- [ ] `botProposition.php` - Submit info/media proposals
+
 ## Credentials
 
 You need a Screenscraper developer account. Register at https://www.screenscraper.fr.
