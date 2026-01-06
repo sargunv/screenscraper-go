@@ -56,5 +56,5 @@ var systemMediaTypesCmd = &cobra.Command{
 func init() {
 	mediaTypesCmd.AddCommand(gameMediaTypesCmd)
 	mediaTypesCmd.AddCommand(systemMediaTypesCmd)
-	rootCmd.AddCommand(mediaTypesCmd)
+	listCmd.AddCommand(mediaTypesCmd)
 }

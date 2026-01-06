@@ -28,5 +28,5 @@ var genresCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(genresCmd)
+	listCmd.AddCommand(genresCmd)
 }

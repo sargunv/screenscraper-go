@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var languagesCmd = &cobra.Command{
-	Use:   "languages",
-	Short: "Get list of languages",
-	Long:  "Retrieves the list of all languages",
+var playerCountsCmd = &cobra.Command{
+	Use:   "player-counts",
+	Short: "Get list of player counts",
+	Long:  "Retrieves the list of all player counts (1 player, 2 players, etc.)",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resp, err := client.GetLanguagesList()
+		resp, err := client.GetPlayerCountsList()
 		if err != nil {
 			return err
 		}
@@ -28,5 +28,5 @@ var languagesCmd = &cobra.Command{
 }
 
 func init() {
-	listCmd.AddCommand(languagesCmd)
+	listCmd.AddCommand(playerCountsCmd)
 }

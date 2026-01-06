@@ -14,10 +14,6 @@ Or use the library in your Go project:
 
 ## CLI Usage
 
-```bash
-screenscraper --help
-```
-
 ```
 A CLI client for the Screenscraper API to fetch game metadata and media.
 
@@ -31,29 +27,24 @@ Usage:
   screenscraper [command]
 
 Available Commands:
-  completion   Generate the autocompletion script for the specified shell
-  download     Download media files
-  game         Get game information
-  genres       Get list of genres
-  help         Help about any command
-  infra        Get infrastructure/server information
-  languages    Get list of languages
-  media-types  Get list of media types
-  regions      Get list of regions
-  search       Search for games by name
-  systems      Get list of systems/consoles
-  user         Get user information and quotas
-  user-levels  Get list of user levels
+  completion  Generate the autocompletion script for the specified shell
+  download    Download media files
+  game        Get game information
+  help        Help about any command
+  infra       Get infrastructure/server information
+  list        List metadata and reference data
+  search      Search for games by name
+  user        Get user information and quotas
 
 Flags:
       --dev-id string          Developer ID (or set SCREENSCRAPER_DEV_USER)
       --dev-password string    Developer password (or set SCREENSCRAPER_DEV_PASSWORD)
-  -h, --help                   help for scraper
+  -h, --help                   help for screenscraper
       --soft-name string       Software name identifier
       --user-id string         User ID (or set SCREENSCRAPER_ID)
       --user-password string   User password (or set SCREENSCRAPER_PASSWORD)
 
-Use "scraper [command] --help" for more information about a command.
+Use "screenscraper [command] --help" for more information about a command.
 ```
 
 ## Library Usage
@@ -79,13 +70,13 @@ Use "scraper [command] --help" for more information about a command.
 - [x] `mediasJeuListe.php` - List of game media types
 - [x] `systemesListe.php` - List of systems/consoles
 - [x] `userlevelsListe.php` - List of user levels
-- [ ] `nbJoueursListe.php` - List of player counts
-- [ ] `supportTypesListe.php` - List of support types
-- [ ] `romTypesListe.php` - List of ROM types
-- [ ] `famillesListe.php` - List of families
-- [ ] `classificationsListe.php` - List of classifications
-- [ ] `infosJeuListe.php` - List of game info types
-- [ ] `infosRomListe.php` - List of ROM info types
+- [x] `nbJoueursListe.php` - List of player counts
+- [x] `supportTypesListe.php` - List of support types
+- [x] `romTypesListe.php` - List of ROM types
+- [x] `famillesListe.php` - List of families
+- [x] `classificationsListe.php` - List of classifications
+- [x] `infosJeuListe.php` - List of game info types
+- [x] `infosRomListe.php` - List of ROM info types
 
 ### Game Data
 

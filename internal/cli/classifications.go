@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var languagesCmd = &cobra.Command{
-	Use:   "languages",
-	Short: "Get list of languages",
-	Long:  "Retrieves the list of all languages",
+var classificationsCmd = &cobra.Command{
+	Use:   "classifications",
+	Short: "Get list of classifications",
+	Long:  "Retrieves the list of all game classifications/ratings (ESRB, PEGI, etc.)",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resp, err := client.GetLanguagesList()
+		resp, err := client.GetClassificationsList()
 		if err != nil {
 			return err
 		}
@@ -28,5 +28,5 @@ var languagesCmd = &cobra.Command{
 }
 
 func init() {
-	listCmd.AddCommand(languagesCmd)
+	listCmd.AddCommand(classificationsCmd)
 }

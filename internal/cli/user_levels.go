@@ -28,5 +28,5 @@ var userLevelsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(userLevelsCmd)
+	listCmd.AddCommand(userLevelsCmd)
 }

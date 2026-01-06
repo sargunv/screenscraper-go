@@ -11,8 +11,8 @@ type IDText struct {
 	Text string `json:"text"`
 }
 
-// Classification represents a game rating/classification
-type Classification struct {
+// GameClassification represents a game rating/classification in game responses
+type GameClassification struct {
 	Text string `json:"text"`
 	Type string `json:"type"`
 }
@@ -119,21 +119,21 @@ type Game struct {
 		MediaPictoMonochrome string `json:"notemedia_pictomonochrome,omitempty"`
 		MediaPictoCouleur    string `json:"notemedia_pictocouleur,omitempty"`
 	} `json:"notemedias,omitempty"`
-	TopStaff        string           `json:"topstaff,omitempty"`
-	Rotation        string           `json:"rotation,omitempty"`
-	Resolution      string           `json:"resolution,omitempty"`
-	Synopsis        []LocalizedName  `json:"synopsis,omitempty"`
-	Classifications []Classification `json:"classifications,omitempty"`
-	Dates           []DateEntry      `json:"dates,omitempty"`
-	Genres          []GameGenre      `json:"genres,omitempty"`
-	Modes           []GameGenre      `json:"modes,omitempty"`
-	Families        []GameFamily     `json:"familles,omitempty"`
-	Numbers         []GameGenre      `json:"numeros,omitempty"`
-	Themes          []GameGenre      `json:"themes,omitempty"`
-	Styles          []GameGenre      `json:"styles,omitempty"`
-	Medias          []Media          `json:"medias,omitempty"`
-	ROMs            []ROM            `json:"roms,omitempty"`
-	ROM             *ROM             `json:"rom,omitempty"`
+	TopStaff        string               `json:"topstaff,omitempty"`
+	Rotation        string               `json:"rotation,omitempty"`
+	Resolution      string               `json:"resolution,omitempty"`
+	Synopsis        []LocalizedName      `json:"synopsis,omitempty"`
+	Classifications []GameClassification `json:"classifications,omitempty"`
+	Dates           []DateEntry          `json:"dates,omitempty"`
+	Genres          []GameGenre          `json:"genres,omitempty"`
+	Modes           []GameGenre          `json:"modes,omitempty"`
+	Families        []GameFamily         `json:"familles,omitempty"`
+	Numbers         []GameGenre          `json:"numeros,omitempty"`
+	Themes          []GameGenre          `json:"themes,omitempty"`
+	Styles          []GameGenre          `json:"styles,omitempty"`
+	Medias          []Media              `json:"medias,omitempty"`
+	ROMs            []ROM                `json:"roms,omitempty"`
+	ROM             *ROM                 `json:"rom,omitempty"`
 }
 
 // GameInfoParams parameters for game info lookup

@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var languagesCmd = &cobra.Command{
-	Use:   "languages",
-	Short: "Get list of languages",
-	Long:  "Retrieves the list of all languages",
+var romTypesCmd = &cobra.Command{
+	Use:   "rom-types",
+	Short: "Get list of ROM types",
+	Long:  "Retrieves the list of all ROM types",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resp, err := client.GetLanguagesList()
+		resp, err := client.GetROMTypesList()
 		if err != nil {
 			return err
 		}
@@ -28,5 +28,5 @@ var languagesCmd = &cobra.Command{
 }
 
 func init() {
-	listCmd.AddCommand(languagesCmd)
+	listCmd.AddCommand(romTypesCmd)
 }

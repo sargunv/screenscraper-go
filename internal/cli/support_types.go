@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var languagesCmd = &cobra.Command{
-	Use:   "languages",
-	Short: "Get list of languages",
-	Long:  "Retrieves the list of all languages",
+var supportTypesCmd = &cobra.Command{
+	Use:   "support-types",
+	Short: "Get list of support types",
+	Long:  "Retrieves the list of all support types (cartridge, CD, etc.)",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resp, err := client.GetLanguagesList()
+		resp, err := client.GetSupportTypesList()
 		if err != nil {
 			return err
 		}
@@ -28,5 +28,5 @@ var languagesCmd = &cobra.Command{
 }
 
 func init() {
-	listCmd.AddCommand(languagesCmd)
+	listCmd.AddCommand(supportTypesCmd)
 }
