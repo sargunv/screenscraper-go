@@ -31,18 +31,19 @@ Usage:
   screenscraper [command]
 
 Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  download    Download media files
-  game        Get game information
-  genres      Get list of genres
-  help        Help about any command
-  infra       Get infrastructure/server information
-  languages   Get list of languages
-  media-types Get list of media types
-  regions     Get list of regions
-  search      Search for games by name
-  systems     Get list of systems/consoles
-  user        Get user information and quotas
+  completion   Generate the autocompletion script for the specified shell
+  download     Download media files
+  game         Get game information
+  genres       Get list of genres
+  help         Help about any command
+  infra        Get infrastructure/server information
+  languages    Get list of languages
+  media-types  Get list of media types
+  regions      Get list of regions
+  search       Search for games by name
+  systems      Get list of systems/consoles
+  user         Get user information and quotas
+  user-levels  Get list of user levels
 
 Flags:
       --dev-id string          Developer ID (or set SCREENSCRAPER_DEV_USER)
@@ -77,7 +78,7 @@ Use "scraper [command] --help" for more information about a command.
 - [x] `mediasSystemeListe.php` - List of system media types
 - [x] `mediasJeuListe.php` - List of game media types
 - [x] `systemesListe.php` - List of systems/consoles
-- [ ] `userlevelsListe.php` - List of user levels
+- [x] `userlevelsListe.php` - List of user levels
 - [ ] `nbJoueursListe.php` - List of player counts
 - [ ] `supportTypesListe.php` - List of support types
 - [ ] `romTypesListe.php` - List of ROM types

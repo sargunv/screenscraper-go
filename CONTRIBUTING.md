@@ -29,3 +29,9 @@ Run the CLI:
 ## Documentation
 
 - Screenscraper API documentation is translated from French to English in `api/SCREENSCRAPER_API.md`
+
+## Organization
+
+- `client/` directory contains an implementation file and test file per API endpoint
+- `internal/cli/` directory contains a command file per CLI command
+- `api/` directory contains the API documentation translated from French to English
