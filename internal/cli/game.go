@@ -29,10 +29,11 @@ var gameCmd = &cobra.Command{
 
 You can lookup by:
   1. ROM hash (CRC/MD5/SHA1) + size + system + name + type (recommended)
-  2. Game ID (direct lookup)
-
-Example:
+  2. Game ID (direct lookup)`,
+	Example: `  # Lookup by ROM hash
   screenscraper game --crc=50ABC90A --size=749652 --system=1 --rom-type=rom --name="Sonic 2.zip"
+  
+  # Lookup by game ID
   screenscraper game --game-id=3`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		params := screenscraper.GameInfoParams{

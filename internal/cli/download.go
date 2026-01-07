@@ -30,10 +30,11 @@ var downloadCmd = &cobra.Command{
 var downloadGameMediaCmd = &cobra.Command{
 	Use:   "game",
 	Short: "Download game media",
-	Long: `Download game media (box art, logo, screenshot, etc.)
-
-Example:
+	Long:  `Download game media (box art, logo, screenshot, etc.)`,
+	Example: `  # Download game box art
   screenscraper download game --system=1 --game-id=3 --media="box-2D(us)" --output=box.png
+  
+  # Download game wheel logo
   screenscraper download game -s 1 -g 3 -m "wheel-hd(eu)" -o logo.png`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if dlSystemID == "" || dlGameID == "" || dlMedia == "" {
@@ -78,9 +79,8 @@ Example:
 var downloadSystemMediaCmd = &cobra.Command{
 	Use:   "system",
 	Short: "Download system media",
-	Long: `Download system media (logo, wheel, photos, etc.)
-
-Example:
+	Long:  `Download system media (logo, wheel, photos, etc.)`,
+	Example: `  # Download system wheel logo
   screenscraper download system --system=1 --media="wheel(wor)" --output=system.png`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if dlSystemID == "" || dlMedia == "" {
@@ -124,9 +124,8 @@ Example:
 var downloadGroupMediaCmd = &cobra.Command{
 	Use:   "group",
 	Short: "Download group media",
-	Long: `Download group media (genres, modes, families, themes, styles)
-
-Example:
+	Long:  `Download group media (genres, modes, families, themes, styles)`,
+	Example: `  # Download genre logo
   screenscraper download group --group-id=1 --media="logo-monochrome" --output=genre.png`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if dlGroupID == "" || dlMedia == "" {
@@ -170,9 +169,8 @@ Example:
 var downloadCompanyMediaCmd = &cobra.Command{
 	Use:   "company",
 	Short: "Download company media",
-	Long: `Download company media (publishers, developers)
-
-Example:
+	Long:  `Download company media (publishers, developers)`,
+	Example: `  # Download company logo
   screenscraper download company --company-id=3 --media="logo-monochrome" --output=company.png`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if dlCompanyID == "" || dlMedia == "" {

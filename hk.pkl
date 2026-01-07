@@ -1,10 +1,18 @@
 amends "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v1.20.0/hk@1.20.0#/Builtins.pkl"
 
+local gen_docs = new Step {
+    fix = "rm -r docs && go run ./cmd/screenscraper-gen-docs"
+    glob = List("internal/cli/**/*.go", "cmd/screenscraper-gen-docs/**/*.go", "docs/**/*.md")
+}
+
 local linters = new Mapping<String, Step> {
     ["go-fmt"] = Builtins.go_fmt
     ["gomod-tidy"] = Builtins.gomod_tidy
-    ["prettier"] = Builtins.prettier
+    ["gen-docs"] = gen_docs
+    ["prettier"] = (Builtins.prettier) {
+        depends = List("gen-docs")
+    }
 }
 
 hooks {

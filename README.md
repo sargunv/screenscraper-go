@@ -14,37 +14,15 @@ Or use the library in your Go project:
 
 ## CLI Usage
 
-```
-A CLI client for the Screenscraper API to fetch game metadata and media.
+See the [CLI documentation](docs/cli/) for complete usage information.
 
-Credentials are loaded from environment variables:
-  SCREENSCRAPER_DEV_USER     - Developer username
-  SCREENSCRAPER_DEV_PASSWORD - Developer password
-  SCREENSCRAPER_ID           - User ID (optional)
-  SCREENSCRAPER_PASSWORD     - User password (optional)
+Quick start:
 
-Usage:
-  screenscraper [command]
-
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  download    Download media files
-  game        Get game information
-  help        Help about any command
-  infra       Get infrastructure/server information
-  list        List metadata and reference data
-  search      Search for games by name
-  user        Get user information and quotas
-
-Flags:
-      --dev-id string          Developer ID (or set SCREENSCRAPER_DEV_USER)
-      --dev-password string    Developer password (or set SCREENSCRAPER_DEV_PASSWORD)
-  -h, --help                   help for screenscraper
-      --user-id string         User ID (or set SCREENSCRAPER_ID)
-      --user-password string   User password (or set SCREENSCRAPER_PASSWORD)
-
-Use "screenscraper [command] --help" for more information about a command.
-```
+- [Main CLI documentation](docs/cli/screenscraper.md)
+- [Download media files](docs/cli/screenscraper_download.md)
+- [Get game information](docs/cli/screenscraper_game.md)
+- [Search for games](docs/cli/screenscraper_search.md)
+- [List metadata and reference data](docs/cli/screenscraper_list.md)
 
 ## Library Usage
 

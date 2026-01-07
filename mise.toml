@@ -25,3 +25,11 @@ run = "go run ./cmd/screenscraper"
 
 [tasks.clean]
 run = "go clean"
+
+[tasks.check]
+description = "Run all checks (linters, etc.)"
+run = "hk run check"
+
+[tasks.fix]
+description = "Run all fixers (format, generate docs, etc.)"
+run = "hk run fix"
