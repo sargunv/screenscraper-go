@@ -37,8 +37,8 @@ Quick start:
 - [x] Search for games and roms
 - [x] Get detailed game information
 - [x] Download game, system, group, and company media
-- [ ] Submit game ratings
-- [ ] Submit info / media proposals
+- [x] Submit game ratings
+- [x] Submit info / media proposals (UNTESTED)
 
 ## Credentials
 
