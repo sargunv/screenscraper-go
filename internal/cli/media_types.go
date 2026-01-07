@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"sargunv/screenscraper-go/internal/format"
+
 	"github.com/spf13/cobra"
 )
 
@@ -23,12 +25,17 @@ var gameMediaTypesCmd = &cobra.Command{
 			return err
 		}
 
-		formatted, err := json.MarshalIndent(resp.Response.Medias, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format JSON: %w", err)
+		if jsonOutput {
+			formatted, err := json.MarshalIndent(resp.Response.Medias, "", "  ")
+			if err != nil {
+				return fmt.Errorf("failed to format JSON: %w", err)
+			}
+			fmt.Println(string(formatted))
+			return nil
 		}
 
-		fmt.Println(string(formatted))
+		lang := format.GetPreferredLanguage(locale)
+		fmt.Print(format.RenderMediaTypesList(resp.Response.Medias, lang))
 		return nil
 	},
 }
@@ -43,12 +50,17 @@ var systemMediaTypesCmd = &cobra.Command{
 			return err
 		}
 
-		formatted, err := json.MarshalIndent(resp.Response.Medias, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format JSON: %w", err)
+		if jsonOutput {
+			formatted, err := json.MarshalIndent(resp.Response.Medias, "", "  ")
+			if err != nil {
+				return fmt.Errorf("failed to format JSON: %w", err)
+			}
+			fmt.Println(string(formatted))
+			return nil
 		}
 
-		fmt.Println(string(formatted))
+		lang := format.GetPreferredLanguage(locale)
+		fmt.Print(format.RenderMediaTypesList(resp.Response.Medias, lang))
 		return nil
 	},
 }

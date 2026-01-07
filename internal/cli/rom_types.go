@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"sargunv/screenscraper-go/internal/format"
+
 	"github.com/spf13/cobra"
 )
 
@@ -17,12 +19,17 @@ var romTypesCmd = &cobra.Command{
 			return err
 		}
 
-		formatted, err := json.MarshalIndent(resp.Response.ROMTypes, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format JSON: %w", err)
+		if jsonOutput {
+			formatted, err := json.MarshalIndent(resp.Response.ROMTypes, "", "  ")
+			if err != nil {
+				return fmt.Errorf("failed to format JSON: %w", err)
+			}
+			fmt.Println(string(formatted))
+			return nil
 		}
 
-		fmt.Println(string(formatted))
+		lang := format.GetPreferredLanguage(locale)
+		fmt.Print(format.RenderROMTypesList(resp.Response.ROMTypes, lang))
 		return nil
 	},
 }

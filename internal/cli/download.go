@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"sargunv/screenscraper-go/client"
+	screenscraper "sargunv/screenscraper-go/client"
 
 	"github.com/spf13/cobra"
 )
@@ -33,8 +33,8 @@ var downloadGameMediaCmd = &cobra.Command{
 	Long: `Download game media (box art, logo, screenshot, etc.)
 
 Example:
-  scraper download game --system=1 --game-id=3 --media="box-2D(us)" --output=box.png
-  scraper download game -s 1 -g 3 -m "wheel-hd(eu)" -o logo.png`,
+  screenscraper download game --system=1 --game-id=3 --media="box-2D(us)" --output=box.png
+  screenscraper download game -s 1 -g 3 -m "wheel-hd(eu)" -o logo.png`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if dlSystemID == "" || dlGameID == "" || dlMedia == "" {
 			return fmt.Errorf("--system, --game-id, and --media are required")
@@ -81,7 +81,7 @@ var downloadSystemMediaCmd = &cobra.Command{
 	Long: `Download system media (logo, wheel, photos, etc.)
 
 Example:
-  scraper download system --system=1 --media="wheel(wor)" --output=system.png`,
+  screenscraper download system --system=1 --media="wheel(wor)" --output=system.png`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if dlSystemID == "" || dlMedia == "" {
 			return fmt.Errorf("--system and --media are required")

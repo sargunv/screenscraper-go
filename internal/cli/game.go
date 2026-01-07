@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"sargunv/screenscraper-go/client"
+	screenscraper "sargunv/screenscraper-go/client"
+	"sargunv/screenscraper-go/internal/format"
 
 	"github.com/spf13/cobra"
 )
@@ -31,8 +32,8 @@ You can lookup by:
   2. Game ID (direct lookup)
 
 Example:
-  scraper game --crc=50ABC90A --size=749652 --system=1 --rom-type=rom --name="Sonic 2.zip"
-  scraper game --game-id=3`,
+  screenscraper game --crc=50ABC90A --size=749652 --system=1 --rom-type=rom --name="Sonic 2.zip"
+  screenscraper game --game-id=3`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		params := screenscraper.GameInfoParams{
 			CRC:       gameCRC,
@@ -63,12 +64,17 @@ Example:
 			return err
 		}
 
-		formatted, err := json.MarshalIndent(resp.Response.Game, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format JSON: %w", err)
+		if jsonOutput {
+			formatted, err := json.MarshalIndent(resp.Response.Game, "", "  ")
+			if err != nil {
+				return fmt.Errorf("failed to format JSON: %w", err)
+			}
+			fmt.Println(string(formatted))
+			return nil
 		}
 
-		fmt.Println(string(formatted))
+		lang := format.GetPreferredLanguage(locale)
+		fmt.Print(format.RenderGame(resp.Response.Game, lang))
 		return nil
 	},
 }

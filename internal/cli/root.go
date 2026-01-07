@@ -15,6 +15,8 @@ var (
 	softName    string
 	ssID        string
 	ssPassword  string
+	jsonOutput  bool
+	locale      string
 	client      *screenscraper.Client
 )
 
@@ -63,6 +65,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&ssID, "user-id", "", "User ID (or set SCREENSCRAPER_ID)")
 	rootCmd.PersistentFlags().StringVar(&ssPassword, "user-password", "", "User password (or set SCREENSCRAPER_PASSWORD)")
 	rootCmd.PersistentFlags().StringVar(&softName, "soft-name", "", "Software name identifier")
+	rootCmd.PersistentFlags().BoolVar(&jsonOutput, "json", false, "Output results as JSON")
+	rootCmd.PersistentFlags().StringVar(&locale, "locale", "", "Override locale for output (e.g., en, fr, de)")
 }
 
 func Execute() error {
