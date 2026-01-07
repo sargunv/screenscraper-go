@@ -1,4 +1,4 @@
-## screenscraper infra
+## screenscraper status infra
 
 Get infrastructure/server information
 
@@ -7,7 +7,7 @@ Get infrastructure/server information
 Retrieves Screenscraper infrastructure info including CPU usage, API load, and status
 
 ```
-screenscraper infra [flags]
+screenscraper status infra [flags]
 ```
 
 ### Options
@@ -25,4 +25,5 @@ screenscraper infra [flags]
 
 ### SEE ALSO
 
-- [screenscraper](screenscraper.md) - Screenscraper CLI client
+* [screenscraper status](screenscraper_status.md)	 - Get status information
+

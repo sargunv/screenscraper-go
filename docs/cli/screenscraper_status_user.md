@@ -1,4 +1,4 @@
-## screenscraper user
+## screenscraper status user
 
 Get user information and quotas
 
@@ -7,7 +7,7 @@ Get user information and quotas
 Retrieves user information including quotas, rate limits, and contribution stats
 
 ```
-screenscraper user [flags]
+screenscraper status user [flags]
 ```
 
 ### Options
@@ -25,4 +25,5 @@ screenscraper user [flags]
 
 ### SEE ALSO
 
-- [screenscraper](screenscraper.md) - Screenscraper CLI client
+* [screenscraper status](screenscraper_status.md)	 - Get status information
+

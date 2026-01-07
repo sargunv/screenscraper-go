@@ -25,7 +25,6 @@ Credentials are loaded from environment variables:
 
 - [screenscraper detail](screenscraper_detail.md) - Get detailed information about a specific item
 - [screenscraper download](screenscraper_download.md) - Download media files
-- [screenscraper infra](screenscraper_infra.md) - Get infrastructure/server information
 - [screenscraper list](screenscraper_list.md) - List metadata and reference data
 - [screenscraper search](screenscraper_search.md) - Search for games by name
-- [screenscraper user](screenscraper_user.md) - Get user information and quotas
+- [screenscraper status](screenscraper_status.md) - Get status information

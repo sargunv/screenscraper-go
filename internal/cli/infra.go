@@ -35,5 +35,5 @@ var infraCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(infraCmd)
+	statusCmd.AddCommand(infraCmd)
 }

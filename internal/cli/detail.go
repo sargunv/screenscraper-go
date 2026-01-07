@@ -7,7 +7,7 @@ import (
 var detailCmd = &cobra.Command{
 	Use:   "detail",
 	Short: "Get detailed information about a specific item",
-	Long:  "Commands to retrieve detailed information about systems, genres, families, classifications, and games.",
+	Long:  "Commands to retrieve detailed information about systems and games.",
 }
 
 func init() {
