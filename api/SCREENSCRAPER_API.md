@@ -2,7 +2,7 @@
 
 > [!WARNING]
 >
-> This document is a machine translation of the [original documentation](https://www.screenscraper.fr/webapi2.php) on 2026-01-05. There may be out-of-date information or errors.
+> This document is a translation of the [original documentation](https://www.screenscraper.fr/webapi2.php) on 2026-01-05. There may be out-of-date information or errors.
 
 ## API Overview
 
@@ -1302,3 +1302,36 @@ Returns textual information about the success or failure of the procedure
 | sstopper | Screenshot Topper | jpg |  |  |  |
 | themehs | Hyperspin Theme | zip |  |  |  |
 | themehb | HyperBat Theme | zip |  |  |  |
+
+---
+
+## Debug Mode for Developers
+
+There is a debug mode for developers on the API. It allows:
+
+- Forcing cache file updates
+- Forcing the user's IP address virtually
+- Forcing the user level and thus the number of simultaneous threads allowed
+- Forcing API usage counters to test over-quota scenarios
+
+Debug mode usage is limited to 100 uses per day.
+
+To access debug mode for developers, you must provide your "DebugPassword" (indicated above) in the `devdebugpassword` URL variable.
+
+To force a cache file update for the `jeuInfos` API, use the URL variable `forceupdate=1`.
+
+To force the user's IP address virtually, use the URL variable `forceip=ip`.
+
+To force the user level, use the URL variable `forcelevel=numeric identifier of the user level` (see userlevelsListe.php).
+
+To force the API access counter, use the URL variable `forcerequestok=number of accesses`.
+
+To force the API access counter with negative return (rom/game not found), use the URL variable `forcerequestko=number of accesses`.
+
+To force the API access counter per minute, use the URL variable `forcerequestmin=number of accesses`.
+
+**Example call:**
+
+```
+https://api.screenscraper.fr/api2/jeuInfos.php?...&devdebugpassword=xxx&forceupdate=1&forcelevel=30
+```
