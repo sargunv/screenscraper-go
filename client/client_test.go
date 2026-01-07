@@ -19,5 +19,5 @@ func testClient(t *testing.T) *Client {
 		t.Fatalf("Required environment variables not set: SCREENSCRAPER_DEV_USER and SCREENSCRAPER_DEV_PASSWORD")
 	}
 
-	return NewClient(devID, devPassword, "scraper-test/0.1", ssID, ssPassword)
+	return NewClient(devID, devPassword, "sargunv/screenscraper-go/tests", ssID, ssPassword)
 }
