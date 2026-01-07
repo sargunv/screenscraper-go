@@ -38,7 +38,7 @@ Quick start:
 - [x] Get detailed game information
 - [x] Download game, system, group, and company media
 - [x] Submit game ratings
-- [x] Submit info / media proposals (UNTESTED)
+- [x] Submit info / media proposals
 
 ## Credentials
 
