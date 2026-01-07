@@ -40,7 +40,6 @@ Flags:
       --dev-id string          Developer ID (or set SCREENSCRAPER_DEV_USER)
       --dev-password string    Developer password (or set SCREENSCRAPER_DEV_PASSWORD)
   -h, --help                   help for screenscraper
-      --soft-name string       Software name identifier
       --user-id string         User ID (or set SCREENSCRAPER_ID)
       --user-password string   User password (or set SCREENSCRAPER_PASSWORD)
 

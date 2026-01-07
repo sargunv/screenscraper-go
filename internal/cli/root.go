@@ -12,7 +12,6 @@ import (
 var (
 	devID       string
 	devPassword string
-	softName    string
 	ssID        string
 	ssPassword  string
 	jsonOutput  bool
@@ -51,11 +50,7 @@ Credentials are loaded from environment variables:
 			os.Exit(1)
 		}
 
-		if softName == "" {
-			softName = "screenscraper-go"
-		}
-
-		client = screenscraper.NewClient(devID, devPassword, softName, ssID, ssPassword)
+		client = screenscraper.NewClient(devID, devPassword, "screenscraper-go", ssID, ssPassword)
 	},
 }
 
@@ -64,7 +59,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&devPassword, "dev-password", "", "Developer password (or set SCREENSCRAPER_DEV_PASSWORD)")
 	rootCmd.PersistentFlags().StringVar(&ssID, "user-id", "", "User ID (or set SCREENSCRAPER_ID)")
 	rootCmd.PersistentFlags().StringVar(&ssPassword, "user-password", "", "User password (or set SCREENSCRAPER_PASSWORD)")
-	rootCmd.PersistentFlags().StringVar(&softName, "soft-name", "", "Software name identifier")
 	rootCmd.PersistentFlags().BoolVar(&jsonOutput, "json", false, "Output results as JSON")
 	rootCmd.PersistentFlags().StringVar(&locale, "locale", "", "Override locale for output (e.g., en, fr, de)")
 }
