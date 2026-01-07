@@ -12,7 +12,7 @@ prettier = "latest"
 _.file = '.env'
 
 [tasks.setup]
-run = ["mise install", "hk install"]
+run = ["mise install", "hk install", "mise lock"]
 
 [tasks.build]
 run = "go build ./..."
