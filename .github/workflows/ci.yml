@@ -13,12 +13,16 @@ jobs:
       - uses: actions/checkout@v6
 
       - uses: jdx/mise-action@v3
+        with:
+          experimental: true
 
       - name: Build
         run: mise run build
 
-      - name: Fix
-        run: mise run fix
+      # NOTE: we don't test in CI because our tests hit the live API
+
+      - name: Format and lint
+        run: mise run fix && mise run check
 
       - name: Check for uncommitted changes
         run: |
