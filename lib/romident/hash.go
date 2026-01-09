@@ -24,9 +24,9 @@ func CalculateHashes(r io.Reader) ([]Hash, error) {
 	}
 
 	return []Hash{
-		{Algorithm: HashSHA1, Value: hex.EncodeToString(sha1Hash.Sum(nil)), Source: "calculated"},
-		{Algorithm: HashMD5, Value: hex.EncodeToString(md5Hash.Sum(nil)), Source: "calculated"},
-		{Algorithm: HashCRC32, Value: fmt.Sprintf("%08x", crc32Hash.Sum32()), Source: "calculated"},
+		{Algorithm: HashSHA1, Value: hex.EncodeToString(sha1Hash.Sum(nil)), Source: HashSourceCalculated},
+		{Algorithm: HashMD5, Value: hex.EncodeToString(md5Hash.Sum(nil)), Source: HashSourceCalculated},
+		{Algorithm: HashCRC32, Value: fmt.Sprintf("%08x", crc32Hash.Sum32()), Source: HashSourceCalculated},
 	}, nil
 }
 
@@ -55,11 +55,11 @@ func CalculateSingleHash(r io.Reader, algorithm HashAlgorithm) (Hash, error) {
 		value = hex.EncodeToString(h.Sum(nil))
 	}
 
-	return Hash{Algorithm: algorithm, Value: value, Source: "calculated"}, nil
+	return Hash{Algorithm: algorithm, Value: value, Source: HashSourceCalculated}, nil
 }
 
 // NewHash creates a Hash with the given parameters.
-func NewHash(algorithm HashAlgorithm, value, source string) Hash {
+func NewHash(algorithm HashAlgorithm, value string, source HashSource) Hash {
 	return Hash{
 		Algorithm: algorithm,
 		Value:     value,

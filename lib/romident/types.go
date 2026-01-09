@@ -20,7 +20,29 @@ const (
 	FormatXBE     Format = "xbe"
 	FormatISO9660 Format = "iso9660"
 	FormatZIP     Format = "zip"
-	// Future: FormatGBA, FormatSFC, etc.
+	FormatGBA     Format = "gba"
+)
+
+// Region represents a game region using ISO country codes.
+type Region string
+
+const (
+	RegionJP      Region = "JP"      // Japan
+	RegionUS      Region = "US"      // USA/North America
+	RegionEU      Region = "EU"      // Europe (includes Australia for Xbox)
+	RegionFR      Region = "FR"      // France
+	RegionES      Region = "ES"      // Spain
+	RegionDE      Region = "DE"      // Germany
+	RegionIT      Region = "IT"      // Italy
+	RegionUnknown Region = "Unknown" // Fallback for unrecognized codes
+)
+
+// Platform represents a gaming platform.
+type Platform string
+
+const (
+	PlatformXbox Platform = "xbox"
+	PlatformGBA  Platform = "gba"
 )
 
 // HashAlgorithm identifies a hash algorithm.
@@ -32,11 +54,21 @@ const (
 	HashCRC32 HashAlgorithm = "crc32"
 )
 
+// HashSource indicates where a hash value came from.
+type HashSource string
+
+const (
+	HashSourceCalculated    HashSource = "calculated"
+	HashSourceZIPMetadata   HashSource = "zip-metadata"
+	HashSourceCHDRaw        HashSource = "chd-raw"
+	HashSourceCHDCompressed HashSource = "chd-compressed"
+)
+
 // Hash represents a computed or extracted hash value.
 type Hash struct {
 	Algorithm HashAlgorithm `json:"algorithm"`
-	Value     string        `json:"value"`  // hex-encoded
-	Source    string        `json:"source"` // "calculated", "zip-metadata", "chd-raw", "chd-compressed"
+	Value     string        `json:"value"` // hex-encoded
+	Source    HashSource    `json:"source"`
 }
 
 // ROMFile represents a single file within a ROM.
@@ -52,11 +84,14 @@ type Files map[string]ROMFile
 
 // GameIdent represents platform-specific identification data.
 type GameIdent struct {
-	Platform string            `json:"platform"`
-	TitleID  string            `json:"title_id,omitempty"`
-	Title    string            `json:"title,omitempty"`
-	Region   string            `json:"region,omitempty"`
-	Extra    map[string]string `json:"extra,omitempty"`
+	Platform   Platform          `json:"platform"`
+	TitleID    string            `json:"title_id,omitempty"`
+	Title      string            `json:"title,omitempty"`
+	Regions    []Region          `json:"regions,omitempty"`
+	MakerCode  string            `json:"maker_code,omitempty"`
+	Version    *int              `json:"version,omitempty"`     // nil if not available
+	DiscNumber *int              `json:"disc_number,omitempty"` // nil if not available/applicable
+	Extra      map[string]string `json:"extra,omitempty"`
 }
 
 // ROM represents a complete game unit (single file, zip, or folder).

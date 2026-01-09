@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 
 	"github.com/sargunv/rom-tools/internal/format"
 	"github.com/sargunv/rom-tools/lib/romident"
@@ -29,6 +30,7 @@ Supports:
 - CHD files: extracts SHA1 hashes from header (fast, no decompression)
 - ZIP archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
 - Folders: identifies files within.
+- GBA files: identifies GBA game information from the header.
 - XISO and XBE files: identifies Xbox game information from the XBE header.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runIdentify,
@@ -148,8 +150,21 @@ func outputTextSingle(rom *romident.ROM) {
 		if rom.Ident.Title != "" {
 			fmt.Printf("  Title: %s\n", rom.Ident.Title)
 		}
-		if rom.Ident.Region != "" {
-			fmt.Printf("  Region: %s\n", rom.Ident.Region)
+		if len(rom.Ident.Regions) > 0 {
+			regionStrs := make([]string, len(rom.Ident.Regions))
+			for i, r := range rom.Ident.Regions {
+				regionStrs[i] = string(r)
+			}
+			fmt.Printf("  Regions: %s\n", strings.Join(regionStrs, ", "))
+		}
+		if rom.Ident.MakerCode != "" {
+			fmt.Printf("  Maker Code: %s\n", rom.Ident.MakerCode)
+		}
+		if rom.Ident.Version != nil {
+			fmt.Printf("  Version: %d\n", *rom.Ident.Version)
+		}
+		if rom.Ident.DiscNumber != nil {
+			fmt.Printf("  Disc Number: %d\n", *rom.Ident.DiscNumber)
 		}
 	}
 }

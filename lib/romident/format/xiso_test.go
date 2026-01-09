@@ -35,7 +35,9 @@ func TestParseXISO(t *testing.T) {
 		t.Errorf("Expected title ID hex '00000000', got '%s'", info.TitleIDHex)
 	}
 
-	if info.Region != "NA/JP/EU/AU/DEBUG" {
-		t.Errorf("Expected region 'NA/JP/EU/AU/DEBUG', got '%s'", info.Region)
+	// RegionFlags should include NA (0x1), JP (0x2), EU/AU (0x4), and DEBUG (0x80000000)
+	expectedFlags := uint32(XboxRegionNA | XboxRegionJapan | XboxRegionEUAU | XboxRegionDebug)
+	if info.RegionFlags != expectedFlags {
+		t.Errorf("Expected region flags 0x%08X, got 0x%08X", expectedFlags, info.RegionFlags)
 	}
 }

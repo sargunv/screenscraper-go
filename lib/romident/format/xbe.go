@@ -4,14 +4,13 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"strings"
 	"unicode/utf16"
 )
 
 // XBE (Xbox Executable) format parsing.
 //
 // XBE specification:
-// https://xboxdevwiki.net/Xbe
+// https://www.caustik.com/cxbx/download/xbe.htm
 //
 // XBE header layout (relevant fields):
 //
@@ -66,8 +65,7 @@ type XboxInfo struct {
 	PublisherCode string // 2-char publisher code from title ID
 	GameNumber    uint16 // Game number from title ID
 	Title         string
-	Region        string
-	RegionFlags   uint32
+	RegionFlags   uint32 // Bitmask of XboxRegion values
 	DiscNumber    uint32
 	Version       uint32
 }
@@ -124,7 +122,6 @@ func ParseXBEAt(r io.ReaderAt, xbeOffset int64) (*XboxInfo, error) {
 		PublisherCode: publisherCode,
 		GameNumber:    gameNumber,
 		Title:         title,
-		Region:        decodeRegion(XboxRegion(regionFlags)),
 		RegionFlags:   regionFlags,
 		DiscNumber:    discNumber,
 		Version:       version,
@@ -142,27 +139,6 @@ func decodeTitleID(titleID uint32) (string, uint16) {
 	char2 := byte(publisherCode & 0xFF)
 
 	return string([]byte{char1, char2}), gameNumber
-}
-
-// decodeRegion converts region flags to a human-readable string.
-func decodeRegion(flags XboxRegion) string {
-	var regions []string
-	if flags&XboxRegionNA != 0 {
-		regions = append(regions, "NA")
-	}
-	if flags&XboxRegionJapan != 0 {
-		regions = append(regions, "JP")
-	}
-	if flags&XboxRegionEUAU != 0 {
-		regions = append(regions, "EU/AU")
-	}
-	if flags&XboxRegionDebug != 0 {
-		regions = append(regions, "DEBUG")
-	}
-	if len(regions) == 0 {
-		return "Unknown"
-	}
-	return strings.Join(regions, "/")
 }
 
 // decodeUTF16LE decodes a null-terminated UTF-16LE string.

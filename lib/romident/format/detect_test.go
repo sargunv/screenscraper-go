@@ -36,6 +36,11 @@ func TestDetectByMagic(t *testing.T) {
 			filename: "xromwell/default.xbe",
 			want:     XBE,
 		},
+		{
+			name:     "GBA file",
+			filename: "AGB_Rogue.gba",
+			want:     GBA,
+		},
 	}
 
 	for _, tt := range tests {
@@ -92,6 +97,11 @@ func TestDetectByExtension(t *testing.T) {
 			name:     "XBE extension",
 			filename: "default.xbe",
 			want:     XBE,
+		},
+		{
+			name:     "GBA extension",
+			filename: "test.gba",
+			want:     GBA,
 		},
 		{
 			name:     "ISO extension (ambiguous)",

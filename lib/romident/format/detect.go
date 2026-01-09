@@ -17,6 +17,7 @@ const (
 	XBE     Format = "xbe"
 	ISO9660 Format = "iso9660"
 	ZIP     Format = "zip"
+	GBA     Format = "gba"
 )
 
 // Magic bytes and offsets for various formats
@@ -40,6 +41,10 @@ var (
 	// XBE: magic at start
 	xbeMagic  = []byte("XBEH")
 	xbeOffset = int64(0)
+
+	// GBA: fixed value 0x96 required at offset 0xB2
+	gbaMagic  = []byte{0x96}
+	gbaOffset = int64(0xB2)
 )
 
 // Detector can detect the format of a file.
@@ -67,6 +72,8 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return XISO
 	case ".xbe":
 		return XBE
+	case ".gba":
+		return GBA
 	default:
 		return Unknown
 	}
@@ -117,6 +124,16 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 		if _, err := r.ReadAt(buf, xbeOffset); err == nil {
 			if bytesEqual(buf, xbeMagic) {
 				return XBE, nil
+			}
+		}
+	}
+
+	// Check for GBA
+	if size >= gbaOffset+int64(len(gbaMagic)) {
+		buf := make([]byte, len(gbaMagic))
+		if _, err := r.ReadAt(buf, gbaOffset); err == nil {
+			if bytesEqual(buf, gbaMagic) {
+				return GBA, nil
 			}
 		}
 	}

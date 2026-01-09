@@ -64,7 +64,7 @@ func identifyContainer(c container.Container, containerType ROMType, containerPa
 				}
 			}
 			if !hasCRC32 {
-				romFile.Hashes = append(romFile.Hashes, NewHash(HashCRC32, fmt.Sprintf("%08x", entry.CRC32), "zip-metadata"))
+				romFile.Hashes = append(romFile.Hashes, NewHash(HashCRC32, fmt.Sprintf("%08x", entry.CRC32), HashSourceZIPMetadata))
 			}
 		}
 
@@ -167,7 +167,7 @@ func identifyZIP(path string, opts Options) (*ROM, error) {
 		hashes := []Hash{}
 		if entry.CRC32 != 0 {
 			hashes = []Hash{
-				NewHash(HashCRC32, fmt.Sprintf("%08x", entry.CRC32), "zip-metadata"),
+				NewHash(HashCRC32, fmt.Sprintf("%08x", entry.CRC32), HashSourceZIPMetadata),
 			}
 		}
 
@@ -211,8 +211,8 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			return nil, nil, fmt.Errorf("failed to parse CHD header: %w", err)
 		}
 		romFile.Hashes = []Hash{
-			NewHash(HashSHA1, chdInfo.RawSHA1, "chd-raw"),
-			NewHash(HashSHA1, chdInfo.SHA1, "chd-compressed"),
+			NewHash(HashSHA1, chdInfo.RawSHA1, HashSourceCHDRaw),
+			NewHash(HashSHA1, chdInfo.SHA1, HashSourceCHDCompressed),
 		}
 		return romFile, ident, nil
 	}
@@ -228,6 +228,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 		// Reset reader position for XBE parsing
 		if _, err := r.Seek(0, 0); err == nil {
 			ident = identifyXBE(r, size)
+		}
+	}
+	if detectedFormat == format.GBA {
+		// Reset reader position for GBA parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyGBA(r, size)
 		}
 	}
 
@@ -312,15 +318,19 @@ func identifyXISO(r io.ReaderAt, size int64) *GameIdent {
 		return nil
 	}
 
+	version := int(info.Version)
+	discNumber := int(info.DiscNumber)
+
 	return &GameIdent{
-		Platform: "xbox",
-		TitleID:  fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
-		Title:    info.Title,
-		Region:   info.Region,
+		Platform:   PlatformXbox,
+		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
+		Title:      info.Title,
+		Regions:    decodeXboxRegions(info.RegionFlags),
+		MakerCode:  info.PublisherCode,
+		Version:    &version,
+		DiscNumber: &discNumber,
 		Extra: map[string]string{
 			"title_id_hex": info.TitleIDHex,
-			"disc_number":  fmt.Sprintf("%d", info.DiscNumber),
-			"version":      fmt.Sprintf("%d", info.Version),
 		},
 	}
 }
@@ -333,16 +343,80 @@ func identifyXBE(r io.ReaderAt, size int64) *GameIdent {
 		return nil
 	}
 
+	version := int(info.Version)
+	discNumber := int(info.DiscNumber)
+
 	return &GameIdent{
-		Platform: "xbox",
-		TitleID:  fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
-		Title:    info.Title,
-		Region:   info.Region,
+		Platform:   PlatformXbox,
+		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
+		Title:      info.Title,
+		Regions:    decodeXboxRegions(info.RegionFlags),
+		MakerCode:  info.PublisherCode,
+		Version:    &version,
+		DiscNumber: &discNumber,
 		Extra: map[string]string{
 			"title_id_hex": info.TitleIDHex,
-			"disc_number":  fmt.Sprintf("%d", info.DiscNumber),
-			"version":      fmt.Sprintf("%d", info.Version),
 		},
+	}
+}
+
+// identifyGBA extracts game identification from a GBA ROM file.
+// Returns nil if identification fails (non-fatal).
+func identifyGBA(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseGBA(r, size)
+	if err != nil {
+		return nil
+	}
+
+	version := info.Version
+
+	return &GameIdent{
+		Platform:  PlatformGBA,
+		TitleID:   info.GameCode,
+		Title:     info.Title,
+		Regions:   []Region{decodeGBARegion(info.RegionCode)},
+		MakerCode: info.MakerCode,
+		Version:   &version,
+	}
+}
+
+// decodeXboxRegions converts Xbox region flags to a slice of Region.
+func decodeXboxRegions(flags uint32) []Region {
+	var regions []Region
+	if flags&uint32(format.XboxRegionNA) != 0 {
+		regions = append(regions, RegionUS)
+	}
+	if flags&uint32(format.XboxRegionJapan) != 0 {
+		regions = append(regions, RegionJP)
+	}
+	if flags&uint32(format.XboxRegionEUAU) != 0 {
+		regions = append(regions, RegionEU)
+	}
+	if len(regions) == 0 {
+		regions = append(regions, RegionUnknown)
+	}
+	return regions
+}
+
+// decodeGBARegion converts a GBA region code byte to a Region.
+func decodeGBARegion(code byte) Region {
+	switch code {
+	case 'J':
+		return RegionJP
+	case 'E':
+		return RegionUS
+	case 'P':
+		return RegionEU
+	case 'F':
+		return RegionFR
+	case 'S':
+		return RegionES
+	case 'D':
+		return RegionDE
+	case 'I':
+		return RegionIT
+	default:
+		return RegionUnknown
 	}
 }
 
@@ -359,6 +433,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatISO9660
 	case format.ZIP:
 		return FormatZIP
+	case format.GBA:
+		return FormatGBA
 	default:
 		return FormatUnknown
 	}
