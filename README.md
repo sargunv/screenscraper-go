@@ -16,4 +16,4 @@ See the [CLI documentation](./docs/rom-tools.md) for complete usage information.
 
 To use the ScreenScraper API client in your Go project:
 
-    go get github.com/sargunv/rom-tools/clients/screenscraper
+    go get github.com/sargunv/rom-tools/lib/screenscraper

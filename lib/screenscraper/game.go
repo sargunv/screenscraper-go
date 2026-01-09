@@ -136,24 +136,28 @@ type Game struct {
 	ROM             *ROM                 `json:"rom,omitempty"`
 }
 
-// GameInfoParams parameters for game info lookup
+// GameInfoParams contains parameters for game info lookup (jeuInfos.php).
+// You must provide either ROM identification information OR a GameID.
+// For ROM identification: at least one hash (CRC, MD5, or SHA1) is required (preferably all three),
+// plus ROMSize (size in bytes), SystemID, ROMType, and ROMName.
+// For direct game lookup: GameID can be used instead (no ROM information is sent in this case).
 type GameInfoParams struct {
 	// ROM identification (at least one hash + size recommended)
-	CRC     string
-	MD5     string
-	SHA1    string
-	ROMSize string
+	CRC     string // CRC32 calculation of existing local rom/iso/folder file
+	MD5     string // MD5 calculation of existing local rom/iso/folder file
+	SHA1    string // SHA1 calculation of existing local rom/iso/folder file
+	ROMSize string // Size in bytes of the file or folder
 
-	// Required context
-	SystemID string
-	ROMType  string // "rom", "iso", or "folder"
-	ROMName  string
+	// Required context (when using ROM identification)
+	SystemID string // Numeric identifier of the system (see systemesListe.php)
+	ROMType  string // Type of "rom": "rom" (single rom file), "iso" (single iso file), or "folder"
+	ROMName  string // Name of the file (with extension) or folder name
 
 	// Alternative: direct game lookup
-	GameID string
+	GameID string // Force game search with its numeric identifier (no ROM information is sent in this case)
 
 	// Optional
-	SerialNum string
+	SerialNum string // Force game search with the ROM (iso) serial number
 }
 
 // GameInfoResponse is the complete response for the game info endpoint
@@ -166,7 +170,11 @@ type GameInfoResponse struct {
 	} `json:"response"`
 }
 
-// GetGameInfo retrieves detailed game information and media
+// GetGameInfo retrieves detailed game information and media (jeuInfos.php).
+// Unless exempted, you must send at least one (preferably all 3) hash calculations
+// (crc, md5, sha1) for rom/iso file or folder identification AND the size (in bytes).
+// Returns comprehensive game metadata, release dates by region, media URLs (screenshots, box art, wheels, videos, manuals, bezels, etc.),
+// ROM information (if scraped by ROM), and a list of all known ROMs for the game.
 func (c *Client) GetGameInfo(params GameInfoParams) (*GameInfoResponse, error) {
 	p := map[string]string{
 		"crc":       params.CRC,

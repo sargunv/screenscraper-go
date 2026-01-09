@@ -1,0 +1,6 @@
+Rom files in this directory are sourced from:
+
+- https://github.com/XboxDev/cromwell (LGPL-2.1)
+- https://www.zophar.net/pdroms/ (public domain)
+
+These files are used as sample data for automated tests.

@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"slices"
 
-	"github.com/sargunv/rom-tools/clients/romident"
 	"github.com/sargunv/rom-tools/internal/format"
+	"github.com/sargunv/rom-tools/lib/romident"
 
 	"github.com/spf13/cobra"
 )
@@ -29,7 +29,7 @@ Supports:
 - CHD files: extracts SHA1 hashes from header (fast, no decompression)
 - ZIP archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
 - Folders: identifies files within.
-- XISO files: identifies Xbox game information from the XBE header.`,
+- XISO and XBE files: identifies Xbox game information from the XBE header.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runIdentify,
 }

@@ -17,6 +17,7 @@ const (
 	FormatUnknown Format = "unknown"
 	FormatCHD     Format = "chd"
 	FormatXISO    Format = "xiso"
+	FormatXBE     Format = "xbe"
 	FormatISO9660 Format = "iso9660"
 	FormatZIP     Format = "zip"
 	// Future: FormatGBA, FormatSFC, etc.

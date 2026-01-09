@@ -53,8 +53,12 @@ type SubmitProposalResponse struct {
 	Message string
 }
 
-// SubmitInfoProposal submits a text info proposal (botProposition.php endpoint)
-// This requires user credentials (SSID and SSPassword) to be set on the client.
+// SubmitInfoProposal submits a text info proposal (botProposition.php).
+// The request must be sent as an HTML form of type "multipart/form-data" with the "POST" method.
+// Requires user credentials (SSID and SSPassword) to be set on the client.
+// Info types for games: name, editeur, developpeur, players, score, rating, genres, datessortie, rotation, resolution, modes, familles, numero, styles, themes, description.
+// Info types for ROMs: developpeur, editeur, datessortie, players, regions, langues, clonetype, hacktype, friendly, serial, description.
+// See the API documentation for complete lists and format requirements.
 func (c *Client) SubmitInfoProposal(params SubmitInfoProposalParams) (*SubmitProposalResponse, error) {
 	// Validate that user credentials are provided
 	if c.SSID == "" || c.SSPassword == "" {
@@ -102,8 +106,11 @@ func (c *Client) SubmitInfoProposal(params SubmitInfoProposalParams) (*SubmitPro
 	return c.postProposal(fields, nil, "")
 }
 
-// SubmitMediaProposal submits a media proposal (botProposition.php endpoint)
-// This requires user credentials (SSID and SSPassword) to be set on the client.
+// SubmitMediaProposal submits a media proposal (botProposition.php).
+// The request must be sent as an HTML form of type "multipart/form-data" with the "POST" method.
+// Requires user credentials (SSID and SSPassword) to be set on the client.
+// Media types include: sstitle, ss, fanart, video, overlay, steamgrid, wheel, wheel-hd, marquee, screenmarquee, box-2D, box-2D-side, box-2D-back, box-texture, manuel, flyer, maps, figurine, support-texture, box-scan, support-scan, bezel-4-3, bezel-16-9, etc.
+// See the API documentation for complete list and format requirements.
 func (c *Client) SubmitMediaProposal(params SubmitMediaProposalParams) (*SubmitProposalResponse, error) {
 	// Validate that user credentials are provided
 	if c.SSID == "" || c.SSPassword == "" {
@@ -162,7 +169,6 @@ func (c *Client) SubmitMediaProposal(params SubmitMediaProposalParams) (*SubmitP
 	return c.postProposal(fields, params.MediaFile, params.MediaFileName)
 }
 
-// postProposal sends a multipart/form-data POST request to the botProposition.php endpoint
 func (c *Client) postProposal(fields map[string]string, fileReader io.Reader, fileName string) (*SubmitProposalResponse, error) {
 	// Create a buffer to write the multipart form data
 	var body bytes.Buffer

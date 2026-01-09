@@ -1,7 +1,7 @@
 package format
 
 import (
-	"github.com/sargunv/rom-tools/clients/screenscraper"
+	"github.com/sargunv/rom-tools/lib/screenscraper"
 )
 
 // GetLocalizedName extracts the localized name from individual language fields.

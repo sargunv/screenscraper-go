@@ -1,7 +1,7 @@
 package shared
 
 import (
-	"github.com/sargunv/rom-tools/clients/screenscraper"
+	"github.com/sargunv/rom-tools/lib/screenscraper"
 )
 
 // Shared state for screenscraper CLI commands

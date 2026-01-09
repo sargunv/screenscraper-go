@@ -21,7 +21,10 @@ type GameSearchResponse struct {
 	} `json:"response"`
 }
 
-// SearchGame searches for games by name
+// SearchGame searches for games by name (jeuRecherche.php).
+// Returns a table of games (limited to 30 games) sorted by probability.
+// The returned games contain the same information as GetGameInfo but without ROM information.
+// SystemID is optional and can be used to limit the search to a specific system.
 func (c *Client) SearchGame(params SearchGameParams) (*GameSearchResponse, error) {
 	p := map[string]string{
 		"recherche": params.Query,

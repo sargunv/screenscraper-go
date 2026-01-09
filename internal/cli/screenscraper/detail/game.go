@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sargunv/rom-tools/clients/screenscraper"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/shared"
 	"github.com/sargunv/rom-tools/internal/format"
+	"github.com/sargunv/rom-tools/lib/screenscraper"
 
 	"github.com/spf13/cobra"
 )
@@ -33,7 +33,7 @@ You can lookup by:
   2. Game ID (direct lookup)`,
 	Example: `  # Lookup by ROM hash
   rom-tools screenscraper detail game --crc=50ABC90A --size=749652 --system=1 --rom-type=rom --name="Sonic 2.zip"
-  
+
   # Lookup by game ID
   rom-tools screenscraper detail game --id=3`,
 	RunE: func(cmd *cobra.Command, args []string) error {

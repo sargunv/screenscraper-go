@@ -14,7 +14,11 @@ type UserInfoResponse struct {
 	} `json:"response"`
 }
 
-// GetUserInfo retrieves user information and quotas
+// GetUserInfo retrieves user information and quotas (ssuserInfos.php).
+// Requires user credentials (ssid and sspassword) to be set on the client.
+// Returns user level, contribution statistics, thread limits, download speed limits,
+// API request quotas (per minute and per day), current usage statistics, and proposal acceptance/rejection rates.
+// This information is essential for quota management in scraping software.
 func (c *Client) GetUserInfo() (*UserInfoResponse, error) {
 	body, err := c.get("ssuserInfos.php", nil)
 	if err != nil {

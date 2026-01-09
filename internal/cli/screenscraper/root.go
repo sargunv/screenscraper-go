@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sargunv/rom-tools/clients/screenscraper"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/detail"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/list"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/shared"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/status"
+	"github.com/sargunv/rom-tools/lib/screenscraper"
 
 	"github.com/spf13/cobra"
 )

@@ -18,7 +18,10 @@ run = ["mise install", "hk install", "mise lock"]
 run = "go build ./..."
 
 [tasks.test]
-run = "go test -v ./..."
+run = [
+    # "go test ./client/screenscraper/...", # Disabled because it hits the live API
+    "go test ./lib/romident/...",
+]
 
 [tasks.rom-tools]
 run = "go run ./cmd/rom-tools"
@@ -36,7 +39,7 @@ run = "hk run fix"
 
 [tasks.gen-docs]
 run = [
-    "rm -r docs",
+    "rm -rf docs",
     "go run ./cmd/gen-docs",
     "prettier --log-level silent --write docs/**/*.md",
 ]

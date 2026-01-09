@@ -8,18 +8,10 @@ import (
 	"unicode/utf16"
 )
 
-// Xbox XISO (XDVDFS) and XBE format parsing.
+// XBE (Xbox Executable) format parsing.
 //
-// XDVDFS (Xbox DVD File System) specification:
-// https://xboxdevwiki.net/Xbox_Game_Disc#Xbox_Game_Disc_filesystem_layout
-//
-// XBE (Xbox Executable) specification:
+// XBE specification:
 // https://xboxdevwiki.net/Xbe
-//
-// XISO layout:
-//   - Offset 0x10000: Volume descriptor with "MICROSOFT*XBOX*MEDIA" magic
-//   - Root directory entry follows, containing file entries in a binary tree
-//   - default.xbe in root contains game metadata in its certificate
 //
 // XBE header layout (relevant fields):
 //
@@ -43,11 +35,6 @@ import (
 //	0x00AC  4     Version
 
 const (
-	xisoVolumeDescOffset = 0x10000
-	xisoMagicSize        = 20
-	xisoRootDirOffset    = 0x14
-	xisoRootDirSizeOff   = 0x18
-
 	xbeMagicSize      = 4
 	xbeBaseAddrOffset = 0x104
 	xbeCertAddrOffset = 0x118
@@ -62,8 +49,6 @@ const (
 	xbeCertSize         = 0x1D0
 )
 
-var xbeMagic = []byte("XBEH")
-
 // XboxRegion represents Xbox region flags.
 type XboxRegion uint32
 
@@ -74,7 +59,7 @@ const (
 	XboxRegionDebug XboxRegion = 0x80000000
 )
 
-// XboxInfo contains metadata extracted from an Xbox XISO.
+// XboxInfo contains metadata extracted from an Xbox XBE file.
 type XboxInfo struct {
 	TitleID       uint32
 	TitleIDHex    string
@@ -87,127 +72,23 @@ type XboxInfo struct {
 	Version       uint32
 }
 
-// ParseXISO extracts game information from an Xbox XISO image.
-func ParseXISO(r io.ReaderAt, size int64) (*XboxInfo, error) {
-	// Read volume descriptor
-	if size < xisoVolumeDescOffset+32 {
-		return nil, fmt.Errorf("file too small for XISO header")
-	}
-
-	volDesc := make([]byte, 32)
-	if _, err := r.ReadAt(volDesc, xisoVolumeDescOffset); err != nil {
-		return nil, fmt.Errorf("failed to read XISO volume descriptor: %w", err)
-	}
-
-	// Verify magic
-	if string(volDesc[:xisoMagicSize]) != "MICROSOFT*XBOX*MEDIA" {
-		return nil, fmt.Errorf("not a valid XISO: invalid magic")
-	}
-
-	// Get root directory location
-	rootDirSector := binary.LittleEndian.Uint32(volDesc[xisoRootDirOffset:])
-	rootDirSize := binary.LittleEndian.Uint32(volDesc[xisoRootDirSizeOff:])
-
-	// Find default.xbe in root directory
-	xbeOffset, err := findDefaultXBE(r, int64(rootDirSector)*2048, int64(rootDirSize))
-	if err != nil {
-		return nil, fmt.Errorf("failed to find default.xbe: %w", err)
-	}
-
-	// Parse XBE
-	return parseXBE(r, xbeOffset)
+// ParseXBE extracts game information from an XBE file.
+// The file should start at offset 0 (for standalone .xbe files).
+func ParseXBE(r io.ReaderAt, size int64) (*XboxInfo, error) {
+	return ParseXBEAt(r, 0)
 }
 
-// findDefaultXBE searches the XDVDFS directory tree for default.xbe.
-// The directory uses a binary tree structure with left/right child offsets.
-func findDefaultXBE(r io.ReaderAt, dirOffset, dirSize int64) (int64, error) {
-	dirData := make([]byte, dirSize)
-	if _, err := r.ReadAt(dirData, dirOffset); err != nil {
-		return 0, fmt.Errorf("failed to read directory: %w", err)
-	}
-
-	return searchDirectory(dirData, "default.xbe")
-}
-
-// searchDirectory searches a directory's binary tree for a file.
-// Directory entry format:
-//
-//	Offset  Size  Description
-//	0       2     Left child offset (within directory, *4)
-//	2       2     Right child offset (within directory, *4)
-//	4       4     File start sector
-//	8       4     File size
-//	12      1     File attributes
-//	13      1     Filename length
-//	14      N     Filename (ASCII)
-func searchDirectory(dirData []byte, target string) (int64, error) {
-	target = strings.ToLower(target)
-	return searchDirectoryAt(dirData, 0, target)
-}
-
-func searchDirectoryAt(dirData []byte, offset int, target string) (int64, error) {
-	if offset >= len(dirData)-14 {
-		return 0, fmt.Errorf("file not found")
-	}
-
-	leftOffset := binary.LittleEndian.Uint16(dirData[offset:]) * 4
-	rightOffset := binary.LittleEndian.Uint16(dirData[offset+2:]) * 4
-	fileSector := binary.LittleEndian.Uint32(dirData[offset+4:])
-	// fileSize := binary.LittleEndian.Uint32(dirData[offset+8:])
-	// attributes := dirData[offset+12]
-	nameLen := int(dirData[offset+13])
-
-	if nameLen == 0 || offset+14+nameLen > len(dirData) {
-		return 0, fmt.Errorf("invalid directory entry")
-	}
-
-	name := strings.ToLower(string(dirData[offset+14 : offset+14+nameLen]))
-
-	if name == target {
-		return int64(fileSector) * 2048, nil
-	}
-
-	// Binary tree search
-	if target < name && leftOffset != 0 {
-		result, err := searchDirectoryAt(dirData, int(leftOffset), target)
-		if err == nil {
-			return result, nil
-		}
-	}
-	if target > name && rightOffset != 0 {
-		result, err := searchDirectoryAt(dirData, int(rightOffset), target)
-		if err == nil {
-			return result, nil
-		}
-	}
-
-	// Also try both branches if exact comparison didn't work
-	if leftOffset != 0 {
-		result, err := searchDirectoryAt(dirData, int(leftOffset), target)
-		if err == nil {
-			return result, nil
-		}
-	}
-	if rightOffset != 0 {
-		result, err := searchDirectoryAt(dirData, int(rightOffset), target)
-		if err == nil {
-			return result, nil
-		}
-	}
-
-	return 0, fmt.Errorf("file not found")
-}
-
-// parseXBE extracts game info from an XBE file at the given offset.
-func parseXBE(r io.ReaderAt, xbeOffset int64) (*XboxInfo, error) {
+// ParseXBEAt extracts game information from an XBE file at the given offset.
+// This is useful when the XBE is embedded within another file (e.g., in an XISO).
+func ParseXBEAt(r io.ReaderAt, xbeOffset int64) (*XboxInfo, error) {
 	// Read XBE header
 	header := make([]byte, xbeHeaderSize)
 	if _, err := r.ReadAt(header, xbeOffset); err != nil {
 		return nil, fmt.Errorf("failed to read XBE header: %w", err)
 	}
 
-	// Verify magic
-	if string(header[:xbeMagicSize]) != "XBEH" {
+	// Verify magic (XBEH)
+	if string(header[:xbeMagicSize]) != string(xbeMagic) {
 		return nil, fmt.Errorf("not a valid XBE: invalid magic")
 	}
 

@@ -14,6 +14,7 @@ const (
 	Unknown Format = "unknown"
 	CHD     Format = "chd"
 	XISO    Format = "xiso"
+	XBE     Format = "xbe"
 	ISO9660 Format = "iso9660"
 	ZIP     Format = "zip"
 )
@@ -35,6 +36,10 @@ var (
 	// ZIP: magic at start
 	zipMagic  = []byte{0x50, 0x4B, 0x03, 0x04}
 	zipOffset = int64(0)
+
+	// XBE: magic at start
+	xbeMagic  = []byte("XBEH")
+	xbeOffset = int64(0)
 )
 
 // Detector can detect the format of a file.
@@ -60,6 +65,8 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return Unknown
 	case ".xiso":
 		return XISO
+	case ".xbe":
+		return XBE
 	default:
 		return Unknown
 	}
@@ -100,6 +107,16 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 		if _, err := r.ReadAt(buf, xisoOffset); err == nil {
 			if bytesEqual(buf, xisoMagic) {
 				return XISO, nil
+			}
+		}
+	}
+
+	// Check for XBE
+	if size >= xbeOffset+int64(len(xbeMagic)) {
+		buf := make([]byte, len(xbeMagic))
+		if _, err := r.ReadAt(buf, xbeOffset); err == nil {
+			if bytesEqual(buf, xbeMagic) {
+				return XBE, nil
 			}
 		}
 	}

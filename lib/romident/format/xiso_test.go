@@ -1,0 +1,41 @@
+package format
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/sargunv/rom-tools/internal/testutil"
+)
+
+func TestParseXISO(t *testing.T) {
+	xisoPath := filepath.Join(testutil.ROMsPath(t), "xromwell.xiso.iso")
+
+	file, err := os.Open(xisoPath)
+	if err != nil {
+		t.Fatalf("Failed to open XISO file: %v", err)
+	}
+	defer file.Close()
+
+	stat, err := file.Stat()
+	if err != nil {
+		t.Fatalf("Failed to stat XISO file: %v", err)
+	}
+
+	info, err := ParseXISO(file, stat.Size())
+	if err != nil {
+		t.Fatalf("ParseXISO() error = %v", err)
+	}
+
+	if info.Title != "Xromwell" {
+		t.Errorf("Expected title 'Xromwell', got '%s'", info.Title)
+	}
+
+	if info.TitleIDHex != "00000000" {
+		t.Errorf("Expected title ID hex '00000000', got '%s'", info.TitleIDHex)
+	}
+
+	if info.Region != "NA/JP/EU/AU/DEBUG" {
+		t.Errorf("Expected region 'NA/JP/EU/AU/DEBUG', got '%s'", info.Region)
+	}
+}

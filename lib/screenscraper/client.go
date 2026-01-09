@@ -11,17 +11,22 @@ import (
 
 const BaseURL = "https://api.screenscraper.fr/api2"
 
-// Client is a Screenscraper API client
+// Client is a Screenscraper API client.
+//
+// The ScreenScraper API can only be integrated into applications that are entirely free and distributed,
+// or, otherwise, with prior authorization and conditions set by the ScreenScraper team.
+// Contact the ScreenScraper forum to obtain developer credentials.
 type Client struct {
 	HTTPClient  *http.Client
-	DevID       string
-	DevPassword string
-	SoftName    string
-	SSID        string
-	SSPassword  string
+	DevID       string // Developer identifier (required for all requests)
+	DevPassword string // Developer password (required for all requests)
+	SoftName    string // Name of the calling software (required for all requests)
+	SSID        string // ScreenScraper user identifier (optional, required for submitting ratings/proposals)
+	SSPassword  string // ScreenScraper user password (optional, required for submitting ratings/proposals)
 }
 
-// NewClient creates a new Screenscraper API client
+// NewClient creates a new Screenscraper API client.
+// Developer credentials must be obtained from the ScreenScraper forum.
 func NewClient(devID, devPassword, softName, ssid, sspassword string) *Client {
 	return &Client{
 		HTTPClient: &http.Client{
@@ -35,7 +40,6 @@ func NewClient(devID, devPassword, softName, ssid, sspassword string) *Client {
 	}
 }
 
-// buildURL constructs the API URL with common parameters
 func (c *Client) buildURL(endpoint string, params map[string]string) string {
 	u := fmt.Sprintf("%s/%s", BaseURL, endpoint)
 	v := url.Values{}
@@ -64,7 +68,6 @@ func (c *Client) buildURL(endpoint string, params map[string]string) string {
 	return u + "?" + v.Encode()
 }
 
-// validateResponse checks the Header fields in a JSON response and returns an error if the request failed
 func validateResponse(header Header) error {
 	// Check if success field indicates failure
 	if header.Success != "" && header.Success != "true" {
@@ -86,7 +89,6 @@ func validateResponse(header Header) error {
 	return nil
 }
 
-// get performs a GET request and returns the raw response body
 func (c *Client) get(endpoint string, params map[string]string) ([]byte, error) {
 	apiURL := c.buildURL(endpoint, params)
 

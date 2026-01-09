@@ -19,7 +19,10 @@ type DownloadMediaParams struct {
 	OutputFormat string // "png" or "jpg"
 }
 
-// DownloadGameMedia downloads game image media
+// DownloadGameMedia downloads game image media (mediaJeu.php).
+// Returns PNG/JPEG image data, or text "CRCOK"/"MD5OK"/"SHA1OK" if the hash matches (update optimization),
+// or text "NOMEDIA" if the media file was not found.
+// MediaFormat is informative only and does not return the media in the specified format.
 func (c *Client) DownloadGameMedia(params DownloadMediaParams) ([]byte, error) {
 	p := map[string]string{
 		"crc":          params.CRC,
@@ -36,7 +39,10 @@ func (c *Client) DownloadGameMedia(params DownloadMediaParams) ([]byte, error) {
 	return c.get("mediaJeu.php", p)
 }
 
-// DownloadSystemMedia downloads system image media
+// DownloadSystemMedia downloads system image media (mediaSysteme.php).
+// Returns PNG/JPEG image data, or text "CRCOK"/"MD5OK"/"SHA1OK" if the hash matches (update optimization),
+// or text "NOMEDIA" if the media file was not found.
+// MediaFormat is informative only and does not return the media in the specified format.
 func (c *Client) DownloadSystemMedia(params DownloadMediaParams) ([]byte, error) {
 	p := map[string]string{
 		"crc":          params.CRC,
@@ -70,7 +76,11 @@ type DownloadGroupMediaParams struct {
 	OutputFormat string // "png" or "jpg"
 }
 
-// DownloadGroupMedia downloads group image media (genres, modes, families, themes, styles)
+// DownloadGroupMedia downloads group image media (mediaGroup.php).
+// Group types: genre, mode, famille, theme, style.
+// Returns PNG/JPEG image data, or text "CRCOK"/"MD5OK"/"SHA1OK" if the hash matches (update optimization),
+// or text "NOMEDIA" if the media file was not found.
+// MediaFormat is informative only and does not return the media in the specified format.
 func (c *Client) DownloadGroupMedia(params DownloadGroupMediaParams) ([]byte, error) {
 	p := map[string]string{
 		"crc":          params.CRC,
@@ -104,7 +114,10 @@ type DownloadCompanyMediaParams struct {
 	OutputFormat string // "png" or "jpg"
 }
 
-// DownloadCompanyMedia downloads company image media (publishers, developers)
+// DownloadCompanyMedia downloads company image media (mediaCompagnie.php).
+// Returns PNG/JPEG image data, or text "CRCOK"/"MD5OK"/"SHA1OK" if the hash matches (update optimization),
+// or text "NOMEDIA" if the media file was not found.
+// MediaFormat is informative only and does not return the media in the specified format.
 func (c *Client) DownloadCompanyMedia(params DownloadCompanyMediaParams) ([]byte, error) {
 	p := map[string]string{
 		"crc":          params.CRC,

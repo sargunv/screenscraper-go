@@ -13,7 +13,9 @@ type InfraInfoResponse struct {
 	} `json:"response"`
 }
 
-// GetInfraInfo retrieves infrastructure/server information
+// GetInfraInfo retrieves infrastructure/server information (ssinfraInfos.php).
+// Provides server CPU usage, API access counts, thread limits, and API closure status.
+// This information helps clients understand server load and make decisions about request rates.
 func (c *Client) GetInfraInfo() (*InfraInfoResponse, error) {
 	body, err := c.get("ssinfraInfos.php", nil)
 	if err != nil {

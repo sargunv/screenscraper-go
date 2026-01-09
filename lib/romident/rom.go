@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sargunv/rom-tools/clients/romident/container"
-	"github.com/sargunv/rom-tools/clients/romident/format"
+	"github.com/sargunv/rom-tools/lib/romident/container"
+	"github.com/sargunv/rom-tools/lib/romident/format"
 )
 
 // IdentifyROM identifies a ROM file, ZIP archive, or folder.
@@ -224,7 +224,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyXISO(r, size)
 		}
 	}
-	// Future: CHD identification, etc.
+	if detectedFormat == format.XBE {
+		// Reset reader position for XBE parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyXBE(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -320,6 +325,27 @@ func identifyXISO(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifyXBE extracts game identification from an Xbox XBE file.
+// Returns nil if identification fails (non-fatal).
+func identifyXBE(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseXBE(r, size)
+	if err != nil {
+		return nil
+	}
+
+	return &GameIdent{
+		Platform: "xbox",
+		TitleID:  fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
+		Title:    info.Title,
+		Region:   info.Region,
+		Extra: map[string]string{
+			"title_id_hex": info.TitleIDHex,
+			"disc_number":  fmt.Sprintf("%d", info.DiscNumber),
+			"version":      fmt.Sprintf("%d", info.Version),
+		},
+	}
+}
+
 // formatToRomidentFormat converts format.Format to romident.Format
 func formatToRomidentFormat(f format.Format) Format {
 	switch f {
@@ -327,6 +353,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatCHD
 	case format.XISO:
 		return FormatXISO
+	case format.XBE:
+		return FormatXBE
 	case format.ISO9660:
 		return FormatISO9660
 	case format.ZIP:

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sargunv/rom-tools/clients/screenscraper"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/shared"
+	"github.com/sargunv/rom-tools/lib/screenscraper"
 
 	"github.com/spf13/cobra"
 )

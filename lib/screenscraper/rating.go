@@ -21,9 +21,10 @@ type SubmitRatingResponse struct {
 	Message string
 }
 
-// SubmitRating submits a rating for a game (botNote.php endpoint)
-// This requires user credentials (SSID and SSPassword) to be set on the client.
-// The rating must be between 1 and 20.
+// SubmitRating submits a rating for a game (botNote.php).
+// The request must be sent as an HTML request with the "GET" method.
+// Requires user credentials (SSID and SSPassword) to be set on the client.
+// Rating must be an integer from 1 to 20.
 func (c *Client) SubmitRating(params SubmitRatingParams) (*SubmitRatingResponse, error) {
 	// Validate that user credentials are provided
 	if c.SSID == "" || c.SSPassword == "" {
