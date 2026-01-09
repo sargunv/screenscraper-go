@@ -1,12 +1,9 @@
-// Package container provides handlers for container formats (ZIP, folders).
 package container
 
 import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"sync"
 )
 
@@ -18,17 +15,15 @@ func NewZIPHandler() *ZIPHandler {
 	return &ZIPHandler{}
 }
 
-// ZIPFileInfo contains information about a file within a ZIP archive.
-type ZIPFileInfo struct {
-	Name  string
-	Size  int64
-	CRC32 uint32
+// ZIPArchive represents an open ZIP archive and implements Container.
+type ZIPArchive struct {
+	reader  *zip.ReadCloser
+	entries []FileEntry
 }
 
-// ZIPArchive represents an open ZIP archive.
-type ZIPArchive struct {
-	reader *zip.ReadCloser
-	Files  []ZIPFileInfo
+// Entries returns all files in the ZIP archive.
+func (z *ZIPArchive) Entries() []FileEntry {
+	return z.entries
 }
 
 // Close closes the ZIP archive.
@@ -47,9 +42,9 @@ func (z *ZIPArchive) OpenFile(name string) (io.ReadCloser, error) {
 }
 
 // OpenFileAt opens a file within the ZIP archive with random access support.
-// Returns a ZIPEntryReader that implements io.ReaderAt by buffering decompressed data.
+// Returns a ReaderAtSeekCloser that implements io.ReaderAt by buffering decompressed data.
 // This is useful for format detection and header parsing without decompressing the entire file.
-func (z *ZIPArchive) OpenFileAt(name string) (*ZIPEntryReader, error) {
+func (z *ZIPArchive) OpenFileAt(name string) (ReaderAtSeekCloser, error) {
 	for _, f := range z.reader.File {
 		if f.Name == name {
 			return newZIPEntryReader(f)
@@ -206,55 +201,22 @@ func (h *ZIPHandler) Open(path string) (*ZIPArchive, error) {
 		return nil, fmt.Errorf("failed to open ZIP: %w", err)
 	}
 
-	var files []ZIPFileInfo
+	var entries []FileEntry
 	for _, f := range r.File {
 		// Skip directories
 		if f.FileInfo().IsDir() {
 			continue
 		}
 
-		files = append(files, ZIPFileInfo{
+		entries = append(entries, FileEntry{
 			Name:  f.Name,
 			Size:  int64(f.UncompressedSize64),
-			CRC32: f.CRC32,
+			CRC32: f.CRC32, // Pre-computed CRC32 from ZIP metadata
 		})
 	}
 
 	return &ZIPArchive{
-		reader: r,
-		Files:  files,
+		reader:  r,
+		entries: entries,
 	}, nil
-}
-
-// FolderHandler handles directory-based ROMs.
-type FolderHandler struct{}
-
-// NewFolderHandler creates a new folder handler.
-func NewFolderHandler() *FolderHandler {
-	return &FolderHandler{}
-}
-
-// ListFiles lists all files in a folder.
-func (h *FolderHandler) ListFiles(path string) ([]string, error) {
-	var files []string
-
-	err := filepath.Walk(path, func(p string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			rel, err := filepath.Rel(path, p)
-			if err != nil {
-				return err
-			}
-			files = append(files, rel)
-		}
-		return nil
-	})
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to list folder: %w", err)
-	}
-
-	return files, nil
 }

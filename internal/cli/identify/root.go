@@ -25,28 +25,19 @@ var Cmd = &cobra.Command{
 	Long: `Extract hashes and game identification data from ROM files.
 
 Supports:
-  - Single files: calculates SHA1, MD5, CRC32
-  - ZIP archives: extracts CRC32 from metadata (fast, no decompression)
-  - CHD files: extracts SHA1 hashes from header (fast, no decompression)
-  - Folders: identifies all files within
-
-Format detection:
-  - Loose files: by magic bytes (CHD, XISO, ISO9660, ZIP)
-  - ZIP contents: by extension (default), by magic bytes (--slow mode)
-  - Folders: by magic bytes for all files
-
-Hash modes:
-  - Default: uses fast methods where available, calculates for loose files
-  - --fast: skips hash calculation for large loose files, but calculates for small loose files (<65MiB). ZIPs only use CRC32 from metadata (no decompression)
-  - --slow: calculates full hashes and enables format detection/identification for ZIP contents`,
+- Hashing files: calculates SHA1, MD5, CRC32 (unless in fast mode).
+- CHD files: extracts SHA1 hashes from header (fast, no decompression)
+- ZIP archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
+- Folders: identifies files within.
+- XISO files: identifies Xbox game information from the XBE header.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runIdentify,
 }
 
 func init() {
 	Cmd.Flags().BoolVarP(&jsonOutput, "json", "j", false, "Output results as JSON Lines (one JSON object per line)")
-	Cmd.Flags().BoolVar(&fastMode, "fast", false, "Skip hash calculation entirely")
-	Cmd.Flags().BoolVar(&slowMode, "slow", false, "Calculate full hashes even for archives (requires decompression)")
+	Cmd.Flags().BoolVar(&fastMode, "fast", false, "Skip hash calculation for large loose files, but calculates for small loose files (<65MiB).")
+	Cmd.Flags().BoolVar(&slowMode, "slow", false, "Calculate full hashes and identify games inside archives (requires decompression).")
 	Cmd.MarkFlagsMutuallyExclusive("fast", "slow")
 }
 
