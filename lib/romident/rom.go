@@ -236,6 +236,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyGBA(r, size)
 		}
 	}
+	if detectedFormat == format.N64 {
+		// Reset reader position for N64 parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyN64(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -380,17 +386,40 @@ func identifyGBA(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifyN64 extracts game identification from an N64 ROM file.
+// Returns nil if identification fails (non-fatal).
+func identifyN64(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseN64(r, size)
+	if err != nil {
+		return nil
+	}
+
+	version := info.Version
+
+	return &GameIdent{
+		Platform: PlatformN64,
+		TitleID:  info.GameCode,
+		Title:    info.Title,
+		Regions:  []Region{decodeN64Region(info.RegionCode)},
+		Version:  &version,
+		Extra: map[string]string{
+			"byte_order":    string(info.ByteOrder),
+			"category_code": string(info.CategoryCode),
+		},
+	}
+}
+
 // decodeXboxRegions converts Xbox region flags to a slice of Region.
 func decodeXboxRegions(flags uint32) []Region {
 	var regions []Region
 	if flags&uint32(format.XboxRegionNA) != 0 {
-		regions = append(regions, RegionUS)
+		regions = append(regions, RegionNA)
 	}
 	if flags&uint32(format.XboxRegionJapan) != 0 {
 		regions = append(regions, RegionJP)
 	}
 	if flags&uint32(format.XboxRegionEUAU) != 0 {
-		regions = append(regions, RegionEU)
+		regions = append(regions, RegionEU, RegionAU)
 	}
 	if len(regions) == 0 {
 		regions = append(regions, RegionUnknown)
@@ -420,6 +449,49 @@ func decodeGBARegion(code byte) Region {
 	}
 }
 
+// decodeN64Region converts an N64 destination code byte to a Region.
+// Based on the N64brew Wiki ROM Header specification.
+func decodeN64Region(code byte) Region {
+	switch code {
+	case 'A':
+		return RegionWorld
+	case 'B':
+		return RegionBR
+	case 'C':
+		return RegionCN
+	case 'D':
+		return RegionDE
+	case 'E':
+		return RegionUS
+	case 'F':
+		return RegionFR
+	case 'G':
+		return RegionGatewayNTSC
+	case 'H':
+		return RegionNL
+	case 'I':
+		return RegionIT
+	case 'J':
+		return RegionJP
+	case 'K':
+		return RegionKR
+	case 'L':
+		return RegionGatewayPAL
+	case 'N':
+		return RegionCA
+	case 'P', 'X', 'Y', 'Z':
+		return RegionEU
+	case 'S':
+		return RegionES
+	case 'U':
+		return RegionAU
+	case 'W':
+		return RegionNordic
+	default:
+		return RegionUnknown
+	}
+}
+
 // formatToRomidentFormat converts format.Format to romident.Format
 func formatToRomidentFormat(f format.Format) Format {
 	switch f {
@@ -435,6 +507,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatZIP
 	case format.GBA:
 		return FormatGBA
+	case format.N64:
+		return FormatN64
 	default:
 		return FormatUnknown
 	}

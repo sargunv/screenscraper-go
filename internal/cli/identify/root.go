@@ -26,12 +26,13 @@ var Cmd = &cobra.Command{
 	Long: `Extract hashes and game identification data from ROM files.
 
 Supports:
-- Hashing files: calculates SHA1, MD5, CRC32 (unless in fast mode).
-- CHD files: extracts SHA1 hashes from header (fast, no decompression)
-- ZIP archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
-- Folders: identifies files within.
-- GBA files: identifies GBA game information from the header.
-- XISO and XBE files: identifies Xbox game information from the XBE header.`,
+- .chd discs: extracts SHA1 hashes from header (fast, no decompression)
+- .zip archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
+- .gba roms: identifies GBA game information from the header.
+- .z64, .v64, .n64 roms: identifies N64 game information from the ROM header.
+- .xiso and .xbe roms: identifies Xbox game information from the XBE certificate.
+- all files: calculates SHA1, MD5, CRC32 (unless in fast mode).
+- all folders: identifies files within.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runIdentify,
 }

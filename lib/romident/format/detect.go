@@ -18,6 +18,7 @@ const (
 	ISO9660 Format = "iso9660"
 	ZIP     Format = "zip"
 	GBA     Format = "gba"
+	N64     Format = "n64"
 )
 
 // Magic bytes and offsets for various formats
@@ -74,6 +75,8 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return XBE
 	case ".gba":
 		return GBA
+	case ".z64", ".v64", ".n64":
+		return N64
 	default:
 		return Unknown
 	}
@@ -134,6 +137,16 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 		if _, err := r.ReadAt(buf, gbaOffset); err == nil {
 			if bytesEqual(buf, gbaMagic) {
 				return GBA, nil
+			}
+		}
+	}
+
+	// Check for N64 (any byte order: 0x80 at position 0, 1, or 3)
+	if size >= 4 {
+		buf := make([]byte, 4)
+		if _, err := r.ReadAt(buf, 0); err == nil {
+			if IsN64ROM(buf) {
+				return N64, nil
 			}
 		}
 	}

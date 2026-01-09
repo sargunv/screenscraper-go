@@ -21,20 +21,32 @@ const (
 	FormatISO9660 Format = "iso9660"
 	FormatZIP     Format = "zip"
 	FormatGBA     Format = "gba"
+	FormatN64     Format = "n64"
 )
 
-// Region represents a game region using ISO country codes.
+// Region represents a game region using ISO country codes, continent codes, and some other non-country codes.
 type Region string
 
 const (
-	RegionJP      Region = "JP"      // Japan
-	RegionUS      Region = "US"      // USA/North America
-	RegionEU      Region = "EU"      // Europe (includes Australia for Xbox)
-	RegionFR      Region = "FR"      // France
-	RegionES      Region = "ES"      // Spain
-	RegionDE      Region = "DE"      // Germany
-	RegionIT      Region = "IT"      // Italy
-	RegionUnknown Region = "Unknown" // Fallback for unrecognized codes
+	RegionJP          Region = "JP"          // Japan
+	RegionUS          Region = "US"          // USA
+	RegionNA          Region = "NA"          // North America
+	RegionEU          Region = "EU"          // Europe
+	RegionFR          Region = "FR"          // France
+	RegionES          Region = "ES"          // Spain
+	RegionDE          Region = "DE"          // Germany
+	RegionIT          Region = "IT"          // Italy
+	RegionAU          Region = "AU"          // Australia
+	RegionBR          Region = "BR"          // Brazil
+	RegionCN          Region = "CN"          // China
+	RegionNL          Region = "NL"          // Netherlands
+	RegionKR          Region = "KR"          // Korea
+	RegionCA          Region = "CA"          // Canada
+	RegionNordic      Region = "Nordic"      // Scandinavia
+	RegionGatewayNTSC Region = "GatewayNTSC" // Gateway 64 (NTSC)
+	RegionGatewayPAL  Region = "GatewayPAL"  // Gateway 64 (PAL)
+	RegionWorld       Region = "World"       // Region-free/worldwide
+	RegionUnknown     Region = "Unknown"     // Fallback for unrecognized codes
 )
 
 // Platform represents a gaming platform.
@@ -43,6 +55,7 @@ type Platform string
 const (
 	PlatformXbox Platform = "xbox"
 	PlatformGBA  Platform = "gba"
+	PlatformN64  Platform = "n64"
 )
 
 // HashAlgorithm identifies a hash algorithm.
