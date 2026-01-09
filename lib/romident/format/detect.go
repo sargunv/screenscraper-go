@@ -19,6 +19,7 @@ const (
 	ZIP     Format = "zip"
 	GBA     Format = "gba"
 	N64     Format = "n64"
+	GB      Format = "gb"
 )
 
 // Magic bytes and offsets for various formats
@@ -77,6 +78,8 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return GBA
 	case ".z64", ".v64", ".n64":
 		return N64
+	case ".gb", ".gbc":
+		return GB
 	default:
 		return Unknown
 	}
@@ -149,6 +152,11 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 				return N64, nil
 			}
 		}
+	}
+
+	// Check for GB/GBC (Nintendo Logo at offset 0x104)
+	if IsGBROM(r, size) {
+		return GB, nil
 	}
 
 	// Check for ISO9660

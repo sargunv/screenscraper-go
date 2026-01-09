@@ -242,6 +242,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyN64(r, size)
 		}
 	}
+	if detectedFormat == format.GB {
+		// Reset reader position for GB parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyGB(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -409,6 +415,53 @@ func identifyN64(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifyGB extracts game identification from a GB/GBC ROM file.
+// Returns nil if identification fails (non-fatal).
+func identifyGB(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseGB(r, size)
+	if err != nil {
+		return nil
+	}
+
+	version := info.Version
+
+	// Determine platform based on CGB flag
+	var platform Platform
+	if info.Platform == format.GBPlatformGBC {
+		platform = PlatformGBC
+	} else {
+		platform = PlatformGB
+	}
+
+	// Determine region from destination code
+	var region Region
+	if info.DestinationCode == 0x00 {
+		region = RegionJP
+	} else {
+		region = RegionWorld // Non-Japanese = worldwide
+	}
+
+	extra := map[string]string{
+		"licensee": info.LicenseeCode,
+	}
+	if info.ManufacturerCode != "" {
+		extra["manufacturer"] = info.ManufacturerCode
+	}
+	if info.SGBFlag == format.SGBFlagSupported {
+		extra["sgb_support"] = "true"
+	}
+	extra["cartridge_type"] = fmt.Sprintf("%02X", info.CartridgeType)
+
+	return &GameIdent{
+		Platform:  platform,
+		Title:     info.Title,
+		Regions:   []Region{region},
+		MakerCode: info.LicenseeCode,
+		Version:   &version,
+		Extra:     extra,
+	}
+}
+
 // decodeXboxRegions converts Xbox region flags to a slice of Region.
 func decodeXboxRegions(flags uint32) []Region {
 	var regions []Region
@@ -509,6 +562,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatGBA
 	case format.N64:
 		return FormatN64
+	case format.GB:
+		return FormatGB
 	default:
 		return FormatUnknown
 	}
