@@ -27,6 +27,7 @@ const (
 	FormatGB      Format = "gb"
 	FormatMD      Format = "md"
 	FormatSMD     Format = "smd"
+	FormatNDS     Format = "nds"
 )
 
 // Region represents a game region using ISO country codes, continent codes, and some other non-country codes.
@@ -64,6 +65,8 @@ const (
 	PlatformGB   Platform = "gb"
 	PlatformGBC  Platform = "gbc"
 	PlatformMD   Platform = "md"
+	PlatformNDS  Platform = "nds"
+	PlatformDSi  Platform = "dsi"
 )
 
 // HashAlgorithm identifies a hash algorithm.

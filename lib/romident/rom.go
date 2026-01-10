@@ -260,6 +260,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifySMD(r, size)
 		}
 	}
+	if detectedFormat == format.NDS {
+		// Reset reader position for NDS parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyNDS(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -514,6 +520,41 @@ func identifyMD(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifyNDS extracts game identification from a Nintendo DS ROM file.
+// Returns nil if identification fails (non-fatal).
+func identifyNDS(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseNDS(r, size)
+	if err != nil {
+		return nil
+	}
+
+	version := info.Version
+
+	// Determine platform based on unit code
+	var platform Platform
+	switch info.Platform {
+	case format.NDSPlatformDSi:
+		platform = PlatformDSi
+	default:
+		platform = PlatformNDS
+	}
+
+	extra := map[string]string{}
+	if info.Platform == format.NDSPlatformDSiDual {
+		extra["dsi_enhanced"] = "true"
+	}
+
+	return &GameIdent{
+		Platform:  platform,
+		TitleID:   info.GameCode,
+		Title:     info.Title,
+		Regions:   []Region{decodeNDSRegion(info.RegionCode)},
+		MakerCode: info.MakerCode,
+		Version:   &version,
+		Extra:     extra,
+	}
+}
+
 // identifySMD extracts game identification from an SMD (Super Magic Drive) ROM file.
 // Returns nil if identification fails (non-fatal).
 func identifySMD(r io.ReaderAt, size int64) *GameIdent {
@@ -631,6 +672,37 @@ func decodeGBARegion(code byte) Region {
 	}
 }
 
+// decodeNDSRegion converts an NDS region code byte to a Region.
+// The region is typically the 4th character of the game code.
+func decodeNDSRegion(code byte) Region {
+	switch code {
+	case 'J':
+		return RegionJP
+	case 'E':
+		return RegionUS
+	case 'P':
+		return RegionEU
+	case 'D':
+		return RegionDE
+	case 'F':
+		return RegionFR
+	case 'I':
+		return RegionIT
+	case 'S':
+		return RegionES
+	case 'K':
+		return RegionKR
+	case 'C':
+		return RegionCN
+	case 'A':
+		return RegionWorld
+	case 'U':
+		return RegionAU
+	default:
+		return RegionUnknown
+	}
+}
+
 // decodeN64Region converts an N64 destination code byte to a Region.
 // Based on the N64brew Wiki ROM Header specification.
 func decodeN64Region(code byte) Region {
@@ -701,6 +773,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatMD
 	case format.SMD:
 		return FormatSMD
+	case format.NDS:
+		return FormatNDS
 	default:
 		return FormatUnknown
 	}

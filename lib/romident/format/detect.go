@@ -24,6 +24,7 @@ const (
 	GB      Format = "gb"
 	MD      Format = "md"
 	SMD     Format = "smd"
+	NDS     Format = "nds" // Nintendo DS
 )
 
 // Magic bytes and offsets for various formats
@@ -92,6 +93,8 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return MD
 	case ".smd":
 		return SMD
+	case ".nds", ".dsi", ".ids":
+		return NDS
 	default:
 		return Unknown
 	}
@@ -144,6 +147,11 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 				return XBE, nil
 			}
 		}
+	}
+
+	// Check for NDS
+	if IsNDSROM(r, size) {
+		return NDS, nil
 	}
 
 	// Check for GBA
