@@ -18,7 +18,9 @@ const (
 	ISO9660 Format = "iso9660"
 	ZIP     Format = "zip"
 	GBA     Format = "gba"
-	N64     Format = "n64"
+	Z64     Format = "z64" // N64 big-endian (native)
+	V64     Format = "v64" // N64 byte-swapped
+	N64     Format = "n64" // N64 word-swapped (little-endian)
 	GB      Format = "gb"
 	MD      Format = "md"
 	SMD     Format = "smd"
@@ -78,7 +80,11 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return XBE
 	case ".gba":
 		return GBA
-	case ".z64", ".v64", ".n64":
+	case ".z64":
+		return Z64
+	case ".v64":
+		return V64
+	case ".n64":
 		return N64
 	case ".gb", ".gbc":
 		return GB
@@ -154,8 +160,8 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 	if size >= 4 {
 		buf := make([]byte, 4)
 		if _, err := r.ReadAt(buf, 0); err == nil {
-			if IsN64ROM(buf) {
-				return N64, nil
+			if f := DetectN64Format(buf); f != Unknown {
+				return f, nil
 			}
 		}
 	}

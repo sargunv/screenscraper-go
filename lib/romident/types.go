@@ -21,7 +21,9 @@ const (
 	FormatISO9660 Format = "iso9660"
 	FormatZIP     Format = "zip"
 	FormatGBA     Format = "gba"
-	FormatN64     Format = "n64"
+	FormatZ64     Format = "z64" // N64 big-endian (native)
+	FormatV64     Format = "v64" // N64 byte-swapped
+	FormatN64     Format = "n64" // N64 word-swapped (little-endian)
 	FormatGB      Format = "gb"
 	FormatMD      Format = "md"
 	FormatSMD     Format = "smd"

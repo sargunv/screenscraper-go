@@ -161,3 +161,21 @@ func IsN64ROM(first4 []byte) bool {
 		first4[1] == n64ReservedByte ||
 		first4[3] == n64ReservedByte
 }
+
+// DetectN64Format returns the specific N64 format (Z64, V64, or N64) based on byte order.
+// Returns Unknown if not an N64 ROM.
+func DetectN64Format(first4 []byte) Format {
+	if len(first4) < 4 {
+		return Unknown
+	}
+	switch {
+	case first4[0] == n64ReservedByte:
+		return Z64 // Big-endian (native)
+	case first4[1] == n64ReservedByte:
+		return V64 // Byte-swapped
+	case first4[3] == n64ReservedByte:
+		return N64 // Word-swapped (little-endian)
+	default:
+		return Unknown
+	}
+}

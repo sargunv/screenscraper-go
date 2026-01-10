@@ -236,7 +236,7 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyGBA(r, size)
 		}
 	}
-	if detectedFormat == format.N64 {
+	if detectedFormat == format.Z64 || detectedFormat == format.V64 || detectedFormat == format.N64 {
 		// Reset reader position for N64 parsing
 		if _, err := r.Seek(0, 0); err == nil {
 			ident = identifyN64(r, size)
@@ -689,6 +689,10 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatZIP
 	case format.GBA:
 		return FormatGBA
+	case format.Z64:
+		return FormatZ64
+	case format.V64:
+		return FormatV64
 	case format.N64:
 		return FormatN64
 	case format.GB:
