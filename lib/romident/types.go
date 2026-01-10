@@ -23,6 +23,7 @@ const (
 	FormatGBA     Format = "gba"
 	FormatN64     Format = "n64"
 	FormatGB      Format = "gb"
+	FormatMD      Format = "md"
 )
 
 // Region represents a game region using ISO country codes, continent codes, and some other non-country codes.
@@ -59,6 +60,7 @@ const (
 	PlatformN64  Platform = "n64"
 	PlatformGB   Platform = "gb"
 	PlatformGBC  Platform = "gbc"
+	PlatformMD   Platform = "md"
 )
 
 // HashAlgorithm identifies a hash algorithm.

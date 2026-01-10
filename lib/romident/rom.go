@@ -248,6 +248,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyGB(r, size)
 		}
 	}
+	if detectedFormat == format.MD {
+		// Reset reader position for MD parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyMD(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -462,6 +468,83 @@ func identifyGB(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifyMD extracts game identification from a Mega Drive/Genesis ROM file.
+// Returns nil if identification fails (non-fatal).
+func identifyMD(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseMD(r, size)
+	if err != nil {
+		return nil
+	}
+
+	// Use overseas title if available, otherwise domestic title
+	title := info.OverseasTitle
+	if title == "" {
+		title = info.DomesticTitle
+	}
+
+	// Decode regions
+	regions := decodeMDRegions(info.Regions)
+
+	extra := map[string]string{
+		"system_type": info.SystemType,
+	}
+	if info.Copyright != "" {
+		extra["copyright"] = info.Copyright
+	}
+	if info.DomesticTitle != "" && info.DomesticTitle != info.OverseasTitle {
+		extra["domestic_title"] = info.DomesticTitle
+	}
+	if info.DeviceSupport != "" {
+		extra["device_support"] = info.DeviceSupport
+	}
+	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
+
+	return &GameIdent{
+		Platform: PlatformMD,
+		TitleID:  info.SerialNumber,
+		Title:    title,
+		Regions:  regions,
+		Extra:    extra,
+	}
+}
+
+// decodeMDRegions converts Mega Drive region codes to a slice of Region.
+func decodeMDRegions(codes []byte) []Region {
+	var regions []Region
+	seen := make(map[Region]bool)
+
+	for _, code := range codes {
+		var region Region
+		switch code {
+		case 'J', '1':
+			region = RegionJP
+		case 'U', '4', '8':
+			region = RegionUS
+		case 'E':
+			region = RegionEU
+		case 'A':
+			region = RegionWorld // Asia sometimes means world
+		case 'B':
+			region = RegionBR
+		case 'K':
+			region = RegionKR
+		default:
+			continue
+		}
+
+		if !seen[region] {
+			seen[region] = true
+			regions = append(regions, region)
+		}
+	}
+
+	if len(regions) == 0 {
+		regions = append(regions, RegionUnknown)
+	}
+
+	return regions
+}
+
 // decodeXboxRegions converts Xbox region flags to a slice of Region.
 func decodeXboxRegions(flags uint32) []Region {
 	var regions []Region
@@ -564,6 +647,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatN64
 	case format.GB:
 		return FormatGB
+	case format.MD:
+		return FormatMD
 	default:
 		return FormatUnknown
 	}
