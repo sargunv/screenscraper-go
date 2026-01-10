@@ -24,6 +24,7 @@ const (
 	FormatN64     Format = "n64"
 	FormatGB      Format = "gb"
 	FormatMD      Format = "md"
+	FormatSMD     Format = "smd"
 )
 
 // Region represents a game region using ISO country codes, continent codes, and some other non-country codes.

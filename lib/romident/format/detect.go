@@ -21,6 +21,7 @@ const (
 	N64     Format = "n64"
 	GB      Format = "gb"
 	MD      Format = "md"
+	SMD     Format = "smd"
 )
 
 // Magic bytes and offsets for various formats
@@ -81,8 +82,10 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return N64
 	case ".gb", ".gbc":
 		return GB
-	case ".md", ".gen", ".smd":
+	case ".md", ".gen":
 		return MD
+	case ".smd":
+		return SMD
 	default:
 		return Unknown
 	}
@@ -160,6 +163,11 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 	// Check for GB/GBC (Nintendo Logo at offset 0x104)
 	if IsGBROM(r, size) {
 		return GB, nil
+	}
+
+	// Check for SMD (Super Magic Drive interleaved format) before raw MD
+	if IsSMDROM(r, size) {
+		return SMD, nil
 	}
 
 	// Check for Mega Drive (SEGA at offset 0x100)

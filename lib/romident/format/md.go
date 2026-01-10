@@ -66,49 +66,13 @@ func ParseMD(r io.ReaderAt, size int64) (*MDInfo, error) {
 		return nil, fmt.Errorf("file too small for Mega Drive header: %d bytes", size)
 	}
 
-	header := make([]byte, mdHeaderSize)
-	if _, err := r.ReadAt(header, mdHeaderStart); err != nil {
-		return nil, fmt.Errorf("failed to read Mega Drive header: %w", err)
+	// Read enough data to include the header region
+	data := make([]byte, mdHeaderStart+mdHeaderSize)
+	if _, err := r.ReadAt(data, 0); err != nil {
+		return nil, fmt.Errorf("failed to read Mega Drive ROM: %w", err)
 	}
 
-	// Verify this is a Mega Drive ROM by checking for "SEGA" in system type
-	systemType := extractASCII(header[0:mdSystemTypeLen])
-	if !strings.Contains(systemType, "SEGA") {
-		return nil, fmt.Errorf("not a valid Mega Drive ROM: system type is %q", systemType)
-	}
-
-	// Extract copyright/date
-	copyright := extractASCII(header[mdCopyrightOffset-mdHeaderStart : mdCopyrightOffset-mdHeaderStart+mdCopyrightLen])
-
-	// Extract titles
-	domesticTitle := extractASCII(header[mdDomesticTitleOff-mdHeaderStart : mdDomesticTitleOff-mdHeaderStart+mdDomesticTitleLen])
-	overseasTitle := extractASCII(header[mdOverseasTitleOff-mdHeaderStart : mdOverseasTitleOff-mdHeaderStart+mdOverseasTitleLen])
-
-	// Extract serial number
-	serialNumber := extractASCII(header[mdSerialNumberOffset-mdHeaderStart : mdSerialNumberOffset-mdHeaderStart+mdSerialNumberLen])
-
-	// Extract checksum (big-endian)
-	checksumOffset := mdChecksumOffset - mdHeaderStart
-	checksum := uint16(header[checksumOffset])<<8 | uint16(header[checksumOffset+1])
-
-	// Extract device support
-	deviceSupport := extractASCII(header[mdDeviceSupportOff-mdHeaderStart : mdDeviceSupportOff-mdHeaderStart+mdDeviceSupportLen])
-
-	// Extract region codes
-	regionStart := mdRegionOffset - mdHeaderStart
-	regionData := header[regionStart : regionStart+mdRegionLen]
-	regions := parseRegionCodes(regionData)
-
-	return &MDInfo{
-		SystemType:    systemType,
-		Copyright:     copyright,
-		DomesticTitle: domesticTitle,
-		OverseasTitle: overseasTitle,
-		SerialNumber:  serialNumber,
-		Checksum:      checksum,
-		DeviceSupport: deviceSupport,
-		Regions:       regions,
-	}, nil
+	return parseMDFromBytes(data)
 }
 
 // parseRegionCodes extracts region codes from the region field.
@@ -226,4 +190,45 @@ func IsMDROM(r io.ReaderAt, size int64) bool {
 	// Check for "SEGA" anywhere in the system type field
 	// Common values: "SEGA MEGA DRIVE ", "SEGA GENESIS    ", " SEGA MEGA DRIVE", etc.
 	return strings.Contains(string(buf), "SEGA")
+}
+
+// parseMDFromBytes extracts game information from raw Mega Drive ROM bytes.
+// This is used by both ParseMD (for raw ROMs) and ParseSMD (after de-interleaving).
+func parseMDFromBytes(data []byte) (*MDInfo, error) {
+	if len(data) < mdHeaderStart+mdHeaderSize {
+		return nil, fmt.Errorf("data too small for Mega Drive header: %d bytes", len(data))
+	}
+
+	// Extract system type and verify
+	systemType := extractASCII(data[mdSystemTypeOffset : mdSystemTypeOffset+mdSystemTypeLen])
+	if !strings.Contains(systemType, "SEGA") {
+		return nil, fmt.Errorf("not a valid Mega Drive ROM: system type is %q", systemType)
+	}
+
+	// Extract all fields
+	copyright := extractASCII(data[mdCopyrightOffset : mdCopyrightOffset+mdCopyrightLen])
+	domesticTitle := extractASCII(data[mdDomesticTitleOff : mdDomesticTitleOff+mdDomesticTitleLen])
+	overseasTitle := extractASCII(data[mdOverseasTitleOff : mdOverseasTitleOff+mdOverseasTitleLen])
+	serialNumber := extractASCII(data[mdSerialNumberOffset : mdSerialNumberOffset+mdSerialNumberLen])
+
+	// Extract checksum (big-endian)
+	checksum := uint16(data[mdChecksumOffset])<<8 | uint16(data[mdChecksumOffset+1])
+
+	// Extract device support
+	deviceSupport := extractASCII(data[mdDeviceSupportOff : mdDeviceSupportOff+mdDeviceSupportLen])
+
+	// Extract region codes
+	regionData := data[mdRegionOffset : mdRegionOffset+mdRegionLen]
+	regions := parseRegionCodes(regionData)
+
+	return &MDInfo{
+		SystemType:    systemType,
+		Copyright:     copyright,
+		DomesticTitle: domesticTitle,
+		OverseasTitle: overseasTitle,
+		SerialNumber:  serialNumber,
+		Checksum:      checksum,
+		DeviceSupport: deviceSupport,
+		Regions:       regions,
+	}, nil
 }

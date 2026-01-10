@@ -254,6 +254,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyMD(r, size)
 		}
 	}
+	if detectedFormat == format.SMD {
+		// Reset reader position for SMD parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifySMD(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -508,6 +514,46 @@ func identifyMD(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifySMD extracts game identification from an SMD (Super Magic Drive) ROM file.
+// Returns nil if identification fails (non-fatal).
+func identifySMD(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseSMD(r, size)
+	if err != nil {
+		return nil
+	}
+
+	// Use overseas title if available, otherwise domestic title
+	title := info.OverseasTitle
+	if title == "" {
+		title = info.DomesticTitle
+	}
+
+	// Decode regions
+	regions := decodeMDRegions(info.Regions)
+
+	extra := map[string]string{
+		"system_type": info.SystemType,
+	}
+	if info.Copyright != "" {
+		extra["copyright"] = info.Copyright
+	}
+	if info.DomesticTitle != "" && info.DomesticTitle != info.OverseasTitle {
+		extra["domestic_title"] = info.DomesticTitle
+	}
+	if info.DeviceSupport != "" {
+		extra["device_support"] = info.DeviceSupport
+	}
+	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
+
+	return &GameIdent{
+		Platform: PlatformMD,
+		TitleID:  info.SerialNumber,
+		Title:    title,
+		Regions:  regions,
+		Extra:    extra,
+	}
+}
+
 // decodeMDRegions converts Mega Drive region codes to a slice of Region.
 func decodeMDRegions(codes []byte) []Region {
 	var regions []Region
@@ -649,6 +695,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatGB
 	case format.MD:
 		return FormatMD
+	case format.SMD:
+		return FormatSMD
 	default:
 		return FormatUnknown
 	}
