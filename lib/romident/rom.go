@@ -10,6 +10,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/romident/container/folder"
 	"github.com/sargunv/rom-tools/lib/romident/container/zip"
 	"github.com/sargunv/rom-tools/lib/romident/disc/chd"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 	"github.com/sargunv/rom-tools/lib/romident/game/gb"
 	"github.com/sargunv/rom-tools/lib/romident/game/gba"
 	"github.com/sargunv/rom-tools/lib/romident/game/md"
@@ -379,7 +380,7 @@ func identifyXISO(r io.ReaderAt, size int64) *GameIdent {
 	discNumber := int(info.DiscNumber)
 
 	return &GameIdent{
-		Platform:   PlatformXbox,
+		Platform:   game.PlatformXbox,
 		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
 		Title:      info.Title,
 		Regions:    decodeXboxRegions(info.RegionFlags),
@@ -404,7 +405,7 @@ func identifyXBE(r io.ReaderAt, size int64) *GameIdent {
 	discNumber := int(info.DiscNumber)
 
 	return &GameIdent{
-		Platform:   PlatformXbox,
+		Platform:   game.PlatformXbox,
 		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
 		Title:      info.Title,
 		Regions:    decodeXboxRegions(info.RegionFlags),
@@ -428,7 +429,7 @@ func identifyGBA(r io.ReaderAt, size int64) *GameIdent {
 	version := info.Version
 
 	return &GameIdent{
-		Platform:  PlatformGBA,
+		Platform:  game.PlatformGBA,
 		TitleID:   info.GameCode,
 		Title:     info.Title,
 		Regions:   []Region{decodeGBARegion(info.RegionCode)},
@@ -448,7 +449,7 @@ func identifyN64(r io.ReaderAt, size int64) *GameIdent {
 	version := info.Version
 
 	return &GameIdent{
-		Platform: PlatformN64,
+		Platform: game.PlatformN64,
 		TitleID:  info.GameCode,
 		Title:    info.Title,
 		Regions:  []Region{decodeN64Region(info.RegionCode)},
@@ -473,17 +474,17 @@ func identifyGB(r io.ReaderAt, size int64) *GameIdent {
 	// Determine platform based on CGB flag
 	var platform Platform
 	if info.Platform == gb.GBPlatformGBC {
-		platform = PlatformGBC
+		platform = game.PlatformGBC
 	} else {
-		platform = PlatformGB
+		platform = game.PlatformGB
 	}
 
 	// Determine region from destination code
 	var region Region
 	if info.DestinationCode == 0x00 {
-		region = RegionJP
+		region = game.RegionJP
 	} else {
-		region = RegionWorld // Non-Japanese = worldwide
+		region = game.RegionWorld // Non-Japanese = worldwide
 	}
 
 	extra := map[string]string{
@@ -539,7 +540,7 @@ func identifyMD(r io.ReaderAt, size int64) *GameIdent {
 	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
 
 	return &GameIdent{
-		Platform: PlatformMD,
+		Platform: game.PlatformMD,
 		TitleID:  info.SerialNumber,
 		Title:    title,
 		Regions:  regions,
@@ -568,7 +569,7 @@ func identifySNES(r io.ReaderAt, size int64) *GameIdent {
 	}
 
 	return &GameIdent{
-		Platform: PlatformSNES,
+		Platform: game.PlatformSNES,
 		Title:    info.Title,
 		Regions:  []Region{decodeSNESRegion(info.DestinationCode)},
 		Version:  &version,
@@ -588,9 +589,9 @@ func identifyNES(r io.ReaderAt, size int64) *GameIdent {
 	// Determine region from TV system
 	var region Region
 	if info.TVSystem == nes.NESTVSystemPAL {
-		region = RegionPAL
+		region = game.RegionPAL
 	} else {
-		region = RegionNTSC
+		region = game.RegionNTSC
 	}
 
 	extra := map[string]string{
@@ -612,7 +613,7 @@ func identifyNES(r io.ReaderAt, size int64) *GameIdent {
 	}
 
 	return &GameIdent{
-		Platform: PlatformNES,
+		Platform: game.PlatformNES,
 		Regions:  []Region{region},
 		Extra:    extra,
 	}
@@ -632,9 +633,9 @@ func identifyNDS(r io.ReaderAt, size int64) *GameIdent {
 	var platform Platform
 	switch info.Platform {
 	case nds.NDSPlatformDSi:
-		platform = PlatformDSi
+		platform = game.PlatformDSi
 	default:
-		platform = PlatformNDS
+		platform = game.PlatformNDS
 	}
 
 	extra := map[string]string{}
@@ -685,7 +686,7 @@ func identifySMD(r io.ReaderAt, size int64) *GameIdent {
 	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
 
 	return &GameIdent{
-		Platform: PlatformMD,
+		Platform: game.PlatformMD,
 		TitleID:  info.SerialNumber,
 		Title:    title,
 		Regions:  regions,
@@ -702,17 +703,17 @@ func decodeMDRegions(codes []byte) []Region {
 		var region Region
 		switch code {
 		case 'J', '1':
-			region = RegionJP
+			region = game.RegionJP
 		case 'U', '4', '8':
-			region = RegionUS
+			region = game.RegionUS
 		case 'E':
-			region = RegionEU
+			region = game.RegionEU
 		case 'A':
-			region = RegionWorld // Asia sometimes means world
+			region = game.RegionWorld // Asia sometimes means world
 		case 'B':
-			region = RegionBR
+			region = game.RegionBR
 		case 'K':
-			region = RegionKR
+			region = game.RegionKR
 		default:
 			continue
 		}
@@ -724,7 +725,7 @@ func decodeMDRegions(codes []byte) []Region {
 	}
 
 	if len(regions) == 0 {
-		regions = append(regions, RegionUnknown)
+		regions = append(regions, game.RegionUnknown)
 	}
 
 	return regions
@@ -734,16 +735,16 @@ func decodeMDRegions(codes []byte) []Region {
 func decodeXboxRegions(flags uint32) []Region {
 	var regions []Region
 	if flags&uint32(xbox.XboxRegionNA) != 0 {
-		regions = append(regions, RegionNA)
+		regions = append(regions, game.RegionNA)
 	}
 	if flags&uint32(xbox.XboxRegionJapan) != 0 {
-		regions = append(regions, RegionJP)
+		regions = append(regions, game.RegionJP)
 	}
 	if flags&uint32(xbox.XboxRegionEUAU) != 0 {
-		regions = append(regions, RegionEU, RegionAU)
+		regions = append(regions, game.RegionEU, game.RegionAU)
 	}
 	if len(regions) == 0 {
-		regions = append(regions, RegionUnknown)
+		regions = append(regions, game.RegionUnknown)
 	}
 	return regions
 }
@@ -752,21 +753,21 @@ func decodeXboxRegions(flags uint32) []Region {
 func decodeGBARegion(code byte) Region {
 	switch code {
 	case 'J':
-		return RegionJP
+		return game.RegionJP
 	case 'E':
-		return RegionUS
+		return game.RegionUS
 	case 'P':
-		return RegionEU
+		return game.RegionEU
 	case 'F':
-		return RegionFR
+		return game.RegionFR
 	case 'S':
-		return RegionES
+		return game.RegionES
 	case 'D':
-		return RegionDE
+		return game.RegionDE
 	case 'I':
-		return RegionIT
+		return game.RegionIT
 	default:
-		return RegionUnknown
+		return game.RegionUnknown
 	}
 }
 
@@ -808,39 +809,39 @@ func decodeSNESMapMode(mode snes.SNESMapMode) string {
 func decodeSNESRegion(code byte) Region {
 	switch code {
 	case 0x00:
-		return RegionJP
+		return game.RegionJP
 	case 0x01:
-		return RegionNA
+		return game.RegionNA
 	case 0x02:
-		return RegionEU
+		return game.RegionEU
 	case 0x03:
-		return RegionSE
+		return game.RegionSE
 	case 0x04:
-		return RegionFI
+		return game.RegionFI
 	case 0x05:
-		return RegionDK
+		return game.RegionDK
 	case 0x06:
-		return RegionFR
+		return game.RegionFR
 	case 0x07:
-		return RegionNL
+		return game.RegionNL
 	case 0x08:
-		return RegionES
+		return game.RegionES
 	case 0x09:
-		return RegionDE
+		return game.RegionDE
 	case 0x0A:
-		return RegionIT
+		return game.RegionIT
 	case 0x0B:
-		return RegionCN
+		return game.RegionCN
 	case 0x0D:
-		return RegionKR
+		return game.RegionKR
 	case 0x0F:
-		return RegionCA
+		return game.RegionCA
 	case 0x10:
-		return RegionBR
+		return game.RegionBR
 	case 0x11:
-		return RegionAU
+		return game.RegionAU
 	default:
-		return RegionUnknown
+		return game.RegionUnknown
 	}
 }
 
@@ -849,29 +850,29 @@ func decodeSNESRegion(code byte) Region {
 func decodeNDSRegion(code byte) Region {
 	switch code {
 	case 'J':
-		return RegionJP
+		return game.RegionJP
 	case 'E':
-		return RegionUS
+		return game.RegionUS
 	case 'P':
-		return RegionEU
+		return game.RegionEU
 	case 'D':
-		return RegionDE
+		return game.RegionDE
 	case 'F':
-		return RegionFR
+		return game.RegionFR
 	case 'I':
-		return RegionIT
+		return game.RegionIT
 	case 'S':
-		return RegionES
+		return game.RegionES
 	case 'K':
-		return RegionKR
+		return game.RegionKR
 	case 'C':
-		return RegionCN
+		return game.RegionCN
 	case 'A':
-		return RegionWorld
+		return game.RegionWorld
 	case 'U':
-		return RegionAU
+		return game.RegionAU
 	default:
-		return RegionUnknown
+		return game.RegionUnknown
 	}
 }
 
@@ -880,40 +881,40 @@ func decodeNDSRegion(code byte) Region {
 func decodeN64Region(code byte) Region {
 	switch code {
 	case 'A':
-		return RegionWorld
+		return game.RegionWorld
 	case 'B':
-		return RegionBR
+		return game.RegionBR
 	case 'C':
-		return RegionCN
+		return game.RegionCN
 	case 'D':
-		return RegionDE
+		return game.RegionDE
 	case 'E':
-		return RegionUS
+		return game.RegionUS
 	case 'F':
-		return RegionFR
+		return game.RegionFR
 	case 'G':
-		return RegionNTSC
+		return game.RegionNTSC
 	case 'H':
-		return RegionNL
+		return game.RegionNL
 	case 'I':
-		return RegionIT
+		return game.RegionIT
 	case 'J':
-		return RegionJP
+		return game.RegionJP
 	case 'K':
-		return RegionKR
+		return game.RegionKR
 	case 'L':
-		return RegionPAL
+		return game.RegionPAL
 	case 'N':
-		return RegionCA
+		return game.RegionCA
 	case 'P', 'X', 'Y', 'Z':
-		return RegionEU
+		return game.RegionEU // TODO: are these separate regions?
 	case 'S':
-		return RegionES
+		return game.RegionES
 	case 'U':
-		return RegionAU
+		return game.RegionAU
 	case 'W':
-		return RegionNordic
+		return game.RegionNordic
 	default:
-		return RegionUnknown
+		return game.RegionUnknown
 	}
 }

@@ -205,7 +205,7 @@ func IsGBROM(r io.ReaderAt, size int64) bool {
 		return false
 	}
 
-	for i := 0; i < 24; i++ {
+	for i := range 24 {
 		if logo[i] != gbNintendoLogo[i] {
 			return false
 		}

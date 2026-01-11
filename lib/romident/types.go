@@ -1,6 +1,8 @@
 // Package romident provides ROM identification and hashing utilities.
 package romident
 
+import "github.com/sargunv/rom-tools/lib/romident/game"
+
 // ROMType indicates how the ROM is packaged.
 type ROMType string
 
@@ -30,53 +32,6 @@ const (
 	FormatNDS     Format = "nds"
 	FormatNES     Format = "nes"
 	FormatSNES    Format = "snes"
-)
-
-// Region represents a game region using ISO country codes, continent codes, and some other non-country codes.
-type Region string
-
-const (
-	RegionJP Region = "JP" // Japan
-	RegionUS Region = "US" // USA
-	RegionFR Region = "FR" // France
-	RegionES Region = "ES" // Spain
-	RegionDE Region = "DE" // Germany
-	RegionIT Region = "IT" // Italy
-	RegionAU Region = "AU" // Australia
-	RegionBR Region = "BR" // Brazil
-	RegionCN Region = "CN" // China
-	RegionNL Region = "NL" // Netherlands
-	RegionKR Region = "KR" // Korea
-	RegionCA Region = "CA" // Canada
-	RegionSE Region = "SE" // Sweden
-	RegionFI Region = "FI" // Finland
-	RegionDK Region = "DK" // Denmark
-
-	RegionNA     Region = "NA"     // North America
-	RegionEU     Region = "EU"     // Europe
-	RegionNordic Region = "Nordic" // Scandinavia
-
-	RegionNTSC Region = "NTSC"
-	RegionPAL  Region = "PAL"
-
-	RegionWorld   Region = "World"
-	RegionUnknown Region = "Unknown"
-)
-
-// Platform represents a gaming platform.
-type Platform string
-
-const (
-	PlatformXbox Platform = "xbox"
-	PlatformGBA  Platform = "gba"
-	PlatformN64  Platform = "n64"
-	PlatformGB   Platform = "gb"
-	PlatformGBC  Platform = "gbc"
-	PlatformMD   Platform = "md"
-	PlatformNDS  Platform = "nds"
-	PlatformDSi  Platform = "dsi"
-	PlatformNES  Platform = "nes"
-	PlatformSNES Platform = "snes"
 )
 
 // HashAlgorithm identifies a hash algorithm.
@@ -113,20 +68,12 @@ type ROMFile struct {
 	IsPrimary bool   `json:"is_primary,omitempty"` // true if used for identification
 }
 
+type GameIdent = game.GameIdent
+type Region = game.Region
+type Platform = game.Platform
+
 // Files is a map of file path to file info.
 type Files map[string]ROMFile
-
-// GameIdent represents platform-specific identification data.
-type GameIdent struct {
-	Platform   Platform          `json:"platform"`
-	TitleID    string            `json:"title_id,omitempty"`
-	Title      string            `json:"title,omitempty"`
-	Regions    []Region          `json:"regions,omitempty"`
-	MakerCode  string            `json:"maker_code,omitempty"`
-	Version    *int              `json:"version,omitempty"`     // nil if not available
-	DiscNumber *int              `json:"disc_number,omitempty"` // nil if not available/applicable
-	Extra      map[string]string `json:"extra,omitempty"`
-}
 
 // ROM represents a complete game unit (single file, zip, or folder).
 type ROM struct {
