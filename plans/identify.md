@@ -1,16 +1,16 @@
-# ROM Format Support Plan
+# ROM Format Support Plans
+
+This directory contains implementation plans for various console ROM formats. Each plan documents the header format, magic bytes, extracted metadata, and implementation complexity.
 
 ## Currently Implemented
 
-| Platform                      | Format   | Extensions             | Status  |
-| ----------------------------- | -------- | ---------------------- | ------- |
-| Game Boy Advance              | GBA      | `.gba`                 | ✅ Done |
-| Game Boy / Color              | GB       | `.gb`, `.gbc`          | ✅ Done |
-| Nintendo 64                   | N64      | `.z64`, `.v64`, `.n64` | ✅ Done |
-| Mega Drive / Genesis          | MD       | `.md`, `.gen`, `.smd`  | ✅ Done |
-| Xbox                          | XBE/XISO | `.xbe`, `.iso`         | ✅ Done |
-| Nintendo Entertainment System | NES      | `.nes`                 | ✅ Done |
-| Nintendo DS                   | NDS      | `.nds`, `.dsi`, `.ids` | ✅ Done |
+| Platform             | Format   | Extensions             | Status  |
+| -------------------- | -------- | ---------------------- | ------- |
+| Game Boy Advance     | GBA      | `.gba`                 | ✅ Done |
+| Game Boy / Color     | GB       | `.gb`, `.gbc`          | ✅ Done |
+| Nintendo 64          | N64      | `.z64`, `.v64`, `.n64` | ✅ Done |
+| Mega Drive / Genesis | MD       | `.md`, `.gen`, `.smd`  | ✅ Done |
+| Xbox                 | XBE/XISO | `.xbe`, `.iso`         | ✅ Done |
 
 ## Planned Support
 
@@ -18,7 +18,9 @@
 
 | Platform | Complexity | Plan |
 | --- | --- | --- |
+| [NES / Famicom](nes-support.md) | Low-Medium | iNES header format |
 | [SNES / Super Famicom](snes-support.md) | Medium-High | Variable header location |
+| [Nintendo DS](nds-support.md) | Low | Well-structured 512-byte header |
 | [PlayStation 1](playstation-support.md) | Medium-High | ISO + SYSTEM.CNF parsing |
 | [PlayStation Portable](psp-support.md) | Medium-High | ISO + PARAM.SFO parsing |
 
@@ -54,8 +56,10 @@
 
 ### Phase 1: Quick Wins
 
-1. **Master System/Game Gear** - Shares format, easy extension
-2. **Atari Lynx** - Simple 64-byte header
+1. **NES** - Very common, simple iNES header
+2. **Nintendo DS** - Clean format, rich metadata
+3. **Master System/Game Gear** - Shares format, easy extension
+4. **Atari Lynx** - Simple 64-byte header
 
 ### Phase 2: Major Platforms
 
@@ -88,7 +92,14 @@
 
 ### Common Challenges
 
-1. **No embedded title**: NES, TG16, Atari 2600
-2. **Variable header location**: SNES, SMS/GG
-3. **Multi-file ROMs**: Neo Geo
-4. **Encryption**: NDS, 3DS, PKG
+1. **No embedded title**: NES, TG16, Atari 2600 - need hash database
+2. **Variable header location**: SNES, SMS/GG - need detection logic
+3. **Multi-file ROMs**: Neo Geo - zip handling
+4. **Encryption**: 3DS, PKG - may skip or require keys
+
+## Notes
+
+- All plans assume working with unencrypted/decrypted dumps
+- Hash-based identification can supplement header parsing
+- ScreenScraper integration can provide metadata for headerless formats
+- Consider supporting most common format variants first (e.g., iNES before NES 2.0)
