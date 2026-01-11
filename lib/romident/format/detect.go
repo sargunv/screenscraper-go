@@ -25,6 +25,7 @@ const (
 	MD      Format = "md"
 	SMD     Format = "smd"
 	NDS     Format = "nds" // Nintendo DS
+	NES     Format = "nes" // Nintendo Entertainment System
 )
 
 // Magic bytes and offsets for various formats
@@ -95,6 +96,8 @@ func (d *Detector) DetectByExtension(filename string) Format {
 		return SMD
 	case ".nds", ".dsi", ".ids":
 		return NDS
+	case ".nes":
+		return NES
 	default:
 		return Unknown
 	}
@@ -147,6 +150,11 @@ func (d *Detector) DetectByMagic(r ReaderAtSeeker, size int64) (Format, error) {
 				return XBE, nil
 			}
 		}
+	}
+
+	// Check for NES (iNES magic at offset 0)
+	if IsNESROM(r, size) {
+		return NES, nil
 	}
 
 	// Check for NDS

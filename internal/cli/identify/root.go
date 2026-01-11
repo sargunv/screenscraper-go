@@ -27,6 +27,7 @@ var Cmd = &cobra.Command{
 
 Supports:
 - Platform specific ROMs: identifies game information from the ROM header, depending on the format. Supported ROM formats:
+  - Nintendo Entertainment System: .nes
   - Nintendo 64: .z64, .v64, .n64
   - Nintendo Game Boy / Color: .gb, .gbc
   - Nintendo Game Boy Advance: .gba

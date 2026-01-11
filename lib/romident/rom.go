@@ -266,6 +266,12 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			ident = identifyNDS(r, size)
 		}
 	}
+	if detectedFormat == format.NES {
+		// Reset reader position for NES parsing
+		if _, err := r.Seek(0, 0); err == nil {
+			ident = identifyNES(r, size)
+		}
+	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
 	if opts.HashMode == HashModeFast && size >= FastModeSmallFileThreshold {
@@ -520,6 +526,48 @@ func identifyMD(r io.ReaderAt, size int64) *GameIdent {
 	}
 }
 
+// identifyNES extracts game identification from an NES ROM file.
+// Returns nil if identification fails (non-fatal).
+// Note: iNES format doesn't include game title, so identification is limited.
+func identifyNES(r io.ReaderAt, size int64) *GameIdent {
+	info, err := format.ParseNES(r, size)
+	if err != nil {
+		return nil
+	}
+
+	// Determine region from TV system
+	var region Region
+	if info.TVSystem == format.NESTVSystemPAL {
+		region = RegionPAL
+	} else {
+		region = RegionNTSC
+	}
+
+	extra := map[string]string{
+		"mapper":       fmt.Sprintf("%d", info.Mapper),
+		"prg_rom_size": fmt.Sprintf("%d", info.PRGROMSize),
+		"chr_rom_size": fmt.Sprintf("%d", info.CHRROMSize),
+	}
+
+	if info.HasBattery {
+		extra["battery"] = "true"
+	}
+	if info.IsNES20 {
+		extra["nes2.0"] = "true"
+	}
+	if info.Mirroring == format.NESMirroringVertical {
+		extra["mirroring"] = "vertical"
+	} else {
+		extra["mirroring"] = "horizontal"
+	}
+
+	return &GameIdent{
+		Platform: PlatformNES,
+		Regions:  []Region{region},
+		Extra:    extra,
+	}
+}
+
 // identifyNDS extracts game identification from a Nintendo DS ROM file.
 // Returns nil if identification fails (non-fatal).
 func identifyNDS(r io.ReaderAt, size int64) *GameIdent {
@@ -720,7 +768,7 @@ func decodeN64Region(code byte) Region {
 	case 'F':
 		return RegionFR
 	case 'G':
-		return RegionGatewayNTSC
+		return RegionNTSC
 	case 'H':
 		return RegionNL
 	case 'I':
@@ -730,7 +778,7 @@ func decodeN64Region(code byte) Region {
 	case 'K':
 		return RegionKR
 	case 'L':
-		return RegionGatewayPAL
+		return RegionPAL
 	case 'N':
 		return RegionCA
 	case 'P', 'X', 'Y', 'Z':
@@ -775,6 +823,8 @@ func formatToRomidentFormat(f format.Format) Format {
 		return FormatSMD
 	case format.NDS:
 		return FormatNDS
+	case format.NES:
+		return FormatNES
 	default:
 		return FormatUnknown
 	}
