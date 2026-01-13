@@ -146,11 +146,6 @@ func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
 		platform = game.PlatformNDS
 	}
 
-	extra := map[string]string{}
-	if info.Platform == NDSPlatformDSiDual {
-		extra["dsi_enhanced"] = "true"
-	}
-
 	return &game.GameIdent{
 		Platform:  platform,
 		TitleID:   info.GameCode,
@@ -158,7 +153,7 @@ func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
 		Regions:   []game.Region{decodeRegion(info.RegionCode)},
 		MakerCode: info.MakerCode,
 		Version:   &version,
-		Extra:     extra,
+		Extra:     info,
 	}, nil
 }
 

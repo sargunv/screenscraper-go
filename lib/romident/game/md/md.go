@@ -221,26 +221,12 @@ func mdInfoToGameIdent(info *MDInfo) *game.GameIdent {
 	// Decode regions
 	regions := decodeRegions(info.Regions)
 
-	extra := map[string]string{
-		"system_type": info.SystemType,
-	}
-	if info.Copyright != "" {
-		extra["copyright"] = info.Copyright
-	}
-	if info.DomesticTitle != "" && info.DomesticTitle != info.OverseasTitle {
-		extra["domestic_title"] = info.DomesticTitle
-	}
-	if info.DeviceSupport != "" {
-		extra["device_support"] = info.DeviceSupport
-	}
-	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
-
 	return &game.GameIdent{
 		Platform: game.PlatformMD,
 		TitleID:  info.SerialNumber,
 		Title:    title,
 		Regions:  regions,
-		Extra:    extra,
+		Extra:    info,
 	}
 }
 

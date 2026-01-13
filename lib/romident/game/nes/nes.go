@@ -168,28 +168,10 @@ func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
 		region = game.RegionNTSC
 	}
 
-	extra := map[string]string{
-		"mapper":  fmt.Sprintf("%d", info.Mapper),
-		"prg_rom": formatROMSize(info.PRGROMSize),
-		"chr_rom": formatROMSize(info.CHRROMSize),
-	}
-
-	if info.HasBattery {
-		extra["battery"] = "true"
-	}
-	if info.IsNES20 {
-		extra["nes2.0"] = "true"
-	}
-	if info.Mirroring == NESMirroringVertical {
-		extra["mirroring"] = "vertical"
-	} else {
-		extra["mirroring"] = "horizontal"
-	}
-
 	return &game.GameIdent{
 		Platform: game.PlatformNES,
 		Regions:  []game.Region{region},
-		Extra:    extra,
+		Extra:    info,
 	}, nil
 }
 

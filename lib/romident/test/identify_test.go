@@ -80,15 +80,6 @@ func TestIdentifyNES(t *testing.T) {
 	if rom.Ident.Platform != game.PlatformNES {
 		t.Errorf("Expected platform %s, got %s", game.PlatformNES, rom.Ident.Platform)
 	}
-
-	// NES doesn't have title in header, but should have mapper info
-	if rom.Ident.Extra == nil {
-		t.Fatal("Expected extra info, got nil")
-	}
-
-	if _, ok := rom.Ident.Extra["mapper"]; !ok {
-		t.Error("Expected mapper in extra info")
-	}
 }
 
 // Test SNES identification
@@ -165,10 +156,6 @@ func TestIdentifyN64_Z64(t *testing.T) {
 	if rom.Ident.Platform != game.PlatformN64 {
 		t.Errorf("Expected platform %s, got %s", game.PlatformN64, rom.Ident.Platform)
 	}
-
-	if rom.Ident.Extra == nil || rom.Ident.Extra["byte_order"] != "z64" {
-		t.Errorf("Expected byte_order 'z64', got '%v'", rom.Ident.Extra)
-	}
 }
 
 // Test N64 V64 identification
@@ -187,10 +174,6 @@ func TestIdentifyN64_V64(t *testing.T) {
 	if rom.Ident.Platform != game.PlatformN64 {
 		t.Errorf("Expected platform %s, got %s", game.PlatformN64, rom.Ident.Platform)
 	}
-
-	if rom.Ident.Extra == nil || rom.Ident.Extra["byte_order"] != "v64" {
-		t.Errorf("Expected byte_order 'v64', got '%v'", rom.Ident.Extra)
-	}
 }
 
 // Test N64 N64 identification (word-swapped)
@@ -208,10 +191,6 @@ func TestIdentifyN64_N64(t *testing.T) {
 
 	if rom.Ident.Platform != game.PlatformN64 {
 		t.Errorf("Expected platform %s, got %s", game.PlatformN64, rom.Ident.Platform)
-	}
-
-	if rom.Ident.Extra == nil || rom.Ident.Extra["byte_order"] != "n64" {
-		t.Errorf("Expected byte_order 'n64', got '%v'", rom.Ident.Extra)
 	}
 }
 

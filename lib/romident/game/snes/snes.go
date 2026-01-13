@@ -248,22 +248,12 @@ func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
 
 	version := info.Version
 
-	extra := map[string]string{
-		"map_mode": decodeMapMode(info.MapMode),
-	}
-	if info.SRAMSize > 0 {
-		extra["sram"] = formatROMSize(info.SRAMSize)
-	}
-	if info.HasCopierHeader {
-		extra["copier_header"] = "true"
-	}
-
 	return &game.GameIdent{
 		Platform: game.PlatformSNES,
 		Title:    info.Title,
 		Regions:  []game.Region{decodeRegion(info.DestinationCode)},
 		Version:  &version,
-		Extra:    extra,
+		Extra:    info,
 	}, nil
 }
 

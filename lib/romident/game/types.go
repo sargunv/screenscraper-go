@@ -30,14 +30,14 @@ type IdentifyFunc func(r io.ReaderAt, size int64) (*GameIdent, error)
 
 // GameIdent represents platform-specific identification data.
 type GameIdent struct {
-	Platform   Platform          `json:"platform"`
-	TitleID    string            `json:"title_id,omitempty"`
-	Title      string            `json:"title,omitempty"`
-	Regions    []Region          `json:"regions,omitempty"`
-	MakerCode  string            `json:"maker_code,omitempty"`
-	Version    *int              `json:"version,omitempty"`     // nil if not available
-	DiscNumber *int              `json:"disc_number,omitempty"` // nil if not available/applicable
-	Extra      map[string]string `json:"extra,omitempty"`
+	Platform   Platform `json:"platform"`
+	TitleID    string   `json:"title_id,omitempty"`
+	Title      string   `json:"title,omitempty"`
+	Regions    []Region `json:"regions,omitempty"`
+	MakerCode  string   `json:"maker_code,omitempty"`
+	Version    *int     `json:"version,omitempty"`
+	DiscNumber *int     `json:"disc_number,omitempty"`
+	Extra      any      `json:"extra,omitempty"`
 }
 
 // Region represents a game region using ISO country codes, continent codes, and some other non-country codes.

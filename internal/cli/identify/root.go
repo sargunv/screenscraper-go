@@ -173,29 +173,11 @@ func outputTextSingle(rom *romident.ROM) {
 		if rom.Ident.DiscNumber != nil {
 			fmt.Printf("  Disc Number: %d\n", *rom.Ident.DiscNumber)
 		}
-		if len(rom.Ident.Extra) > 0 {
-			// Sort keys for consistent output
-			keys := make([]string, 0, len(rom.Ident.Extra))
-			for k := range rom.Ident.Extra {
-				keys = append(keys, k)
-			}
-			slices.Sort(keys)
-			for _, k := range keys {
-				fmt.Printf("  %s: %s\n", formatExtraKey(k), rom.Ident.Extra[k])
-			}
+		if rom.Ident.Extra != nil {
+			extraJSON, _ := json.Marshal(rom.Ident.Extra)
+			fmt.Printf("  Extra: %s\n", string(extraJSON))
 		}
 	}
-}
-
-// formatExtraKey converts snake_case keys to Title Case for display.
-func formatExtraKey(key string) string {
-	words := strings.Split(key, "_")
-	for i, word := range words {
-		if len(word) > 0 {
-			words[i] = strings.ToUpper(word[:1]) + word[1:]
-		}
-	}
-	return strings.Join(words, " ")
 }
 
 func formatSize(bytes int64) string {

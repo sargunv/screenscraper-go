@@ -239,23 +239,12 @@ func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
 		region = game.RegionWorld // Non-Japanese = worldwide
 	}
 
-	extra := map[string]string{
-		"licensee": info.LicenseeCode,
-	}
-	if info.ManufacturerCode != "" {
-		extra["manufacturer"] = info.ManufacturerCode
-	}
-	if info.SGBFlag == SGBFlagSupported {
-		extra["sgb_support"] = "true"
-	}
-	extra["cartridge_type"] = fmt.Sprintf("%02X", info.CartridgeType)
-
 	return &game.GameIdent{
 		Platform:  platform,
 		Title:     info.Title,
 		Regions:   []game.Region{region},
 		MakerCode: info.LicenseeCode,
 		Version:   &version,
-		Extra:     extra,
+		Extra:     info,
 	}, nil
 }

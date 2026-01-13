@@ -225,10 +225,7 @@ func identifyN64WithOrder(r io.ReaderAt, size int64, expectedOrder N64ByteOrder)
 		Title:    info.Title,
 		Regions:  []game.Region{decodeRegion(info.RegionCode)},
 		Version:  &version,
-		Extra: map[string]string{
-			"byte_order":    string(info.ByteOrder),
-			"category_code": string(info.CategoryCode),
-		},
+		Extra:    info,
 	}, nil
 }
 

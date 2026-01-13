@@ -107,6 +107,7 @@ func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
 		Regions:   []game.Region{decodeRegion(info.RegionCode)},
 		MakerCode: info.MakerCode,
 		Version:   &version,
+		Extra:     info,
 	}, nil
 }
 

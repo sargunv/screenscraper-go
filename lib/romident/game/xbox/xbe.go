@@ -96,9 +96,7 @@ func xboxInfoToGameIdent(info *XboxInfo) *game.GameIdent {
 		MakerCode:  info.PublisherCode,
 		Version:    &version,
 		DiscNumber: &discNumber,
-		Extra: map[string]string{
-			"title_id_hex": info.TitleIDHex,
-		},
+		Extra:      info,
 	}
 }
 
