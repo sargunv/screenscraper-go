@@ -35,6 +35,7 @@ Supports:
   - Nintendo Game Boy Advance: .gba
   - Nintendo DS: .nds, .dsi, .ids
   - Sega Mega Drive / Genesis: .md, .gen, .smd
+  - PlayStation 2: .iso
   - Microsoft Xbox: .xiso, .xiso.iso, and .xbe
 - .chd discs: extracts SHA1 hashes from header (fast, no decompression)
 - .zip archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.

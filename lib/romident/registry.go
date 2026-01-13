@@ -8,6 +8,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/romident/gb"
 	"github.com/sargunv/rom-tools/lib/romident/gba"
 	"github.com/sargunv/rom-tools/lib/romident/gcm"
+	"github.com/sargunv/rom-tools/lib/romident/iso9660"
 	"github.com/sargunv/rom-tools/lib/romident/md"
 	"github.com/sargunv/rom-tools/lib/romident/n64"
 	"github.com/sargunv/rom-tools/lib/romident/nds"
@@ -15,7 +16,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/romident/rvz"
 	"github.com/sargunv/rom-tools/lib/romident/smd"
 	"github.com/sargunv/rom-tools/lib/romident/snes"
-	"github.com/sargunv/rom-tools/lib/romident/v64"
+	v64 "github.com/sargunv/rom-tools/lib/romident/v64"
 	"github.com/sargunv/rom-tools/lib/romident/xbe"
 	"github.com/sargunv/rom-tools/lib/romident/xiso"
 	"github.com/sargunv/rom-tools/lib/romident/z64"
@@ -33,35 +34,23 @@ type FormatEntry struct {
 // For ambiguous extensions like .iso, multiple formats are registered and
 // the detection logic tries each candidate in order.
 var registry = []FormatEntry{
-	// GBA
 	{FormatGBA, []string{".gba"}, gba.Identify},
-	// Nintendo DS
 	{FormatNDS, []string{".nds", ".dsi", ".ids"}, nds.Identify},
-	// NES
 	{FormatNES, []string{".nes"}, nes.Identify},
-	// SNES
 	{FormatSNES, []string{".sfc", ".smc"}, snes.Identify},
-	// Game Boy
 	{FormatGB, []string{".gb", ".gbc"}, gb.Identify},
-	// N64 variants
 	{FormatZ64, []string{".z64"}, z64.Identify},
 	{FormatV64, []string{".v64"}, v64.Identify},
 	{FormatN64, []string{".n64"}, n64.Identify},
-	// Mega Drive / Genesis
 	{FormatMD, []string{".md", ".gen"}, md.Identify},
 	{FormatSMD, []string{".smd"}, smd.Identify},
-	// Xbox - XISO before GCM for .iso since XISO magic check is very specific
 	{FormatXISO, []string{".xiso", ".iso"}, xiso.Identify},
 	{FormatXBE, []string{".xbe"}, xbe.Identify},
-	// GameCube / Wii
 	{FormatGCM, []string{".gcm", ".iso"}, gcm.Identify},
 	{FormatRVZ, []string{".rvz", ".wia"}, rvz.Identify},
-
-	// Container/disc formats without game identifiers
 	{FormatCHD, []string{".chd"}, nil},
 	{FormatZIP, []string{".zip"}, nil},
-	// ISO9660 is the fallback for .iso files that aren't XISO or GCM
-	{FormatISO9660, []string{".iso"}, nil},
+	{FormatISO9660, []string{".iso"}, iso9660.Identify},
 }
 
 // FormatsByExtension returns all format entries that match the given filename extension.
