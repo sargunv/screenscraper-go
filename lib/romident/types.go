@@ -12,26 +12,27 @@ const (
 	ROMTypeFolder ROMType = "folder"
 )
 
-// Format indicates the detected file format.
-type Format string
+// Format is an alias for game.Format.
+type Format = game.Format
 
+// Format constants re-exported from game package.
 const (
-	FormatUnknown Format = "unknown"
-	FormatCHD     Format = "chd"
-	FormatXISO    Format = "xiso"
-	FormatXBE     Format = "xbe"
-	FormatISO9660 Format = "iso9660"
-	FormatZIP     Format = "zip"
-	FormatGBA     Format = "gba"
-	FormatZ64     Format = "z64" // N64 big-endian (native)
-	FormatV64     Format = "v64" // N64 byte-swapped
-	FormatN64     Format = "n64" // N64 word-swapped (little-endian)
-	FormatGB      Format = "gb"
-	FormatMD      Format = "md"
-	FormatSMD     Format = "smd"
-	FormatNDS     Format = "nds"
-	FormatNES     Format = "nes"
-	FormatSNES    Format = "snes"
+	FormatUnknown = game.FormatUnknown
+	FormatCHD     = game.FormatCHD
+	FormatXISO    = game.FormatXISO
+	FormatXBE     = game.FormatXBE
+	FormatISO9660 = game.FormatISO9660
+	FormatZIP     = game.FormatZIP
+	FormatGBA     = game.FormatGBA
+	FormatZ64     = game.FormatZ64
+	FormatV64     = game.FormatV64
+	FormatN64     = game.FormatN64
+	FormatGB      = game.FormatGB
+	FormatMD      = game.FormatMD
+	FormatSMD     = game.FormatSMD
+	FormatNDS     = game.FormatNDS
+	FormatNES     = game.FormatNES
+	FormatSNES    = game.FormatSNES
 )
 
 // HashAlgorithm identifies a hash algorithm.

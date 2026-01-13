@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // NDS (Nintendo DS) ROM format parsing.
@@ -120,6 +121,75 @@ func ParseNDS(r io.ReaderAt, size int64) (*NDSInfo, error) {
 		UnitCode:   unitCode,
 		Platform:   platform,
 	}, nil
+}
+
+// Identify verifies the format and extracts game identification from an NDS ROM.
+func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	// Validate format first
+	if !IsNDSROM(r, size) {
+		return nil, fmt.Errorf("not a valid NDS ROM")
+	}
+
+	info, err := ParseNDS(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	version := info.Version
+
+	// Determine platform based on unit code
+	var platform game.Platform
+	switch info.Platform {
+	case NDSPlatformDSi:
+		platform = game.PlatformDSi
+	default:
+		platform = game.PlatformNDS
+	}
+
+	extra := map[string]string{}
+	if info.Platform == NDSPlatformDSiDual {
+		extra["dsi_enhanced"] = "true"
+	}
+
+	return &game.GameIdent{
+		Platform:  platform,
+		TitleID:   info.GameCode,
+		Title:     info.Title,
+		Regions:   []game.Region{decodeRegion(info.RegionCode)},
+		MakerCode: info.MakerCode,
+		Version:   &version,
+		Extra:     extra,
+	}, nil
+}
+
+// decodeRegion converts an NDS region code byte to a Region.
+func decodeRegion(code byte) game.Region {
+	switch code {
+	case 'J':
+		return game.RegionJP
+	case 'E':
+		return game.RegionUS
+	case 'P':
+		return game.RegionEU
+	case 'D':
+		return game.RegionDE
+	case 'F':
+		return game.RegionFR
+	case 'I':
+		return game.RegionIT
+	case 'S':
+		return game.RegionES
+	case 'K':
+		return game.RegionKR
+	case 'C':
+		return game.RegionCN
+	case 'A':
+		return game.RegionWorld
+	case 'U':
+		return game.RegionAU
+	default:
+		return game.RegionUnknown
+	}
 }
 
 // IsNDSROM checks if the data has a valid NDS ROM structure.

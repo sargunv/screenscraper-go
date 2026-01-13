@@ -2,7 +2,6 @@ package romident
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 
@@ -10,15 +9,6 @@ import (
 	"github.com/sargunv/rom-tools/lib/romident/container/folder"
 	"github.com/sargunv/rom-tools/lib/romident/container/zip"
 	"github.com/sargunv/rom-tools/lib/romident/disc/chd"
-	"github.com/sargunv/rom-tools/lib/romident/game"
-	"github.com/sargunv/rom-tools/lib/romident/game/gb"
-	"github.com/sargunv/rom-tools/lib/romident/game/gba"
-	"github.com/sargunv/rom-tools/lib/romident/game/md"
-	"github.com/sargunv/rom-tools/lib/romident/game/n64"
-	"github.com/sargunv/rom-tools/lib/romident/game/nds"
-	"github.com/sargunv/rom-tools/lib/romident/game/nes"
-	"github.com/sargunv/rom-tools/lib/romident/game/snes"
-	"github.com/sargunv/rom-tools/lib/romident/game/xbox"
 )
 
 // IdentifyROM identifies a ROM file, ZIP archive, or folder.
@@ -207,18 +197,13 @@ func identifyZIP(path string, opts Options) (*ROM, error) {
 func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector *Detector, opts Options) (*ROMFile, *GameIdent, error) {
 	size := r.Size()
 
-	// Detect format
-	detectedFormat, err := detector.Detect(r, size, name)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to detect format: %w", err)
-	}
+	// Detect format and identify game using registry
+	detectedFormat, ident := identifyGameFromRegistry(r, size, name)
 
 	romFile := &ROMFile{
 		Size:   size,
 		Format: detectedFormat,
 	}
-
-	var ident *GameIdent
 
 	// For CHD, always extract hashes from header (fast, no decompression)
 	if detectedFormat == FormatCHD {
@@ -231,68 +216,6 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 			NewHash(HashSHA1, chdInfo.SHA1, HashSourceCHDCompressed),
 		}
 		return romFile, ident, nil
-	}
-
-	// Extract identification for identifiable formats
-	if detectedFormat == FormatXISO {
-		// Reset reader position for XISO parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyXISO(r, size)
-		}
-	}
-	if detectedFormat == FormatXBE {
-		// Reset reader position for XBE parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyXBE(r, size)
-		}
-	}
-	if detectedFormat == FormatGBA {
-		// Reset reader position for GBA parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyGBA(r, size)
-		}
-	}
-	if detectedFormat == FormatZ64 || detectedFormat == FormatV64 || detectedFormat == FormatN64 {
-		// Reset reader position for N64 parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyN64(r, size)
-		}
-	}
-	if detectedFormat == FormatGB {
-		// Reset reader position for GB parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyGB(r, size)
-		}
-	}
-	if detectedFormat == FormatMD {
-		// Reset reader position for MD parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyMD(r, size)
-		}
-	}
-	if detectedFormat == FormatSMD {
-		// Reset reader position for SMD parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifySMD(r, size)
-		}
-	}
-	if detectedFormat == FormatNDS {
-		// Reset reader position for NDS parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyNDS(r, size)
-		}
-	}
-	if detectedFormat == FormatNES {
-		// Reset reader position for NES parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifyNES(r, size)
-		}
-	}
-	if detectedFormat == FormatSNES {
-		// Reset reader position for SNES parsing
-		if _, err := r.Seek(0, 0); err == nil {
-			ident = identifySNES(r, size)
-		}
 	}
 
 	// Fast mode: skip calculating hashes for large files, but allow small files
@@ -316,6 +239,42 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 	romFile.Hashes = hashes
 
 	return romFile, ident, nil
+}
+
+// identifyGameFromRegistry uses the format registry to detect format and identify game.
+// Returns the detected format and game identification (if any).
+func identifyGameFromRegistry(r container.ReaderAtSeekCloser, size int64, name string) (Format, *GameIdent) {
+	// Get candidate formats by extension
+	entries := FormatsByExtension(name)
+	if len(entries) == 0 {
+		return FormatUnknown, nil
+	}
+
+	// Try each candidate's identifier
+	for _, entry := range entries {
+		// Reset reader position
+		if _, err := r.Seek(0, 0); err != nil {
+			continue
+		}
+
+		// If no identify function, just verify format using detector
+		if entry.Identify == nil {
+			detector := NewDetector()
+			if detector.VerifyFormat(r, size, entry.Format) {
+				return entry.Format, nil
+			}
+			continue
+		}
+
+		// Try to identify using the entry's function
+		ident, err := entry.Identify(r, size)
+		if err == nil {
+			return entry.Format, ident
+		}
+		// If identification fails, try next candidate
+	}
+
+	return FormatUnknown, nil
 }
 
 func identifySingleFile(path string, size int64, detector *Detector, opts Options) (*ROMFile, *GameIdent, error) {
@@ -366,555 +325,4 @@ func (w *readerAtWrapper) Read(p []byte) (n int, err error) {
 	n, err = w.r.ReadAt(p, w.pos)
 	w.pos += int64(n)
 	return n, err
-}
-
-// identifyXISO extracts game identification from an Xbox XISO.
-// Returns nil if identification fails (non-fatal).
-func identifyXISO(r io.ReaderAt, size int64) *GameIdent {
-	info, err := xbox.ParseXISO(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := int(info.Version)
-	discNumber := int(info.DiscNumber)
-
-	return &GameIdent{
-		Platform:   game.PlatformXbox,
-		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
-		Title:      info.Title,
-		Regions:    decodeXboxRegions(info.RegionFlags),
-		MakerCode:  info.PublisherCode,
-		Version:    &version,
-		DiscNumber: &discNumber,
-		Extra: map[string]string{
-			"title_id_hex": info.TitleIDHex,
-		},
-	}
-}
-
-// identifyXBE extracts game identification from an Xbox XBE file.
-// Returns nil if identification fails (non-fatal).
-func identifyXBE(r io.ReaderAt, size int64) *GameIdent {
-	info, err := xbox.ParseXBE(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := int(info.Version)
-	discNumber := int(info.DiscNumber)
-
-	return &GameIdent{
-		Platform:   game.PlatformXbox,
-		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
-		Title:      info.Title,
-		Regions:    decodeXboxRegions(info.RegionFlags),
-		MakerCode:  info.PublisherCode,
-		Version:    &version,
-		DiscNumber: &discNumber,
-		Extra: map[string]string{
-			"title_id_hex": info.TitleIDHex,
-		},
-	}
-}
-
-// identifyGBA extracts game identification from a GBA ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifyGBA(r io.ReaderAt, size int64) *GameIdent {
-	info, err := gba.ParseGBA(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := info.Version
-
-	return &GameIdent{
-		Platform:  game.PlatformGBA,
-		TitleID:   info.GameCode,
-		Title:     info.Title,
-		Regions:   []Region{decodeGBARegion(info.RegionCode)},
-		MakerCode: info.MakerCode,
-		Version:   &version,
-	}
-}
-
-// identifyN64 extracts game identification from an N64 ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifyN64(r io.ReaderAt, size int64) *GameIdent {
-	info, err := n64.ParseN64(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := info.Version
-
-	return &GameIdent{
-		Platform: game.PlatformN64,
-		TitleID:  info.GameCode,
-		Title:    info.Title,
-		Regions:  []Region{decodeN64Region(info.RegionCode)},
-		Version:  &version,
-		Extra: map[string]string{
-			"byte_order":    string(info.ByteOrder),
-			"category_code": string(info.CategoryCode),
-		},
-	}
-}
-
-// identifyGB extracts game identification from a GB/GBC ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifyGB(r io.ReaderAt, size int64) *GameIdent {
-	info, err := gb.ParseGB(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := info.Version
-
-	// Determine platform based on CGB flag
-	var platform Platform
-	if info.Platform == gb.GBPlatformGBC {
-		platform = game.PlatformGBC
-	} else {
-		platform = game.PlatformGB
-	}
-
-	// Determine region from destination code
-	var region Region
-	if info.DestinationCode == 0x00 {
-		region = game.RegionJP
-	} else {
-		region = game.RegionWorld // Non-Japanese = worldwide
-	}
-
-	extra := map[string]string{
-		"licensee": info.LicenseeCode,
-	}
-	if info.ManufacturerCode != "" {
-		extra["manufacturer"] = info.ManufacturerCode
-	}
-	if info.SGBFlag == gb.SGBFlagSupported {
-		extra["sgb_support"] = "true"
-	}
-	extra["cartridge_type"] = fmt.Sprintf("%02X", info.CartridgeType)
-
-	return &GameIdent{
-		Platform:  platform,
-		Title:     info.Title,
-		Regions:   []Region{region},
-		MakerCode: info.LicenseeCode,
-		Version:   &version,
-		Extra:     extra,
-	}
-}
-
-// identifyMD extracts game identification from a Mega Drive/Genesis ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifyMD(r io.ReaderAt, size int64) *GameIdent {
-	info, err := md.ParseMD(r, size)
-	if err != nil {
-		return nil
-	}
-
-	// Use overseas title if available, otherwise domestic title
-	title := info.OverseasTitle
-	if title == "" {
-		title = info.DomesticTitle
-	}
-
-	// Decode regions
-	regions := decodeMDRegions(info.Regions)
-
-	extra := map[string]string{
-		"system_type": info.SystemType,
-	}
-	if info.Copyright != "" {
-		extra["copyright"] = info.Copyright
-	}
-	if info.DomesticTitle != "" && info.DomesticTitle != info.OverseasTitle {
-		extra["domestic_title"] = info.DomesticTitle
-	}
-	if info.DeviceSupport != "" {
-		extra["device_support"] = info.DeviceSupport
-	}
-	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
-
-	return &GameIdent{
-		Platform: game.PlatformMD,
-		TitleID:  info.SerialNumber,
-		Title:    title,
-		Regions:  regions,
-		Extra:    extra,
-	}
-}
-
-// identifySNES extracts game identification from a SNES ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifySNES(r io.ReaderAt, size int64) *GameIdent {
-	info, err := snes.ParseSNES(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := info.Version
-
-	extra := map[string]string{
-		"map_mode": decodeSNESMapMode(info.MapMode),
-	}
-	if info.SRAMSize > 0 {
-		extra["sram"] = formatROMSize(info.SRAMSize)
-	}
-	if info.HasCopierHeader {
-		extra["copier_header"] = "true"
-	}
-
-	return &GameIdent{
-		Platform: game.PlatformSNES,
-		Title:    info.Title,
-		Regions:  []Region{decodeSNESRegion(info.DestinationCode)},
-		Version:  &version,
-		Extra:    extra,
-	}
-}
-
-// identifyNES extracts game identification from an NES ROM file.
-// Returns nil if identification fails (non-fatal).
-// Note: iNES format doesn't include game title, so identification is limited.
-func identifyNES(r io.ReaderAt, size int64) *GameIdent {
-	info, err := nes.ParseNES(r, size)
-	if err != nil {
-		return nil
-	}
-
-	// Determine region from TV system
-	var region Region
-	if info.TVSystem == nes.NESTVSystemPAL {
-		region = game.RegionPAL
-	} else {
-		region = game.RegionNTSC
-	}
-
-	extra := map[string]string{
-		"mapper":  fmt.Sprintf("%d", info.Mapper),
-		"prg_rom": formatROMSize(info.PRGROMSize),
-		"chr_rom": formatROMSize(info.CHRROMSize),
-	}
-
-	if info.HasBattery {
-		extra["battery"] = "true"
-	}
-	if info.IsNES20 {
-		extra["nes2.0"] = "true"
-	}
-	if info.Mirroring == nes.NESMirroringVertical {
-		extra["mirroring"] = "vertical"
-	} else {
-		extra["mirroring"] = "horizontal"
-	}
-
-	return &GameIdent{
-		Platform: game.PlatformNES,
-		Regions:  []Region{region},
-		Extra:    extra,
-	}
-}
-
-// identifyNDS extracts game identification from a Nintendo DS ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifyNDS(r io.ReaderAt, size int64) *GameIdent {
-	info, err := nds.ParseNDS(r, size)
-	if err != nil {
-		return nil
-	}
-
-	version := info.Version
-
-	// Determine platform based on unit code
-	var platform Platform
-	switch info.Platform {
-	case nds.NDSPlatformDSi:
-		platform = game.PlatformDSi
-	default:
-		platform = game.PlatformNDS
-	}
-
-	extra := map[string]string{}
-	if info.Platform == nds.NDSPlatformDSiDual {
-		extra["dsi_enhanced"] = "true"
-	}
-
-	return &GameIdent{
-		Platform:  platform,
-		TitleID:   info.GameCode,
-		Title:     info.Title,
-		Regions:   []Region{decodeNDSRegion(info.RegionCode)},
-		MakerCode: info.MakerCode,
-		Version:   &version,
-		Extra:     extra,
-	}
-}
-
-// identifySMD extracts game identification from an SMD (Super Magic Drive) ROM file.
-// Returns nil if identification fails (non-fatal).
-func identifySMD(r io.ReaderAt, size int64) *GameIdent {
-	info, err := md.ParseSMD(r, size)
-	if err != nil {
-		return nil
-	}
-
-	// Use overseas title if available, otherwise domestic title
-	title := info.OverseasTitle
-	if title == "" {
-		title = info.DomesticTitle
-	}
-
-	// Decode regions
-	regions := decodeMDRegions(info.Regions)
-
-	extra := map[string]string{
-		"system_type": info.SystemType,
-	}
-	if info.Copyright != "" {
-		extra["copyright"] = info.Copyright
-	}
-	if info.DomesticTitle != "" && info.DomesticTitle != info.OverseasTitle {
-		extra["domestic_title"] = info.DomesticTitle
-	}
-	if info.DeviceSupport != "" {
-		extra["device_support"] = info.DeviceSupport
-	}
-	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
-
-	return &GameIdent{
-		Platform: game.PlatformMD,
-		TitleID:  info.SerialNumber,
-		Title:    title,
-		Regions:  regions,
-		Extra:    extra,
-	}
-}
-
-// decodeMDRegions converts Mega Drive region codes to a slice of Region.
-func decodeMDRegions(codes []byte) []Region {
-	var regions []Region
-	seen := make(map[Region]bool)
-
-	for _, code := range codes {
-		var region Region
-		switch code {
-		case 'J', '1':
-			region = game.RegionJP
-		case 'U', '4', '8':
-			region = game.RegionUS
-		case 'E':
-			region = game.RegionEU
-		case 'A':
-			region = game.RegionWorld // Asia sometimes means world
-		case 'B':
-			region = game.RegionBR
-		case 'K':
-			region = game.RegionKR
-		default:
-			continue
-		}
-
-		if !seen[region] {
-			seen[region] = true
-			regions = append(regions, region)
-		}
-	}
-
-	if len(regions) == 0 {
-		regions = append(regions, game.RegionUnknown)
-	}
-
-	return regions
-}
-
-// decodeXboxRegions converts Xbox region flags to a slice of Region.
-func decodeXboxRegions(flags uint32) []Region {
-	var regions []Region
-	if flags&uint32(xbox.XboxRegionNA) != 0 {
-		regions = append(regions, game.RegionNA)
-	}
-	if flags&uint32(xbox.XboxRegionJapan) != 0 {
-		regions = append(regions, game.RegionJP)
-	}
-	if flags&uint32(xbox.XboxRegionEUAU) != 0 {
-		regions = append(regions, game.RegionEU, game.RegionAU)
-	}
-	if len(regions) == 0 {
-		regions = append(regions, game.RegionUnknown)
-	}
-	return regions
-}
-
-// decodeGBARegion converts a GBA region code byte to a Region.
-func decodeGBARegion(code byte) Region {
-	switch code {
-	case 'J':
-		return game.RegionJP
-	case 'E':
-		return game.RegionUS
-	case 'P':
-		return game.RegionEU
-	case 'F':
-		return game.RegionFR
-	case 'S':
-		return game.RegionES
-	case 'D':
-		return game.RegionDE
-	case 'I':
-		return game.RegionIT
-	default:
-		return game.RegionUnknown
-	}
-}
-
-// formatROMSize formats a ROM size in bytes to a human-readable string.
-func formatROMSize(bytes int) string {
-	if bytes == 0 {
-		return "0"
-	}
-	if bytes >= 1024*1024 {
-		return fmt.Sprintf("%d MiB", bytes/(1024*1024))
-	}
-	if bytes >= 1024 {
-		return fmt.Sprintf("%d KiB", bytes/1024)
-	}
-	return fmt.Sprintf("%d B", bytes)
-}
-
-// decodeSNESMapMode converts a SNES map mode byte to a human-readable string.
-func decodeSNESMapMode(mode snes.SNESMapMode) string {
-	switch mode {
-	case snes.SNESMapModeLoROM:
-		return "LoROM"
-	case snes.SNESMapModeHiROM:
-		return "HiROM"
-	case snes.SNESMapModeLoROMSA1:
-		return "LoROM+SA-1"
-	case snes.SNESMapModeExLoROM:
-		return "ExLoROM"
-	case snes.SNESMapModeExHiROM:
-		return "ExHiROM"
-	case snes.SNESMapModeHiROMSPC, snes.SNESMapModeHiROMSPC2:
-		return "HiROM+SPC7110"
-	default:
-		return fmt.Sprintf("0x%02X", mode)
-	}
-}
-
-// decodeSNESRegion converts a SNES destination code to a Region.
-func decodeSNESRegion(code byte) Region {
-	switch code {
-	case 0x00:
-		return game.RegionJP
-	case 0x01:
-		return game.RegionNA
-	case 0x02:
-		return game.RegionEU
-	case 0x03:
-		return game.RegionSE
-	case 0x04:
-		return game.RegionFI
-	case 0x05:
-		return game.RegionDK
-	case 0x06:
-		return game.RegionFR
-	case 0x07:
-		return game.RegionNL
-	case 0x08:
-		return game.RegionES
-	case 0x09:
-		return game.RegionDE
-	case 0x0A:
-		return game.RegionIT
-	case 0x0B:
-		return game.RegionCN
-	case 0x0D:
-		return game.RegionKR
-	case 0x0F:
-		return game.RegionCA
-	case 0x10:
-		return game.RegionBR
-	case 0x11:
-		return game.RegionAU
-	default:
-		return game.RegionUnknown
-	}
-}
-
-// decodeNDSRegion converts an NDS region code byte to a Region.
-// The region is typically the 4th character of the game code.
-func decodeNDSRegion(code byte) Region {
-	switch code {
-	case 'J':
-		return game.RegionJP
-	case 'E':
-		return game.RegionUS
-	case 'P':
-		return game.RegionEU
-	case 'D':
-		return game.RegionDE
-	case 'F':
-		return game.RegionFR
-	case 'I':
-		return game.RegionIT
-	case 'S':
-		return game.RegionES
-	case 'K':
-		return game.RegionKR
-	case 'C':
-		return game.RegionCN
-	case 'A':
-		return game.RegionWorld
-	case 'U':
-		return game.RegionAU
-	default:
-		return game.RegionUnknown
-	}
-}
-
-// decodeN64Region converts an N64 destination code byte to a Region.
-// Based on the N64brew Wiki ROM Header specification.
-func decodeN64Region(code byte) Region {
-	switch code {
-	case 'A':
-		return game.RegionWorld
-	case 'B':
-		return game.RegionBR
-	case 'C':
-		return game.RegionCN
-	case 'D':
-		return game.RegionDE
-	case 'E':
-		return game.RegionUS
-	case 'F':
-		return game.RegionFR
-	case 'G':
-		return game.RegionNTSC
-	case 'H':
-		return game.RegionNL
-	case 'I':
-		return game.RegionIT
-	case 'J':
-		return game.RegionJP
-	case 'K':
-		return game.RegionKR
-	case 'L':
-		return game.RegionPAL
-	case 'N':
-		return game.RegionCA
-	case 'P', 'X', 'Y', 'Z':
-		return game.RegionEU // TODO: are these separate regions?
-	case 'S':
-		return game.RegionES
-	case 'U':
-		return game.RegionAU
-	case 'W':
-		return game.RegionNordic
-	default:
-		return game.RegionUnknown
-	}
 }

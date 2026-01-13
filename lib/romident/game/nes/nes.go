@@ -3,6 +3,8 @@ package nes
 import (
 	"fmt"
 	"io"
+
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // NES ROM format parsing (iNES and NES 2.0).
@@ -148,6 +150,61 @@ func ParseNES(r io.ReaderAt, size int64) (*NESInfo, error) {
 		TVSystem:    tvSystem,
 		IsNES20:     isNES20,
 	}, nil
+}
+
+// Identify verifies the format and extracts game identification from an NES ROM.
+// Note: iNES format doesn't include game title, so identification is limited.
+func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	info, err := ParseNES(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	// Determine region from TV system
+	var region game.Region
+	if info.TVSystem == NESTVSystemPAL {
+		region = game.RegionPAL
+	} else {
+		region = game.RegionNTSC
+	}
+
+	extra := map[string]string{
+		"mapper":  fmt.Sprintf("%d", info.Mapper),
+		"prg_rom": formatROMSize(info.PRGROMSize),
+		"chr_rom": formatROMSize(info.CHRROMSize),
+	}
+
+	if info.HasBattery {
+		extra["battery"] = "true"
+	}
+	if info.IsNES20 {
+		extra["nes2.0"] = "true"
+	}
+	if info.Mirroring == NESMirroringVertical {
+		extra["mirroring"] = "vertical"
+	} else {
+		extra["mirroring"] = "horizontal"
+	}
+
+	return &game.GameIdent{
+		Platform: game.PlatformNES,
+		Regions:  []game.Region{region},
+		Extra:    extra,
+	}, nil
+}
+
+// formatROMSize formats a ROM size in bytes to a human-readable string.
+func formatROMSize(bytes int) string {
+	if bytes == 0 {
+		return "0"
+	}
+	if bytes >= 1024*1024 {
+		return fmt.Sprintf("%d MiB", bytes/(1024*1024))
+	}
+	if bytes >= 1024 {
+		return fmt.Sprintf("%d KiB", bytes/1024)
+	}
+	return fmt.Sprintf("%d B", bytes)
 }
 
 // IsNESROM checks if the data starts with the iNES magic bytes.

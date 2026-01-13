@@ -2,9 +2,31 @@ package game
 
 import "io"
 
-type GameIdentifier interface {
-	Identify(r io.ReaderAt, size int64) (*GameIdent, error)
-}
+// Format indicates the detected file format.
+type Format string
+
+const (
+	FormatUnknown Format = "unknown"
+	FormatCHD     Format = "chd"
+	FormatXISO    Format = "xiso"
+	FormatXBE     Format = "xbe"
+	FormatISO9660 Format = "iso9660"
+	FormatZIP     Format = "zip"
+	FormatGBA     Format = "gba"
+	FormatZ64     Format = "z64" // N64 big-endian (native)
+	FormatV64     Format = "v64" // N64 byte-swapped
+	FormatN64     Format = "n64" // N64 word-swapped (little-endian)
+	FormatGB      Format = "gb"
+	FormatMD      Format = "md"
+	FormatSMD     Format = "smd"
+	FormatNDS     Format = "nds"
+	FormatNES     Format = "nes"
+	FormatSNES    Format = "snes"
+)
+
+// IdentifyFunc is the signature for format-specific identification functions.
+// Each function verifies the format and extracts game metadata.
+type IdentifyFunc func(r io.ReaderAt, size int64) (*GameIdent, error)
 
 // GameIdent represents platform-specific identification data.
 type GameIdent struct {

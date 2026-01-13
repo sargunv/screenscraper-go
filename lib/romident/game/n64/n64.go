@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // N64 ROM format parsing.
@@ -176,5 +177,99 @@ func DetectN64ByteOrder(first4 []byte) N64ByteOrder {
 		return N64LittleEndian
 	default:
 		return N64Unknown
+	}
+}
+
+// IdentifyZ64 verifies the format and extracts game identification from a Z64 ROM.
+func IdentifyZ64(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	return identifyN64WithOrder(r, size, N64BigEndian)
+}
+
+// IdentifyV64 verifies the format and extracts game identification from a V64 ROM.
+func IdentifyV64(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	return identifyN64WithOrder(r, size, N64ByteSwapped)
+}
+
+// IdentifyN64 verifies the format and extracts game identification from an N64 (word-swapped) ROM.
+func IdentifyN64(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	return identifyN64WithOrder(r, size, N64LittleEndian)
+}
+
+// identifyN64WithOrder verifies the byte order and extracts game identification.
+func identifyN64WithOrder(r io.ReaderAt, size int64, expectedOrder N64ByteOrder) (*game.GameIdent, error) {
+	if size < 4 {
+		return nil, fmt.Errorf("file too small for N64 ROM")
+	}
+
+	// Read first 4 bytes to check byte order
+	first4 := make([]byte, 4)
+	if _, err := r.ReadAt(first4, 0); err != nil {
+		return nil, fmt.Errorf("failed to read N64 header: %w", err)
+	}
+
+	actualOrder := DetectN64ByteOrder(first4)
+	if actualOrder != expectedOrder {
+		return nil, fmt.Errorf("byte order mismatch: expected %s, got %s", expectedOrder, actualOrder)
+	}
+
+	info, err := ParseN64(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	version := info.Version
+
+	return &game.GameIdent{
+		Platform: game.PlatformN64,
+		TitleID:  info.GameCode,
+		Title:    info.Title,
+		Regions:  []game.Region{decodeRegion(info.RegionCode)},
+		Version:  &version,
+		Extra: map[string]string{
+			"byte_order":    string(info.ByteOrder),
+			"category_code": string(info.CategoryCode),
+		},
+	}, nil
+}
+
+// decodeRegion converts an N64 destination code byte to a Region.
+func decodeRegion(code byte) game.Region {
+	switch code {
+	case 'A':
+		return game.RegionWorld
+	case 'B':
+		return game.RegionBR
+	case 'C':
+		return game.RegionCN
+	case 'D':
+		return game.RegionDE
+	case 'E':
+		return game.RegionUS
+	case 'F':
+		return game.RegionFR
+	case 'G':
+		return game.RegionNTSC
+	case 'H':
+		return game.RegionNL
+	case 'I':
+		return game.RegionIT
+	case 'J':
+		return game.RegionJP
+	case 'K':
+		return game.RegionKR
+	case 'L':
+		return game.RegionPAL
+	case 'N':
+		return game.RegionCA
+	case 'P', 'X', 'Y', 'Z':
+		return game.RegionEU
+	case 'S':
+		return game.RegionES
+	case 'U':
+		return game.RegionAU
+	case 'W':
+		return game.RegionNordic
+	default:
+		return game.RegionUnknown
 	}
 }

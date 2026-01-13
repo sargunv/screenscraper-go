@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // Mega Drive (Genesis) ROM format parsing.
@@ -192,6 +193,92 @@ func IsMDROM(r io.ReaderAt, size int64) bool {
 	// Check for "SEGA" anywhere in the system type field
 	// Common values: "SEGA MEGA DRIVE ", "SEGA GENESIS    ", " SEGA MEGA DRIVE", etc.
 	return strings.Contains(string(buf), "SEGA")
+}
+
+// Identify verifies the format and extracts game identification from a Mega Drive ROM.
+func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	if !IsMDROM(r, size) {
+		return nil, fmt.Errorf("not a valid Mega Drive ROM")
+	}
+
+	info, err := ParseMD(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	return mdInfoToGameIdent(info), nil
+}
+
+// mdInfoToGameIdent converts MDInfo to GameIdent.
+// This is shared between MD and SMD identifiers.
+func mdInfoToGameIdent(info *MDInfo) *game.GameIdent {
+	// Use overseas title if available, otherwise domestic title
+	title := info.OverseasTitle
+	if title == "" {
+		title = info.DomesticTitle
+	}
+
+	// Decode regions
+	regions := decodeRegions(info.Regions)
+
+	extra := map[string]string{
+		"system_type": info.SystemType,
+	}
+	if info.Copyright != "" {
+		extra["copyright"] = info.Copyright
+	}
+	if info.DomesticTitle != "" && info.DomesticTitle != info.OverseasTitle {
+		extra["domestic_title"] = info.DomesticTitle
+	}
+	if info.DeviceSupport != "" {
+		extra["device_support"] = info.DeviceSupport
+	}
+	extra["checksum"] = fmt.Sprintf("%04X", info.Checksum)
+
+	return &game.GameIdent{
+		Platform: game.PlatformMD,
+		TitleID:  info.SerialNumber,
+		Title:    title,
+		Regions:  regions,
+		Extra:    extra,
+	}
+}
+
+// decodeRegions converts Mega Drive region codes to a slice of Region.
+func decodeRegions(codes []byte) []game.Region {
+	var regions []game.Region
+	seen := make(map[game.Region]bool)
+
+	for _, code := range codes {
+		var region game.Region
+		switch code {
+		case 'J', '1':
+			region = game.RegionJP
+		case 'U', '4', '8':
+			region = game.RegionUS
+		case 'E':
+			region = game.RegionEU
+		case 'A':
+			region = game.RegionWorld
+		case 'B':
+			region = game.RegionBR
+		case 'K':
+			region = game.RegionKR
+		default:
+			continue
+		}
+
+		if !seen[region] {
+			seen[region] = true
+			regions = append(regions, region)
+		}
+	}
+
+	if len(regions) == 0 {
+		regions = append(regions, game.RegionUnknown)
+	}
+
+	return regions
 }
 
 // parseMDFromBytes extracts game information from raw Mega Drive ROM bytes.

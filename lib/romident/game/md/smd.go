@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // SMD (Super Magic Drive Interleaved) ROM format parsing.
@@ -106,6 +107,20 @@ func deinterleaveSMD(data []byte) []byte {
 	}
 
 	return result
+}
+
+// IdentifySMD verifies the format and extracts game identification from an SMD ROM.
+func IdentifySMD(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	if !IsSMDROM(r, size) {
+		return nil, fmt.Errorf("not a valid SMD ROM")
+	}
+
+	info, err := ParseSMD(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	return mdInfoToGameIdent(info), nil
 }
 
 // ParseSMD extracts game information from an SMD (Super Magic Drive) ROM file.

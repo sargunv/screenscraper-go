@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // Xbox XISO (XDVDFS) format parsing.
@@ -23,6 +25,16 @@ const (
 	xisoRootDirOffset    = 0x14
 	xisoRootDirSizeOff   = 0x18
 )
+
+// IdentifyXISO verifies the format and extracts game identification from an XISO.
+func IdentifyXISO(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	info, err := ParseXISO(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	return xboxInfoToGameIdent(info), nil
+}
 
 // ParseXISO extracts game information from an Xbox XISO image.
 func ParseXISO(r io.ReaderAt, size int64) (*XboxInfo, error) {

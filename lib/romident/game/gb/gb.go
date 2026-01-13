@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // Game Boy (GB) and Game Boy Color (GBC) ROM format parsing.
@@ -211,4 +212,50 @@ func IsGBROM(r io.ReaderAt, size int64) bool {
 		}
 	}
 	return true
+}
+
+// Identify verifies the format and extracts game identification from a GB/GBC ROM.
+func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	info, err := ParseGB(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	version := info.Version
+
+	// Determine platform based on CGB flag
+	var platform game.Platform
+	if info.Platform == GBPlatformGBC {
+		platform = game.PlatformGBC
+	} else {
+		platform = game.PlatformGB
+	}
+
+	// Determine region from destination code
+	var region game.Region
+	if info.DestinationCode == 0x00 {
+		region = game.RegionJP
+	} else {
+		region = game.RegionWorld // Non-Japanese = worldwide
+	}
+
+	extra := map[string]string{
+		"licensee": info.LicenseeCode,
+	}
+	if info.ManufacturerCode != "" {
+		extra["manufacturer"] = info.ManufacturerCode
+	}
+	if info.SGBFlag == SGBFlagSupported {
+		extra["sgb_support"] = "true"
+	}
+	extra["cartridge_type"] = fmt.Sprintf("%02X", info.CartridgeType)
+
+	return &game.GameIdent{
+		Platform:  platform,
+		Title:     info.Title,
+		Regions:   []game.Region{region},
+		MakerCode: info.LicenseeCode,
+		Version:   &version,
+		Extra:     extra,
+	}, nil
 }

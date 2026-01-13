@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"unicode/utf16"
+
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // XBE (Xbox Executable) format parsing.
@@ -68,6 +70,54 @@ type XboxInfo struct {
 	RegionFlags   uint32 // Bitmask of XboxRegion values
 	DiscNumber    uint32
 	Version       uint32
+}
+
+// IdentifyXBE verifies the format and extracts game identification from an XBE file.
+func IdentifyXBE(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	info, err := ParseXBE(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	return xboxInfoToGameIdent(info), nil
+}
+
+// xboxInfoToGameIdent converts XboxInfo to GameIdent.
+// This is shared between XISO and XBE identifiers.
+func xboxInfoToGameIdent(info *XboxInfo) *game.GameIdent {
+	version := int(info.Version)
+	discNumber := int(info.DiscNumber)
+
+	return &game.GameIdent{
+		Platform:   game.PlatformXbox,
+		TitleID:    fmt.Sprintf("%s-%03d", info.PublisherCode, info.GameNumber),
+		Title:      info.Title,
+		Regions:    decodeRegions(info.RegionFlags),
+		MakerCode:  info.PublisherCode,
+		Version:    &version,
+		DiscNumber: &discNumber,
+		Extra: map[string]string{
+			"title_id_hex": info.TitleIDHex,
+		},
+	}
+}
+
+// decodeRegions converts Xbox region flags to a slice of Region.
+func decodeRegions(flags uint32) []game.Region {
+	var regions []game.Region
+	if flags&uint32(XboxRegionNA) != 0 {
+		regions = append(regions, game.RegionNA)
+	}
+	if flags&uint32(XboxRegionJapan) != 0 {
+		regions = append(regions, game.RegionJP)
+	}
+	if flags&uint32(XboxRegionEUAU) != 0 {
+		regions = append(regions, game.RegionEU, game.RegionAU)
+	}
+	if len(regions) == 0 {
+		regions = append(regions, game.RegionUnknown)
+	}
+	return regions
 }
 
 // ParseXBE extracts game information from an XBE file.

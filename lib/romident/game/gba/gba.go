@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // GBA (Game Boy Advance) ROM format parsing.
@@ -88,4 +89,45 @@ func ParseGBA(r io.ReaderAt, size int64) (*GBAInfo, error) {
 		RegionCode: regionCode,
 		Version:    version,
 	}, nil
+}
+
+// Identify verifies the format and extracts game identification from a GBA ROM.
+func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	info, err := ParseGBA(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	version := info.Version
+
+	return &game.GameIdent{
+		Platform:  game.PlatformGBA,
+		TitleID:   info.GameCode,
+		Title:     info.Title,
+		Regions:   []game.Region{decodeRegion(info.RegionCode)},
+		MakerCode: info.MakerCode,
+		Version:   &version,
+	}, nil
+}
+
+// decodeRegion converts a GBA region code byte to a Region.
+func decodeRegion(code byte) game.Region {
+	switch code {
+	case 'J':
+		return game.RegionJP
+	case 'E':
+		return game.RegionUS
+	case 'P':
+		return game.RegionEU
+	case 'F':
+		return game.RegionFR
+	case 'S':
+		return game.RegionES
+	case 'D':
+		return game.RegionDE
+	case 'I':
+		return game.RegionIT
+	default:
+		return game.RegionUnknown
+	}
 }

@@ -3,6 +3,8 @@ package snes
 import (
 	"fmt"
 	"io"
+
+	"github.com/sargunv/rom-tools/lib/romident/game"
 )
 
 // SNES ROM format parsing.
@@ -235,4 +237,106 @@ func IsSNESROM(r io.ReaderAt, size int64) bool {
 	// Try to parse - if successful, it's likely a SNES ROM
 	_, err := ParseSNES(r, size)
 	return err == nil
+}
+
+// Identify verifies the format and extracts game identification from a SNES ROM.
+func Identify(r io.ReaderAt, size int64) (*game.GameIdent, error) {
+	info, err := ParseSNES(r, size)
+	if err != nil {
+		return nil, err
+	}
+
+	version := info.Version
+
+	extra := map[string]string{
+		"map_mode": decodeMapMode(info.MapMode),
+	}
+	if info.SRAMSize > 0 {
+		extra["sram"] = formatROMSize(info.SRAMSize)
+	}
+	if info.HasCopierHeader {
+		extra["copier_header"] = "true"
+	}
+
+	return &game.GameIdent{
+		Platform: game.PlatformSNES,
+		Title:    info.Title,
+		Regions:  []game.Region{decodeRegion(info.DestinationCode)},
+		Version:  &version,
+		Extra:    extra,
+	}, nil
+}
+
+// decodeMapMode converts a SNES map mode byte to a human-readable string.
+func decodeMapMode(mode SNESMapMode) string {
+	switch mode {
+	case SNESMapModeLoROM:
+		return "LoROM"
+	case SNESMapModeHiROM:
+		return "HiROM"
+	case SNESMapModeLoROMSA1:
+		return "LoROM+SA-1"
+	case SNESMapModeExLoROM:
+		return "ExLoROM"
+	case SNESMapModeExHiROM:
+		return "ExHiROM"
+	case SNESMapModeHiROMSPC, SNESMapModeHiROMSPC2:
+		return "HiROM+SPC7110"
+	default:
+		return fmt.Sprintf("0x%02X", mode)
+	}
+}
+
+// decodeRegion converts a SNES destination code to a Region.
+func decodeRegion(code byte) game.Region {
+	switch code {
+	case 0x00:
+		return game.RegionJP
+	case 0x01:
+		return game.RegionNA
+	case 0x02:
+		return game.RegionEU
+	case 0x03:
+		return game.RegionSE
+	case 0x04:
+		return game.RegionFI
+	case 0x05:
+		return game.RegionDK
+	case 0x06:
+		return game.RegionFR
+	case 0x07:
+		return game.RegionNL
+	case 0x08:
+		return game.RegionES
+	case 0x09:
+		return game.RegionDE
+	case 0x0A:
+		return game.RegionIT
+	case 0x0B:
+		return game.RegionCN
+	case 0x0D:
+		return game.RegionKR
+	case 0x0F:
+		return game.RegionCA
+	case 0x10:
+		return game.RegionBR
+	case 0x11:
+		return game.RegionAU
+	default:
+		return game.RegionUnknown
+	}
+}
+
+// formatROMSize formats a ROM size in bytes to a human-readable string.
+func formatROMSize(bytes int) string {
+	if bytes == 0 {
+		return "0"
+	}
+	if bytes >= 1024*1024 {
+		return fmt.Sprintf("%d MiB", bytes/(1024*1024))
+	}
+	if bytes >= 1024 {
+		return fmt.Sprintf("%d KiB", bytes/1024)
+	}
+	return fmt.Sprintf("%d B", bytes)
 }
