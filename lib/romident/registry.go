@@ -4,27 +4,34 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sargunv/rom-tools/lib/romident/game"
-	"github.com/sargunv/rom-tools/lib/romident/game/gb"
-	"github.com/sargunv/rom-tools/lib/romident/game/gba"
-	"github.com/sargunv/rom-tools/lib/romident/game/gc"
-	"github.com/sargunv/rom-tools/lib/romident/game/md"
-	"github.com/sargunv/rom-tools/lib/romident/game/n64"
-	"github.com/sargunv/rom-tools/lib/romident/game/nds"
-	"github.com/sargunv/rom-tools/lib/romident/game/nes"
-	"github.com/sargunv/rom-tools/lib/romident/game/snes"
-	"github.com/sargunv/rom-tools/lib/romident/game/xbox"
+	"github.com/sargunv/rom-tools/lib/romident/core"
+	"github.com/sargunv/rom-tools/lib/romident/gb"
+	"github.com/sargunv/rom-tools/lib/romident/gba"
+	"github.com/sargunv/rom-tools/lib/romident/gcm"
+	"github.com/sargunv/rom-tools/lib/romident/md"
+	"github.com/sargunv/rom-tools/lib/romident/n64"
+	"github.com/sargunv/rom-tools/lib/romident/nds"
+	"github.com/sargunv/rom-tools/lib/romident/nes"
+	"github.com/sargunv/rom-tools/lib/romident/rvz"
+	"github.com/sargunv/rom-tools/lib/romident/smd"
+	"github.com/sargunv/rom-tools/lib/romident/snes"
+	"github.com/sargunv/rom-tools/lib/romident/v64"
+	"github.com/sargunv/rom-tools/lib/romident/xbe"
+	"github.com/sargunv/rom-tools/lib/romident/xiso"
+	"github.com/sargunv/rom-tools/lib/romident/z64"
 )
 
 // FormatEntry associates a format with its extensions and identification function.
 type FormatEntry struct {
 	Format     Format
 	Extensions []string
-	Identify   game.IdentifyFunc
+	Identify   core.IdentifyFunc
 }
 
 // registry contains all registered format entries.
 // Entries are ordered by specificity - more specific extensions first.
+// For ambiguous extensions like .iso, multiple formats are registered and
+// the detection logic tries each candidate in order.
 var registry = []FormatEntry{
 	// GBA
 	{FormatGBA, []string{".gba"}, gba.Identify},
@@ -37,29 +44,24 @@ var registry = []FormatEntry{
 	// Game Boy
 	{FormatGB, []string{".gb", ".gbc"}, gb.Identify},
 	// N64 variants
-	{FormatZ64, []string{".z64"}, n64.IdentifyZ64},
-	{FormatV64, []string{".v64"}, n64.IdentifyV64},
-	{FormatN64, []string{".n64"}, n64.IdentifyN64},
+	{FormatZ64, []string{".z64"}, z64.Identify},
+	{FormatV64, []string{".v64"}, v64.Identify},
+	{FormatN64, []string{".n64"}, n64.Identify},
 	// Mega Drive / Genesis
 	{FormatMD, []string{".md", ".gen"}, md.Identify},
-	{FormatSMD, []string{".smd"}, md.IdentifySMD},
-	// Xbox
-	{FormatXISO, []string{".xiso"}, xbox.IdentifyXISO},
-	{FormatXBE, []string{".xbe"}, xbox.IdentifyXBE},
+	{FormatSMD, []string{".smd"}, smd.Identify},
+	// Xbox - XISO before GCM for .iso since XISO magic check is very specific
+	{FormatXISO, []string{".xiso", ".iso"}, xiso.Identify},
+	{FormatXBE, []string{".xbe"}, xbe.Identify},
 	// GameCube / Wii
-	{FormatGCM, []string{".gcm"}, gc.IdentifyGCM},
-	{FormatRVZ, []string{".rvz", ".wia"}, gc.IdentifyRVZ},
+	{FormatGCM, []string{".gcm", ".iso"}, gcm.Identify},
+	{FormatRVZ, []string{".rvz", ".wia"}, rvz.Identify},
 
 	// Container/disc formats without game identifiers
 	{FormatCHD, []string{".chd"}, nil},
 	{FormatZIP, []string{".zip"}, nil},
+	// ISO9660 is the fallback for .iso files that aren't XISO or GCM
 	{FormatISO9660, []string{".iso"}, nil},
-	// Note: .iso can also be XISO or GCM, handled by trying multiple candidates
-}
-
-// ambiguousExtensions maps extensions that can match multiple formats.
-var ambiguousExtensions = map[string][]Format{
-	".iso": {FormatXISO, FormatGCM, FormatISO9660},
 }
 
 // FormatsByExtension returns all format entries that match the given filename extension.
@@ -70,21 +72,7 @@ func FormatsByExtension(filename string) []FormatEntry {
 		return nil
 	}
 
-	// Check for ambiguous extensions first
-	if formats, ok := ambiguousExtensions[ext]; ok {
-		var entries []FormatEntry
-		for _, f := range formats {
-			for _, entry := range registry {
-				if entry.Format == f {
-					entries = append(entries, entry)
-					break
-				}
-			}
-		}
-		return entries
-	}
-
-	// Find matching entries
+	// Find all matching entries
 	var entries []FormatEntry
 	for _, entry := range registry {
 		for _, entryExt := range entry.Extensions {

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/sargunv/rom-tools/internal/testutil"
-	"github.com/sargunv/rom-tools/lib/romident/game"
+	"github.com/sargunv/rom-tools/lib/romident/core"
 )
 
 // Test GBA identification
@@ -25,8 +25,8 @@ func TestIdentifyGBA(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformGBA {
-		t.Errorf("Expected platform %s, got %s", game.PlatformGBA, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformGBA {
+		t.Errorf("Expected platform %s, got %s", core.PlatformGBA, rom.Ident.Platform)
 	}
 
 	if rom.Ident.TitleID != "AAAA" {
@@ -55,8 +55,8 @@ func TestIdentifyNDS(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformNDS {
-		t.Errorf("Expected platform %s, got %s", game.PlatformNDS, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformNDS {
+		t.Errorf("Expected platform %s, got %s", core.PlatformNDS, rom.Ident.Platform)
 	}
 
 	// Title may be empty for some homebrew ROMs
@@ -76,8 +76,8 @@ func TestIdentifyNES(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformNES {
-		t.Errorf("Expected platform %s, got %s", game.PlatformNES, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformNES {
+		t.Errorf("Expected platform %s, got %s", core.PlatformNES, rom.Ident.Platform)
 	}
 }
 
@@ -94,8 +94,8 @@ func TestIdentifySNES(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformSNES {
-		t.Errorf("Expected platform %s, got %s", game.PlatformSNES, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformSNES {
+		t.Errorf("Expected platform %s, got %s", core.PlatformSNES, rom.Ident.Platform)
 	}
 }
 
@@ -112,8 +112,8 @@ func TestIdentifyGB(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformGB {
-		t.Errorf("Expected platform %s, got %s", game.PlatformGB, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformGB {
+		t.Errorf("Expected platform %s, got %s", core.PlatformGB, rom.Ident.Platform)
 	}
 
 	if rom.Ident.Title != "TIC-TAC-TOE" {
@@ -134,8 +134,8 @@ func TestIdentifyGBC(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformGBC {
-		t.Errorf("Expected platform %s, got %s", game.PlatformGBC, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformGBC {
+		t.Errorf("Expected platform %s, got %s", core.PlatformGBC, rom.Ident.Platform)
 	}
 }
 
@@ -152,8 +152,8 @@ func TestIdentifyN64_Z64(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformN64 {
-		t.Errorf("Expected platform %s, got %s", game.PlatformN64, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformN64 {
+		t.Errorf("Expected platform %s, got %s", core.PlatformN64, rom.Ident.Platform)
 	}
 }
 
@@ -170,8 +170,8 @@ func TestIdentifyN64_V64(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformN64 {
-		t.Errorf("Expected platform %s, got %s", game.PlatformN64, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformN64 {
+		t.Errorf("Expected platform %s, got %s", core.PlatformN64, rom.Ident.Platform)
 	}
 }
 
@@ -188,8 +188,8 @@ func TestIdentifyN64_N64(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformN64 {
-		t.Errorf("Expected platform %s, got %s", game.PlatformN64, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformN64 {
+		t.Errorf("Expected platform %s, got %s", core.PlatformN64, rom.Ident.Platform)
 	}
 }
 
@@ -206,8 +206,8 @@ func TestIdentifyMD(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformMD {
-		t.Errorf("Expected platform %s, got %s", game.PlatformMD, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformMD {
+		t.Errorf("Expected platform %s, got %s", core.PlatformMD, rom.Ident.Platform)
 	}
 }
 
@@ -224,8 +224,8 @@ func TestIdentifySMD(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformMD {
-		t.Errorf("Expected platform %s, got %s", game.PlatformMD, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformMD {
+		t.Errorf("Expected platform %s, got %s", core.PlatformMD, rom.Ident.Platform)
 	}
 }
 
@@ -242,8 +242,8 @@ func TestIdentifyXBE(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformXbox {
-		t.Errorf("Expected platform %s, got %s", game.PlatformXbox, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformXbox {
+		t.Errorf("Expected platform %s, got %s", core.PlatformXbox, rom.Ident.Platform)
 	}
 
 	if rom.Ident.Title != "Xromwell" {
@@ -264,8 +264,8 @@ func TestIdentifyXISO(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformXbox {
-		t.Errorf("Expected platform %s, got %s", game.PlatformXbox, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformXbox {
+		t.Errorf("Expected platform %s, got %s", core.PlatformXbox, rom.Ident.Platform)
 	}
 
 	if rom.Ident.Title != "Xromwell" {
@@ -290,8 +290,8 @@ func TestIdentifyZIPSlowMode(t *testing.T) {
 		t.Fatal("Expected game identification in slow mode, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformGBA {
-		t.Errorf("Expected platform %s, got %s", game.PlatformGBA, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformGBA {
+		t.Errorf("Expected platform %s, got %s", core.PlatformGBA, rom.Ident.Platform)
 	}
 
 	if rom.Ident.Title != "ROGUE" {
@@ -316,8 +316,8 @@ func TestIdentifyFolder(t *testing.T) {
 		t.Fatal("Expected game identification, got nil")
 	}
 
-	if rom.Ident.Platform != game.PlatformXbox {
-		t.Errorf("Expected platform %s, got %s", game.PlatformXbox, rom.Ident.Platform)
+	if rom.Ident.Platform != core.PlatformXbox {
+		t.Errorf("Expected platform %s, got %s", core.PlatformXbox, rom.Ident.Platform)
 	}
 }
 

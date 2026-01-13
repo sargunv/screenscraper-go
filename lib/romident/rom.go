@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sargunv/rom-tools/lib/romident/container"
-	"github.com/sargunv/rom-tools/lib/romident/container/folder"
-	"github.com/sargunv/rom-tools/lib/romident/container/zip"
-	"github.com/sargunv/rom-tools/lib/romident/disc/chd"
+	"github.com/sargunv/rom-tools/lib/romident/chd"
+	"github.com/sargunv/rom-tools/lib/romident/core"
+	"github.com/sargunv/rom-tools/lib/romident/folder"
+	"github.com/sargunv/rom-tools/lib/romident/zip"
 )
 
 // IdentifyROM identifies a ROM file, ZIP archive, or folder.
@@ -32,7 +32,7 @@ func IdentifyROM(path string, opts Options) (*ROM, error) {
 }
 
 // identifyContainer processes any Container (folder, ZIP, etc.) and identifies all files within.
-func identifyContainer(c container.Container, containerType ROMType, containerPath string, opts Options) (*ROM, error) {
+func identifyContainer(c core.Container, containerType ROMType, containerPath string, opts Options) (*ROM, error) {
 	entries := c.Entries()
 	if len(entries) == 0 {
 		return nil, fmt.Errorf("container is empty")
@@ -194,7 +194,7 @@ func identifyZIP(path string, opts Options) (*ROM, error) {
 
 // identifySingleReader identifies a file from a ReaderAtSeekCloser (works for any container).
 // Returns the ROMFile, game identification (if any), and an error.
-func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector *Detector, opts Options) (*ROMFile, *GameIdent, error) {
+func identifySingleReader(r core.ReaderAtSeekCloser, name string, detector *Detector, opts Options) (*ROMFile, *GameIdent, error) {
 	size := r.Size()
 
 	// Detect format and identify game using registry
@@ -243,7 +243,7 @@ func identifySingleReader(r container.ReaderAtSeekCloser, name string, detector 
 
 // identifyGameFromRegistry uses the format registry to detect format and identify game.
 // Returns the detected format and game identification (if any).
-func identifyGameFromRegistry(r container.ReaderAtSeekCloser, size int64, name string) (Format, *GameIdent) {
+func identifyGameFromRegistry(r core.ReaderAtSeekCloser, size int64, name string) (Format, *GameIdent) {
 	// Get candidate formats by extension
 	entries := FormatsByExtension(name)
 	if len(entries) == 0 {
@@ -317,7 +317,7 @@ func (f *containerFileReader) Close() error {
 
 // readerAtWrapper wraps ReaderAtSeekCloser to implement io.Reader.
 type readerAtWrapper struct {
-	r   container.ReaderAtSeekCloser
+	r   core.ReaderAtSeekCloser
 	pos int64
 }
 

@@ -1,7 +1,7 @@
 // Package romident provides ROM identification and hashing utilities.
 package romident
 
-import "github.com/sargunv/rom-tools/lib/romident/game"
+import "github.com/sargunv/rom-tools/lib/romident/core"
 
 // ROMType indicates how the ROM is packaged.
 type ROMType string
@@ -12,29 +12,29 @@ const (
 	ROMTypeFolder ROMType = "folder"
 )
 
-// Format is an alias for game.Format.
-type Format = game.Format
+// Format is an alias for core.Format.
+type Format = core.Format
 
-// Format constants re-exported from game package.
+// Format constants re-exported from core package.
 const (
-	FormatUnknown = game.FormatUnknown
-	FormatCHD     = game.FormatCHD
-	FormatXISO    = game.FormatXISO
-	FormatXBE     = game.FormatXBE
-	FormatISO9660 = game.FormatISO9660
-	FormatZIP     = game.FormatZIP
-	FormatGBA     = game.FormatGBA
-	FormatZ64     = game.FormatZ64
-	FormatV64     = game.FormatV64
-	FormatN64     = game.FormatN64
-	FormatGB      = game.FormatGB
-	FormatMD      = game.FormatMD
-	FormatSMD     = game.FormatSMD
-	FormatNDS     = game.FormatNDS
-	FormatNES     = game.FormatNES
-	FormatSNES    = game.FormatSNES
-	FormatGCM     = game.FormatGCM
-	FormatRVZ     = game.FormatRVZ
+	FormatUnknown = core.FormatUnknown
+	FormatCHD     = core.FormatCHD
+	FormatXISO    = core.FormatXISO
+	FormatXBE     = core.FormatXBE
+	FormatISO9660 = core.FormatISO9660
+	FormatZIP     = core.FormatZIP
+	FormatGBA     = core.FormatGBA
+	FormatZ64     = core.FormatZ64
+	FormatV64     = core.FormatV64
+	FormatN64     = core.FormatN64
+	FormatGB      = core.FormatGB
+	FormatMD      = core.FormatMD
+	FormatSMD     = core.FormatSMD
+	FormatNDS     = core.FormatNDS
+	FormatNES     = core.FormatNES
+	FormatSNES    = core.FormatSNES
+	FormatGCM     = core.FormatGCM
+	FormatRVZ     = core.FormatRVZ
 )
 
 // HashAlgorithm identifies a hash algorithm.
@@ -71,9 +71,9 @@ type ROMFile struct {
 	IsPrimary bool   `json:"is_primary,omitempty"` // true if used for identification
 }
 
-type GameIdent = game.GameIdent
-type Region = game.Region
-type Platform = game.Platform
+type GameIdent = core.GameIdent
+type Region = core.Region
+type Platform = core.Platform
 
 // Files is a map of file path to file info.
 type Files map[string]ROMFile
