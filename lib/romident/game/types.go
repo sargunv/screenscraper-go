@@ -22,6 +22,8 @@ const (
 	FormatNDS     Format = "nds"
 	FormatNES     Format = "nes"
 	FormatSNES    Format = "snes"
+	FormatGCM     Format = "gcm" // GameCube/Wii uncompressed disc
+	FormatRVZ     Format = "rvz" // GameCube/Wii RVZ/WIA compressed disc
 )
 
 // IdentifyFunc is the signature for format-specific identification functions.

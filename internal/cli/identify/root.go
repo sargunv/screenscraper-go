@@ -30,6 +30,7 @@ Supports:
   - Nintendo Entertainment System: .nes
   - Super Nintendo Entertainment System: .sfc, .smc
   - Nintendo 64: .z64, .v64, .n64
+  - Nintendo GameCube / Wii: .gcm, .iso, .rvz, .wia
   - Nintendo Game Boy / Color: .gb, .gbc
   - Nintendo Game Boy Advance: .gba
   - Nintendo DS: .nds, .dsi, .ids

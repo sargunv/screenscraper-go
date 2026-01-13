@@ -106,7 +106,7 @@ func TestCandidatesByExtension(t *testing.T) {
 		{
 			name:     "ISO extension (ambiguous)",
 			filename: "test.iso",
-			want:     []Format{FormatXISO, FormatISO9660},
+			want:     []Format{FormatXISO, FormatGCM, FormatISO9660},
 		},
 		{
 			name:     "Unknown extension",

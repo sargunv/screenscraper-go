@@ -7,6 +7,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/romident/game"
 	"github.com/sargunv/rom-tools/lib/romident/game/gb"
 	"github.com/sargunv/rom-tools/lib/romident/game/gba"
+	"github.com/sargunv/rom-tools/lib/romident/game/gc"
 	"github.com/sargunv/rom-tools/lib/romident/game/md"
 	"github.com/sargunv/rom-tools/lib/romident/game/n64"
 	"github.com/sargunv/rom-tools/lib/romident/game/nds"
@@ -45,17 +46,20 @@ var registry = []FormatEntry{
 	// Xbox
 	{FormatXISO, []string{".xiso"}, xbox.IdentifyXISO},
 	{FormatXBE, []string{".xbe"}, xbox.IdentifyXBE},
+	// GameCube / Wii
+	{FormatGCM, []string{".gcm"}, gc.IdentifyGCM},
+	{FormatRVZ, []string{".rvz", ".wia"}, gc.IdentifyRVZ},
 
 	// Container/disc formats without game identifiers
 	{FormatCHD, []string{".chd"}, nil},
 	{FormatZIP, []string{".zip"}, nil},
 	{FormatISO9660, []string{".iso"}, nil},
-	// Note: .iso can also be XISO, handled by trying multiple candidates
+	// Note: .iso can also be XISO or GCM, handled by trying multiple candidates
 }
 
 // ambiguousExtensions maps extensions that can match multiple formats.
 var ambiguousExtensions = map[string][]Format{
-	".iso": {FormatXISO, FormatISO9660},
+	".iso": {FormatXISO, FormatGCM, FormatISO9660},
 }
 
 // FormatsByExtension returns all format entries that match the given filename extension.

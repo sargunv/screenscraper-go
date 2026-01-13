@@ -33,6 +33,8 @@ const (
 	FormatNDS     = game.FormatNDS
 	FormatNES     = game.FormatNES
 	FormatSNES    = game.FormatSNES
+	FormatGCM     = game.FormatGCM
+	FormatRVZ     = game.FormatRVZ
 )
 
 // HashAlgorithm identifies a hash algorithm.
