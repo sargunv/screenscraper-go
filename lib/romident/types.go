@@ -35,6 +35,8 @@ const (
 	FormatSNES    = core.FormatSNES
 	FormatGCM     = core.FormatGCM
 	FormatRVZ     = core.FormatRVZ
+	FormatSMS     = core.FormatSMS
+	FormatGG      = core.FormatGG
 )
 
 // HashAlgorithm identifies a hash algorithm.

@@ -25,6 +25,8 @@ const (
 	FormatSNES    Format = "snes"
 	FormatGCM     Format = "gcm" // GameCube/Wii uncompressed disc
 	FormatRVZ     Format = "rvz" // GameCube/Wii RVZ/WIA compressed disc
+	FormatSMS     Format = "sms" // Sega Master System
+	FormatGG      Format = "gg"  // Sega Game Gear
 )
 
 // IdentifyFunc is the signature for format-specific identification functions.

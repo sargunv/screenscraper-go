@@ -35,11 +35,11 @@ Supports:
   - Nintendo Game Boy Advance: .gba
   - Nintendo DS: .nds, .dsi, .ids
   - Nintendo 3DS: TODO
-  - Sega Master System: TODO
+  - Sega Master System: .sms
   - Sega Mega Drive / Genesis: .md, .gen, .smd
   - Sega Saturn: .bin
   - Sega Dreamcast: .bin
-  - Sega Game Gear: TODO
+  - Sega Game Gear: .gg
   - Sony PlayStation 1: .bin
   - Sony PlayStation 2: .iso, .bin
   - Sony PlayStation Portable: .iso

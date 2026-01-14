@@ -15,6 +15,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/romident/nes"
 	"github.com/sargunv/rom-tools/lib/romident/rvz"
 	"github.com/sargunv/rom-tools/lib/romident/smd"
+	"github.com/sargunv/rom-tools/lib/romident/sms"
 	"github.com/sargunv/rom-tools/lib/romident/snes"
 	v64 "github.com/sargunv/rom-tools/lib/romident/v64"
 	"github.com/sargunv/rom-tools/lib/romident/xbe"
@@ -44,6 +45,8 @@ var registry = []FormatEntry{
 	{FormatN64, []string{".n64"}, n64.Identify},
 	{FormatMD, []string{".md", ".gen"}, md.Identify},
 	{FormatSMD, []string{".smd"}, smd.Identify},
+	{FormatSMS, []string{".sms"}, sms.Identify},
+	{FormatGG, []string{".gg"}, sms.Identify},
 	{FormatXISO, []string{".xiso", ".iso"}, xiso.Identify},
 	{FormatXBE, []string{".xbe"}, xbe.Identify},
 	{FormatGCM, []string{".gcm", ".iso"}, gcm.Identify},
