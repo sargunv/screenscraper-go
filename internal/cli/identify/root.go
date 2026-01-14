@@ -42,7 +42,7 @@ Supports:
   - Sega Game Gear: TODO
   - Sony PlayStation 1: .bin/cue
   - Sony PlayStation 2: .iso, .bin/cue
-  - Sony PlayStation Portable: TODO
+  - Sony PlayStation Portable: .iso
   - Microsoft Xbox: .xiso, .xiso.iso, and .xbe
 - .chd discs: extracts SHA1 hashes from header (fast, no decompression)
 - .zip archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
