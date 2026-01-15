@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/sargunv/rom-tools/lib/romident/chd"
 	"github.com/sargunv/rom-tools/lib/romident/core"
 	"github.com/sargunv/rom-tools/lib/romident/gb"
 	"github.com/sargunv/rom-tools/lib/romident/gba"
@@ -51,7 +52,7 @@ var registry = []FormatEntry{
 	{FormatXBE, []string{".xbe"}, xbe.Identify},
 	{FormatGCM, []string{".gcm", ".iso"}, gcm.Identify},
 	{FormatRVZ, []string{".rvz", ".wia"}, rvz.Identify},
-	{FormatCHD, []string{".chd"}, nil},
+	{FormatCHD, []string{".chd"}, chd.Identify},
 	{FormatZIP, []string{".zip"}, nil},
 	{FormatISO9660, []string{".iso", ".bin"}, iso9660.Identify},
 }

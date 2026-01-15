@@ -6,7 +6,9 @@ require (
 	github.com/Xuanwo/go-locale v1.1.3
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/x/ansi v0.11.3
+	github.com/klauspost/compress v1.18.2
 	github.com/spf13/cobra v1.10.2
+	github.com/ulikunitz/xz v0.5.15
 )
 
 require (
