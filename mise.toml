@@ -8,7 +8,7 @@ hk = "latest"
 pkl = "latest"
 prettier = "latest"
 "go:golang.org/x/pkgsite/cmd/pkgsite" = "latest"
-uv = "latest"
+"go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen" = "latest"
 
 [env]
 _.file = '.env'
