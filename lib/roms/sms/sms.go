@@ -1,6 +1,8 @@
 package sms
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"io"
 
@@ -20,7 +22,7 @@ import (
 //	Offset  Size  Description
 //	$00     8     Magic string "TMR SEGA"
 //	$08     2     Reserved
-//	$0A     2     Checksum (big-endian)
+//	$0A     2     Checksum (little-endian)
 //	$0C     2     Product code (BCD, big-endian)
 //	$0E     1     Product code high nibble (bits 4-7) + Version (bits 0-3)
 //	$0F     1     Region code (bits 4-7) + ROM size code (bits 0-3)
@@ -39,7 +41,6 @@ const (
 	smsMinROMSize       = smsHeaderOffset + smsHeaderSize
 	smsMagicOffset      = 0x00
 	smsMagicSize        = 8
-	smsReservedOffset   = 0x08
 	smsChecksumOffset   = 0x0A
 	smsProductLowOffset = 0x0C
 	smsProductVerOffset = 0x0E
@@ -48,13 +49,32 @@ const (
 
 var smsMagic = []byte("TMR SEGA")
 
-// Region code constants
+// SMSRegion represents the region code from the SMS/GG header.
+type SMSRegion byte
+
+// SMSRegion values
 const (
-	regionJapanSMS  = 0x3
-	regionExportSMS = 0x4
-	regionJapanGG   = 0x5
-	regionExportGG  = 0x6
-	regionIntlGG    = 0x7
+	SMSRegionJapanSMS  SMSRegion = 0x3
+	SMSRegionExportSMS SMSRegion = 0x4
+	SMSRegionJapanGG   SMSRegion = 0x5
+	SMSRegionExportGG  SMSRegion = 0x6
+	SMSRegionIntlGG    SMSRegion = 0x7
+)
+
+// SMSROMSize represents the ROM size code from the SMS/GG header.
+type SMSROMSize byte
+
+// SMSROMSize values
+const (
+	SMSROMSize8KB   SMSROMSize = 0xA
+	SMSROMSize16KB  SMSROMSize = 0xB
+	SMSROMSize32KB  SMSROMSize = 0xC
+	SMSROMSize48KB  SMSROMSize = 0xD
+	SMSROMSize64KB  SMSROMSize = 0xE
+	SMSROMSize128KB SMSROMSize = 0xF
+	SMSROMSize256KB SMSROMSize = 0x0
+	SMSROMSize512KB SMSROMSize = 0x1
+	SMSROMSize1MB   SMSROMSize = 0x2
 )
 
 // SMSInfo contains metadata extracted from a Master System or Game Gear ROM file.
@@ -63,14 +83,12 @@ type SMSInfo struct {
 	ProductCode string
 	// Version is the version number (0-15).
 	Version int
-	// RegionCode is the raw region code (3-7).
-	RegionCode byte
-	// ROMSizeCode is the ROM size code (0-C).
-	ROMSizeCode byte
-	// Checksum is the ROM checksum.
+	// Region is the region code indicating platform and region.
+	Region SMSRegion
+	// ROMSize is the ROM size code.
+	ROMSize SMSROMSize
+	// Checksum is the ROM checksum (little-endian).
 	Checksum uint16
-	// Reserved contains the reserved bytes.
-	Reserved [2]byte
 	// Platform is the detected platform (SMS or Game Gear) based on region code.
 	Platform core.Platform
 }
@@ -88,19 +106,12 @@ func ParseSMS(r io.ReaderAt, size int64) (*SMSInfo, error) {
 	}
 
 	// Verify magic bytes
-	for i := 0; i < smsMagicSize; i++ {
-		if header[smsMagicOffset+i] != smsMagic[i] {
-			return nil, fmt.Errorf("not a valid SMS/GG ROM: invalid magic bytes")
-		}
+	if !bytes.Equal(header[smsMagicOffset:smsMagicOffset+smsMagicSize], smsMagic) {
+		return nil, fmt.Errorf("not a valid SMS/GG ROM: invalid magic bytes")
 	}
 
-	// Extract reserved bytes
-	var reserved [2]byte
-	reserved[0] = header[smsReservedOffset]
-	reserved[1] = header[smsReservedOffset+1]
-
-	// Extract checksum (big-endian)
-	checksum := uint16(header[smsChecksumOffset])<<8 | uint16(header[smsChecksumOffset+1])
+	// Extract checksum (little-endian)
+	checksum := binary.LittleEndian.Uint16(header[smsChecksumOffset:])
 
 	// Extract product code (BCD encoded in bytes 0x0C-0x0D, high nibble in 0x0E)
 	productCode := decodeBCDProductCode(
@@ -113,21 +124,20 @@ func ParseSMS(r io.ReaderAt, size int64) (*SMSInfo, error) {
 	version := int(header[smsProductVerOffset] & 0x0F)
 
 	// Extract region code (upper nibble of byte 0x0F)
-	regionCode := header[smsRegionSizeOffset] >> 4
+	region := SMSRegion(header[smsRegionSizeOffset] >> 4)
 
 	// Extract ROM size code (lower nibble of byte 0x0F)
-	romSizeCode := header[smsRegionSizeOffset] & 0x0F
+	romSize := SMSROMSize(header[smsRegionSizeOffset] & 0x0F)
 
 	// Determine platform from region code
-	platform := determinePlatform(regionCode)
+	platform := determinePlatform(region)
 
 	return &SMSInfo{
 		ProductCode: productCode,
 		Version:     version,
-		RegionCode:  regionCode,
-		ROMSizeCode: romSizeCode,
+		Region:      region,
+		ROMSize:     romSize,
 		Checksum:    checksum,
-		Reserved:    reserved,
 		Platform:    platform,
 	}, nil
 }
@@ -143,11 +153,11 @@ func decodeBCDProductCode(low, high, extra byte) string {
 }
 
 // determinePlatform returns the platform based on the region code.
-func determinePlatform(regionCode byte) core.Platform {
-	switch regionCode {
-	case regionJapanSMS, regionExportSMS:
+func determinePlatform(region SMSRegion) core.Platform {
+	switch region {
+	case SMSRegionJapanSMS, SMSRegionExportSMS:
 		return core.PlatformMS
-	case regionJapanGG, regionExportGG, regionIntlGG:
+	case SMSRegionJapanGG, SMSRegionExportGG, SMSRegionIntlGG:
 		return core.PlatformGameGear
 	default:
 		// Unknown region code - default to Master System
