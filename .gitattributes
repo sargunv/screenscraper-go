@@ -1,1 +1,2 @@
 **/testdata/* linguist-vendored
+*.gen.go linguist-generated
