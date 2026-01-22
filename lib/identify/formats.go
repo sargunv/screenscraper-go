@@ -276,7 +276,10 @@ func identifyRVZ(r io.ReaderAt, size int64) (*GameIdent, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse disc header from RVZ: %w", err)
 	}
-	extra := &gamecube.RVZExtraInfo{
+	extra := &struct {
+		GCMInfo *gamecube.GCMInfo
+		RVZInfo *gamecube.RVZInfo
+	}{
 		GCMInfo: gcmInfo,
 		RVZInfo: rvzInfo,
 	}

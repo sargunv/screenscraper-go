@@ -59,21 +59,27 @@ const (
 	totalHeaderSize = discStructBase + dheadOffset + dheadSize
 )
 
-// Compression method constants
+// Compression indicates the compression method used in an RVZ/WIA file.
+type Compression uint32
+
+// Compression method constants.
 const (
-	CompressionNone      = 0
-	CompressionPurge     = 1 // Not used in RVZ
-	CompressionBZIP2     = 2
-	CompressionLZMA      = 3
-	CompressionLZMA2     = 4
-	CompressionZstandard = 5
+	CompressionNone      Compression = 0
+	CompressionPurge     Compression = 1 // Not used in RVZ
+	CompressionBZIP2     Compression = 2
+	CompressionLZMA      Compression = 3
+	CompressionLZMA2     Compression = 4
+	CompressionZstandard Compression = 5
 )
 
-// Disc type constants
+// DiscType indicates the disc type (GameCube or Wii) in an RVZ/WIA file.
+type DiscType uint32
+
+// Disc type constants.
 const (
-	DiscTypeUnknown  = 0
-	DiscTypeGameCube = 1
-	DiscTypeWii      = 2
+	DiscTypeUnknown  DiscType = 0
+	DiscTypeGameCube DiscType = 1
+	DiscTypeWii      DiscType = 2
 )
 
 // RVZInfo contains metadata extracted from an RVZ/WIA file header.
@@ -82,10 +88,10 @@ type RVZInfo struct {
 	Version uint32
 	// CompatibleVersion is the minimum compatible version.
 	CompatibleVersion uint32
-	// DiscType indicates the disc type (1=GameCube, 2=Wii).
-	DiscType int
-	// Compression is the compression method name.
-	Compression string
+	// DiscType indicates the disc type (GameCube or Wii).
+	DiscType DiscType
+	// Compression is the compression method.
+	Compression Compression
 	// CompressionLevel is the compression level (signed for Zstandard).
 	CompressionLevel int32
 	// ChunkSize is the chunk size for compressed data.
@@ -100,12 +106,6 @@ type RVZInfo struct {
 	FileHeadHash string
 	// DiscHeader contains the first 128 bytes of disc (uncompressed).
 	DiscHeader []byte
-}
-
-// RVZExtraInfo combines GCMInfo and RVZInfo for the Extra field.
-type RVZExtraInfo struct {
-	GCMInfo *GCMInfo
-	RVZInfo *RVZInfo
 }
 
 // ParseRVZ reads and parses an RVZ/WIA file header.
@@ -134,8 +134,8 @@ func ParseRVZ(r io.ReaderAt, size int64) (*RVZInfo, error) {
 	fileHeadHash := hex.EncodeToString(header[fileHeadHashOffset : fileHeadHashOffset+20])
 
 	// Parse wia_disc_t
-	discType := int(binary.BigEndian.Uint32(header[discStructBase+discTypeOffset:]))
-	compression := binary.BigEndian.Uint32(header[discStructBase+compressionOffset:])
+	discType := DiscType(binary.BigEndian.Uint32(header[discStructBase+discTypeOffset:]))
+	compression := Compression(binary.BigEndian.Uint32(header[discStructBase+compressionOffset:]))
 	comprLevel := int32(binary.BigEndian.Uint32(header[discStructBase+comprLevelOffset:]))
 	chunkSize := binary.BigEndian.Uint32(header[discStructBase+chunkSizeOffset:])
 
@@ -151,7 +151,7 @@ func ParseRVZ(r io.ReaderAt, size int64) (*RVZInfo, error) {
 		Version:           version,
 		CompatibleVersion: compatVer,
 		DiscType:          discType,
-		Compression:       compressionName(compression),
+		Compression:       compression,
 		CompressionLevel:  comprLevel,
 		ChunkSize:         chunkSize,
 		ISOFileSize:       isoFileSize,
@@ -160,24 +160,4 @@ func ParseRVZ(r io.ReaderAt, size int64) (*RVZInfo, error) {
 		FileHeadHash:      fileHeadHash,
 		DiscHeader:        dhead,
 	}, nil
-}
-
-// compressionName returns a human-readable name for the compression method.
-func compressionName(method uint32) string {
-	switch method {
-	case CompressionNone:
-		return "none"
-	case CompressionPurge:
-		return "purge"
-	case CompressionBZIP2:
-		return "bzip2"
-	case CompressionLZMA:
-		return "lzma"
-	case CompressionLZMA2:
-		return "lzma2"
-	case CompressionZstandard:
-		return "zstd"
-	default:
-		return fmt.Sprintf("unknown(%d)", method)
-	}
 }
