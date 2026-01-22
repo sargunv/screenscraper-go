@@ -39,11 +39,10 @@ const (
 
 // GBAInfo contains metadata extracted from a GBA ROM file.
 type GBAInfo struct {
-	Title      string
-	GameCode   string
-	MakerCode  string
-	RegionCode byte // 4th character of game code (J, E, P, etc.)
-	Version    int
+	Title     string
+	GameCode  string
+	MakerCode string
+	Version   int
 }
 
 // ParseGBA extracts game information from a GBA ROM file.
@@ -72,20 +71,13 @@ func ParseGBA(r io.ReaderAt, size int64) (*GBAInfo, error) {
 	// Extract maker code
 	makerCode := util.ExtractASCII(header[gbaMakerOffset : gbaMakerOffset+gbaMakerLen])
 
-	// Extract region code (4th character of game code)
-	var regionCode byte
-	if len(gameCode) >= 4 {
-		regionCode = gameCode[3]
-	}
-
 	// Extract software version
 	version := int(header[gbaVersionOffset])
 
 	return &GBAInfo{
-		Title:      title,
-		GameCode:   gameCode,
-		MakerCode:  makerCode,
-		RegionCode: regionCode,
-		Version:    version,
+		Title:     title,
+		GameCode:  gameCode,
+		MakerCode: makerCode,
+		Version:   version,
 	}, nil
 }
