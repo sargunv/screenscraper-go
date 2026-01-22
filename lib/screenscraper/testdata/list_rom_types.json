@@ -1,0 +1,12 @@
+{
+  "header": {
+    "APIversion": "2.0",
+    "dateTime": "2026-01-21 04:49:40",
+    "commandRequested": "https://neoclone.screenscraper.fr/api2/romTypesListe.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&output=json&ssid=xxx&sspassword=xxx",
+    "success": "true",
+    "error": ""
+  },
+  "response": {
+    "romtypes": ["dossier", "fichier", "iso", "rom"]
+  }
+}

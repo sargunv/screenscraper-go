@@ -1,6 +1,7 @@
 package detail
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -37,16 +38,16 @@ You can lookup by:
   # Lookup by game ID
   rom-tools screenscraper detail game --id=3`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		params := screenscraper.GameInfoParams{
-			CRC:       gameCRC,
-			MD5:       gameMD5,
-			SHA1:      gameSHA1,
-			ROMSize:   gameSize,
-			SystemID:  gameSystemID,
-			ROMType:   gameROMType,
-			ROMName:   gameROMName,
-			GameID:    gameID,
-			SerialNum: gameSerial,
+		params := &screenscraper.GetGameInfoParams{
+			Crc:          gameCRC,
+			Md5:          gameMD5,
+			Sha1:         gameSHA1,
+			ROMSize:      gameSize,
+			SystemID:     gameSystemID,
+			ROMType:      gameROMType,
+			ROMName:      gameROMName,
+			GameID:       gameID,
+			SerialNumber: gameSerial,
 		}
 
 		// Validate we have at least one lookup method
@@ -61,13 +62,23 @@ You can lookup by:
 			return fmt.Errorf("--system is required when using ROM hash lookup")
 		}
 
-		resp, err := shared.Client.GetGameInfo(params)
+		resp, err := shared.Client.GetGameInfoWithResponse(context.Background(), params)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		if resp.JSON200 == nil || resp.JSON200.Response.Game.Id == "" {
+			return fmt.Errorf("game not found")
+		}
+
+		game := resp.JSON200.Response.Game
+
 		if shared.JsonOutput {
-			formatted, err := json.MarshalIndent(resp.Response.Game, "", "  ")
+			formatted, err := json.MarshalIndent(game, "", "  ")
 			if err != nil {
 				return fmt.Errorf("failed to format JSON: %w", err)
 			}
@@ -76,7 +87,7 @@ You can lookup by:
 		}
 
 		lang := format.GetPreferredLanguage(shared.Locale)
-		fmt.Print(format.RenderGame(resp.Response.Game, lang))
+		fmt.Print(format.RenderGame(game, lang))
 		return nil
 	},
 }

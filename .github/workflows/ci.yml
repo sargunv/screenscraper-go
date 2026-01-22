@@ -16,15 +16,13 @@ jobs:
         with:
           experimental: true
 
-      - name: Build
-        run: mise run build
+      - run: mise run generate
+      - run: mise run build
+      - run: mise run test
+      - run: mise run fix
+      - run: mise run check
 
-      # NOTE: we don't test in CI because our tests hit the live API
-
-      - name: Format and lint
-        run: mise run fix && mise run check
-
-      - name: Check for uncommitted changes
+      - name: Check for uncommitted changes from `generate` and `fix`
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "::error::Uncommitted changes detected after running 'mise run fix'. Please run it locally and commit the changes."

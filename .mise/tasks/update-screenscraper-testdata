@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+#MISE description="Fetch fresh screenscraper API responses and scrub credentials"
+
+set -euo pipefail
+
+TESTDATA_DIR="lib/screenscraper/testdata"
+
+# Check required environment variables
+: "${SCREENSCRAPER_DEV_USER:?SCREENSCRAPER_DEV_USER is required}"
+: "${SCREENSCRAPER_DEV_PASSWORD:?SCREENSCRAPER_DEV_PASSWORD is required}"
+
+echo "Fetching game info (Zelda: Link to the Past, game ID 2138)..."
+curl -s "https://api.screenscraper.fr/api2/jeuInfos.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}&gameid=2138" \
+  > "${TESTDATA_DIR}/game_info.json"
+
+echo "Fetching search results (zelda on SNES)..."
+curl -s "https://api.screenscraper.fr/api2/jeuRecherche.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}&recherche=zelda&systemeid=4" \
+  > "${TESTDATA_DIR}/search_games.json"
+
+# User/Status endpoints
+echo "Fetching user info..."
+curl -s "https://api.screenscraper.fr/api2/ssuserInfos.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/user_info.json"
+
+echo "Fetching infra info..."
+curl -s "https://api.screenscraper.fr/api2/ssinfraInfos.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/infra_info.json"
+
+# Reference data lists
+echo "Fetching systems list..."
+curl -s "https://api.screenscraper.fr/api2/systemesListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_systems.json"
+
+echo "Fetching genres list..."
+curl -s "https://api.screenscraper.fr/api2/genresListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_genres.json"
+
+echo "Fetching languages list..."
+curl -s "https://api.screenscraper.fr/api2/languesListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_languages.json"
+
+echo "Fetching regions list..."
+curl -s "https://api.screenscraper.fr/api2/regionsListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_regions.json"
+
+echo "Fetching classifications list..."
+curl -s "https://api.screenscraper.fr/api2/classificationsListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_classifications.json"
+
+echo "Fetching families list..."
+curl -s "https://api.screenscraper.fr/api2/famillesListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_families.json"
+
+echo "Fetching game media types list..."
+curl -s "https://api.screenscraper.fr/api2/mediasJeuListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_game_media_types.json"
+
+echo "Fetching system media types list..."
+curl -s "https://api.screenscraper.fr/api2/mediasSystemeListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_system_media_types.json"
+
+echo "Fetching player counts list..."
+curl -s "https://api.screenscraper.fr/api2/nbJoueursListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_player_counts.json"
+
+echo "Fetching user levels list..."
+curl -s "https://api.screenscraper.fr/api2/userlevelsListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_user_levels.json"
+
+echo "Fetching rom types list..."
+curl -s "https://api.screenscraper.fr/api2/romTypesListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_rom_types.json"
+
+echo "Fetching support types list..."
+curl -s "https://api.screenscraper.fr/api2/supportTypesListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_support_types.json"
+
+echo "Fetching game info types list..."
+curl -s "https://api.screenscraper.fr/api2/infosJeuListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_game_info_types.json"
+
+echo "Fetching rom info types list..."
+curl -s "https://api.screenscraper.fr/api2/infosRomListe.php?devid=${SCREENSCRAPER_DEV_USER}&devpassword=${SCREENSCRAPER_DEV_PASSWORD}&softname=rom-tools-test&output=json&ssid=${SCREENSCRAPER_ID:-}&sspassword=${SCREENSCRAPER_PASSWORD:-}" \
+  > "${TESTDATA_DIR}/list_rom_info_types.json"
+
+echo "Scrubbing credentials from responses..."
+
+# Scrub credentials from header.commandRequested and media URLs
+for file in "${TESTDATA_DIR}"/*.json; do
+  sed -i '' \
+    -e 's/devid=[^&]*/devid=xxx/g' \
+    -e 's/devpassword=[^&]*/devpassword=xxx/g' \
+    -e 's/ssid=[^&]*/ssid=xxx/g' \
+    -e 's/sspassword=[^&"]*/sspassword=xxx/g' \
+    "$file"
+done
+
+echo "Done. Updated files in ${TESTDATA_DIR}/"

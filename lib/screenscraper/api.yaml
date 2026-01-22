@@ -1,0 +1,1996 @@
+openapi: 3.0.3
+info:
+  title: Screenscraper API
+  description: |
+    API for accessing retro video game metadata and media from Screenscraper.
+  version: "2.0"
+  contact:
+    name: Screenscraper Forum
+    url: https://www.screenscraper.fr/
+
+servers:
+  - url: https://api.screenscraper.fr/api2
+    description: Screenscraper API v2
+
+paths:
+  # ============================================================================
+  # Core Endpoints
+  # ============================================================================
+
+  /jeuInfos.php:
+    get:
+      operationId: getGameInfo
+      summary: Get game information by ROM hash or game ID
+      parameters:
+        - name: crc
+          in: query
+          schema:
+            type: string
+          description: CRC32 hash of ROM file
+        - name: md5
+          in: query
+          schema:
+            type: string
+          description: MD5 hash of ROM file
+        - name: sha1
+          in: query
+          schema:
+            type: string
+          description: SHA1 hash of ROM file
+        - name: romtaille
+          x-go-name: ROMSize
+          in: query
+          schema:
+            type: string
+          description: ROM size in bytes
+        - name: systemeid
+          x-go-name: SystemID
+          in: query
+          schema:
+            type: string
+          description: Numeric system ID
+        - name: romtype
+          x-go-name: ROMType
+          in: query
+          schema:
+            type: string
+          description: "Type of ROM: rom, iso, or folder"
+        - name: romnom
+          x-go-name: ROMName
+          in: query
+          schema:
+            type: string
+          description: ROM filename with extension
+        - name: gameid
+          x-go-name: GameID
+          in: query
+          schema:
+            type: string
+          description: Direct game lookup by numeric ID
+        - name: serialnum
+          x-go-name: SerialNumber
+          in: query
+          schema:
+            type: string
+          description: Serial number for ISO identification
+      responses:
+        "200":
+          description: Game information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameInfoResponse"
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized - API closed for non-members
+        "403":
+          description: Forbidden - Invalid credentials
+        "404":
+          description: Game not found
+        "423":
+          description: API locked - completely closed
+        "426":
+          description: Software blacklisted
+        "429":
+          description: Too many requests - thread limit reached
+        "430":
+          description: Quota exceeded for today
+        "431":
+          description: Quota KO exceeded - clean ROM files
+
+  /jeuRecherche.php:
+    get:
+      operationId: searchGames
+      summary: Search games by name
+      parameters:
+        - name: recherche
+          x-go-name: SearchQuery
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query string
+        - name: systemeid
+          x-go-name: SystemID
+          in: query
+          schema:
+            type: string
+          description: Limit search to specific system
+      responses:
+        "200":
+          description: Search results (max 30 games)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameSearchResponse"
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: No games found
+        "423":
+          description: API locked
+        "426":
+          description: Software blacklisted
+        "429":
+          description: Too many requests
+        "430":
+          description: Quota exceeded
+        "431":
+          description: Quota KO exceeded
+
+  # ============================================================================
+  # Media Download Endpoints
+  # ============================================================================
+
+  /mediaJeu.php:
+    get:
+      operationId: downloadGameMedia
+      summary: Download game media (images)
+      parameters:
+        - name: systemeid
+          x-go-name: SystemID
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: jeuid
+          x-go-name: GameID
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Game ID
+        - name: media
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Media identifier (e.g., "box-2D(us)", "wheel-hd(eu)")'
+        - name: crc
+          in: query
+          schema:
+            type: string
+          description: Hash for deduplication
+        - name: md5
+          in: query
+          schema:
+            type: string
+        - name: sha1
+          in: query
+          schema:
+            type: string
+        - name: mediaformat
+          x-go-name: MediaFormat
+          in: query
+          schema:
+            type: string
+        - name: maxwidth
+          x-go-name: MaxWidth
+          in: query
+          schema:
+            type: string
+        - name: maxheight
+          x-go-name: MaxHeight
+          in: query
+          schema:
+            type: string
+        - name: outputformat
+          x-go-name: OutputFormat
+          in: query
+          schema:
+            type: string
+            enum: [png, jpg]
+      responses:
+        "200":
+          description: |
+            Binary media data or text response:
+            - "CRCOK", "MD5OK", "SHA1OK" if hash matches
+            - "NOMEDIA" if media not found
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+        "429":
+          description: Too many requests
+        "430":
+          description: Quota exceeded
+
+  /mediaSysteme.php:
+    get:
+      operationId: downloadSystemMedia
+      summary: Download system media (images)
+      parameters:
+        - name: systemeid
+          x-go-name: SystemID
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: media
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: crc
+          in: query
+          schema:
+            type: string
+        - name: md5
+          in: query
+          schema:
+            type: string
+        - name: sha1
+          in: query
+          schema:
+            type: string
+        - name: mediaformat
+          x-go-name: MediaFormat
+          in: query
+          schema:
+            type: string
+        - name: maxwidth
+          x-go-name: MaxWidth
+          in: query
+          schema:
+            type: string
+        - name: maxheight
+          x-go-name: MaxHeight
+          in: query
+          schema:
+            type: string
+        - name: outputformat
+          x-go-name: OutputFormat
+          in: query
+          schema:
+            type: string
+            enum: [png, jpg]
+      responses:
+        "200":
+          description: Binary image or text response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+
+  /mediaGroup.php:
+    get:
+      operationId: downloadGroupMedia
+      summary: Download group media (genre, mode, family, theme, style)
+      parameters:
+        - name: groupid
+          x-go-name: GroupID
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Numeric group ID
+        - name: media
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: crc
+          in: query
+          schema:
+            type: string
+        - name: md5
+          in: query
+          schema:
+            type: string
+        - name: sha1
+          in: query
+          schema:
+            type: string
+        - name: mediaformat
+          x-go-name: MediaFormat
+          in: query
+          schema:
+            type: string
+        - name: maxwidth
+          x-go-name: MaxWidth
+          in: query
+          schema:
+            type: string
+        - name: maxheight
+          x-go-name: MaxHeight
+          in: query
+          schema:
+            type: string
+        - name: outputformat
+          x-go-name: OutputFormat
+          in: query
+          schema:
+            type: string
+            enum: [png, jpg]
+      responses:
+        "200":
+          description: Binary image or text response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+
+  /mediaCompagnie.php:
+    get:
+      operationId: downloadCompanyMedia
+      summary: Download company media
+      parameters:
+        - name: companyid
+          x-go-name: CompanyID
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Numeric company ID
+        - name: media
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: crc
+          in: query
+          schema:
+            type: string
+        - name: md5
+          in: query
+          schema:
+            type: string
+        - name: sha1
+          in: query
+          schema:
+            type: string
+        - name: mediaformat
+          x-go-name: MediaFormat
+          in: query
+          schema:
+            type: string
+        - name: maxwidth
+          x-go-name: MaxWidth
+          in: query
+          schema:
+            type: string
+        - name: maxheight
+          x-go-name: MaxHeight
+          in: query
+          schema:
+            type: string
+        - name: outputformat
+          x-go-name: OutputFormat
+          in: query
+          schema:
+            type: string
+            enum: [png, jpg]
+      responses:
+        "200":
+          description: Binary image or text response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+
+  # ============================================================================
+  # Reference Data List Endpoints
+  # ============================================================================
+
+  /systemesListe.php:
+    get:
+      operationId: listSystems
+      summary: Get list of systems/consoles
+      responses:
+        "200":
+          description: Systems list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemsListResponse"
+
+  /genresListe.php:
+    get:
+      operationId: listGenres
+      summary: Get list of genres
+      responses:
+        "200":
+          description: Genres list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenresListResponse"
+
+  /languesListe.php:
+    get:
+      operationId: listLanguages
+      summary: Get list of languages
+      responses:
+        "200":
+          description: Languages list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguagesListResponse"
+
+  /regionsListe.php:
+    get:
+      operationId: listRegions
+      summary: Get list of regions
+      responses:
+        "200":
+          description: Regions list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegionsListResponse"
+
+  /classificationsListe.php:
+    get:
+      operationId: listClassifications
+      summary: Get list of classifications/ratings
+      responses:
+        "200":
+          description: Classifications list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassificationsListResponse"
+
+  /famillesListe.php:
+    get:
+      operationId: listFamilies
+      summary: Get list of families
+      responses:
+        "200":
+          description: Families list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FamiliesListResponse"
+
+  /mediasJeuListe.php:
+    get:
+      operationId: listGameMediaTypes
+      summary: Get list of available media types for games
+      responses:
+        "200":
+          description: Game media types list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameMediaTypesListResponse"
+
+  /mediasSystemeListe.php:
+    get:
+      operationId: listSystemMediaTypes
+      summary: Get list of available media types for systems
+      responses:
+        "200":
+          description: System media types list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemMediaTypesListResponse"
+
+  /nbJoueursListe.php:
+    get:
+      operationId: listPlayerCounts
+      summary: Get list of player counts
+      responses:
+        "200":
+          description: Player counts list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerCountsListResponse"
+
+  /userlevelsListe.php:
+    get:
+      operationId: listUserLevels
+      summary: Get list of user levels
+      responses:
+        "200":
+          description: User levels list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLevelsListResponse"
+
+  /romTypesListe.php:
+    get:
+      operationId: listRomTypes
+      summary: Get list of ROM types
+      responses:
+        "200":
+          description: ROM types list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RomTypesListResponse"
+
+  /supportTypesListe.php:
+    get:
+      operationId: listSupportTypes
+      summary: Get list of support types
+      responses:
+        "200":
+          description: Support types list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportTypesListResponse"
+
+  /infosJeuListe.php:
+    get:
+      operationId: listGameInfoTypes
+      summary: Get list of available info types for games
+      responses:
+        "200":
+          description: Game info types list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameInfoTypesListResponse"
+
+  /infosRomListe.php:
+    get:
+      operationId: listRomInfoTypes
+      summary: Get list of available info types for ROMs
+      responses:
+        "200":
+          description: ROM info types list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RomInfoTypesListResponse"
+
+  # ============================================================================
+  # User & Status Endpoints
+  # ============================================================================
+
+  /ssuserInfos.php:
+    get:
+      operationId: getUserInfo
+      summary: Get user information and quotas
+      responses:
+        "200":
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfoResponse"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /ssinfraInfos.php:
+    get:
+      operationId: getInfraInfo
+      summary: Get infrastructure/server status
+      responses:
+        "200":
+          description: Infrastructure information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfraInfoResponse"
+
+  # ============================================================================
+  # Submission Endpoints
+  # ============================================================================
+
+  /botNote.php:
+    get:
+      operationId: submitRating
+      summary: Submit a game rating
+      parameters:
+        - name: gameid
+          x-go-name: GameID
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Numeric game ID
+        - name: note
+          x-go-name: Rating
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+          description: Rating score (1-20)
+      responses:
+        "200":
+          description: Text response confirming submission
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+  /botProposition.php:
+    post:
+      operationId: submitProposal
+      summary: Submit info or media proposal
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                ssid:
+                  x-go-name: UserID
+                  type: string
+                  description: User ID
+                sspassword:
+                  x-go-name: UserPassword
+                  type: string
+                  description: User password
+                gameid:
+                  x-go-name: GameID
+                  type: string
+                  description: Target game ID (mutually exclusive with romid)
+                romid:
+                  x-go-name: ROMID
+                  type: string
+                  description: Target ROM ID (mutually exclusive with gameid)
+                modiftypeinfo:
+                  x-go-name: ModifyInfoType
+                  type: string
+                  description: Info type for text proposals
+                modiftexte:
+                  x-go-name: ModifyText
+                  type: string
+                  description: Text content for info proposals
+                modiftypemedia:
+                  x-go-name: ModifyMediaType
+                  type: string
+                  description: Media type for media proposals
+                modifmediafile:
+                  x-go-name: ModifyMediaFile
+                  type: string
+                  format: binary
+                  description: File upload for media proposals
+                modifmediafileurl:
+                  x-go-name: ModifyMediaFileURL
+                  type: string
+                  description: URL of media (alternative to file upload)
+                modifregion:
+                  x-go-name: ModifyRegion
+                  type: string
+                  description: Region for info proposals
+                modiflangue:
+                  x-go-name: ModifyLanguage
+                  type: string
+                  description: Language for info proposals
+                modifversion:
+                  x-go-name: ModifyVersion
+                  type: string
+                modiftyperegion:
+                  x-go-name: ModifyTypeRegion
+                  type: string
+                  description: Region for media proposals
+                modiftypenumsupport:
+                  x-go-name: ModifySupportNumber
+                  type: string
+                  description: Support number (0-10)
+                modifsource:
+                  x-go-name: ModifySource
+                  type: string
+                  description: Source reference
+      responses:
+        "200":
+          description: Text response confirming proposal
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+
+components:
+  # ============================================================================
+  # Schemas
+  # ============================================================================
+
+  schemas:
+    # --------------------------------------------------------------------------
+    # Common Types
+    # --------------------------------------------------------------------------
+
+    Header:
+      type: object
+      properties:
+        APIversion:
+          type: string
+        commandRequested:
+          type: string
+        dateTime:
+          type: string
+        error:
+          type: string
+        success:
+          type: string
+
+    ServerInfo:
+      type: object
+      properties:
+        apiacces:
+          x-go-name: APIAccess
+          type: string
+        closeforleecher:
+          x-go-name: ClosedForLeecher
+          type: string
+        closefornomember:
+          x-go-name: ClosedForNonMember
+          type: string
+        cpu1:
+          type: string
+        cpu2:
+          type: string
+        cpu3:
+          type: string
+        cpu4:
+          type: string
+        maxthreadformember:
+          x-go-name: MaxThreadForMember
+          type: string
+        maxthreadfornonmember:
+          x-go-name: MaxThreadForNonMember
+          type: string
+        nbscrapeurs:
+          x-go-name: ScraperCount
+          type: string
+        threadformember:
+          x-go-name: ThreadForMember
+          type: string
+        threadfornonmember:
+          x-go-name: ThreadForNonMember
+          type: string
+        threadsmin:
+          x-go-name: MinThreads
+          type: string
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        numid:
+          x-go-name: NumID
+          type: string
+        niveau:
+          x-go-name: Level
+          type: string
+        contribution:
+          type: string
+        uploadsysteme:
+          x-go-name: SystemUpload
+          type: string
+        uploadinfos:
+          x-go-name: InfoUpload
+          type: string
+        romasso:
+          x-go-name: ROMAssociation
+          type: string
+        uploadmedia:
+          x-go-name: MediaUpload
+          type: string
+        propositionok:
+          x-go-name: ApprovedProposals
+          type: string
+        propositionko:
+          x-go-name: RejectedProposals
+          type: string
+        quotarefu:
+          x-go-name: RefusedQuota
+          type: string
+        maxthreads:
+          x-go-name: MaxThreads
+          type: string
+        maxdownloadspeed:
+          x-go-name: MaxDownloadSpeed
+          type: string
+        requeststoday:
+          x-go-name: RequestsToday
+          type: string
+        requestskotoday:
+          x-go-name: FailedRequestsToday
+          type: string
+        maxrequestspermin:
+          x-go-name: MaxRequestsPerMin
+          type: string
+        maxrequestsperday:
+          x-go-name: MaxRequestsPerDay
+          type: string
+        maxrequestskoperday:
+          x-go-name: MaxFailedRequestsPerDay
+          type: string
+        visites:
+          x-go-name: Visits
+          type: string
+        datedernierevisite:
+          x-go-name: LastVisitDate
+          type: string
+        favregion:
+          x-go-name: FavoriteRegion
+          type: string
+
+    Media:
+      type: object
+      required:
+        - type
+        - url
+      properties:
+        crc:
+          type: string
+        md5:
+          type: string
+        sha1:
+          type: string
+        format:
+          type: string
+        parent:
+          type: string
+        region:
+          type: string
+        size:
+          type: string
+        support:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+
+    LocalizedName:
+      type: object
+      properties:
+        langue:
+          x-go-name: Language
+          type: string
+        text:
+          type: string
+
+    NameEntry:
+      type: object
+      properties:
+        region:
+          type: string
+        text:
+          type: string
+
+    IDText:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+
+    # --------------------------------------------------------------------------
+    # Game Types
+    # --------------------------------------------------------------------------
+
+    ROMRegions:
+      type: object
+      properties:
+        regions_de:
+          x-go-name: RegionsDE
+          type: array
+          items:
+            type: string
+        regions_en:
+          x-go-name: RegionsEN
+          type: array
+          items:
+            type: string
+        regions_es:
+          x-go-name: RegionsES
+          type: array
+          items:
+            type: string
+        regions_fr:
+          x-go-name: RegionsFR
+          type: array
+          items:
+            type: string
+        regions_id:
+          x-go-name: RegionsID
+          type: array
+          items:
+            type: string
+        regions_pt:
+          x-go-name: RegionsPT
+          type: array
+          items:
+            type: string
+        regions_shortname:
+          x-go-name: RegionsShortName
+          type: array
+          items:
+            type: string
+
+    ROM:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        romnumsupport:
+          x-go-name: ROMSupportNumber
+          type: string
+        romtotalsupport:
+          x-go-name: ROMSupportTotal
+          type: string
+        romfilename:
+          x-go-name: ROMFilename
+          type: string
+        romsize:
+          x-go-name: ROMSize
+          type: string
+        romcrc:
+          x-go-name: ROMCRC
+          type: string
+        rommd5:
+          x-go-name: ROMMD5
+          type: string
+        romsha1:
+          x-go-name: ROMSHA1
+          type: string
+        romcloneof:
+          x-go-name: ROMCloneOf
+          type: string
+        beta:
+          type: string
+        demo:
+          type: string
+        trad:
+          x-go-name: Translation
+          type: string
+        hack:
+          type: string
+        unl:
+          x-go-name: Unlicensed
+          type: string
+        alt:
+          x-go-name: Alternate
+          type: string
+        best:
+          type: string
+        netplay:
+          x-go-name: Netplay
+          type: string
+        proto:
+          x-go-name: Prototype
+          type: string
+        nbscrap:
+          x-go-name: ScrapCount
+          type: string
+        regions:
+          $ref: "#/components/schemas/ROMRegions"
+
+    GameClassification:
+      type: object
+      properties:
+        text:
+          type: string
+        type:
+          type: string
+
+    DateEntry:
+      type: object
+      properties:
+        region:
+          type: string
+        text:
+          type: string
+
+    Players:
+      type: object
+      properties:
+        text:
+          type: string
+
+    SystemInfoRef:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+
+    GameGenre:
+      type: object
+      properties:
+        id:
+          type: string
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        noms:
+          x-go-name: Names
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalizedName"
+        parentid:
+          x-go-name: ParentID
+          type: string
+        principale:
+          x-go-name: Primary
+          type: string
+
+    GameFamily:
+      type: object
+      properties:
+        id:
+          type: string
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        noms:
+          x-go-name: Names
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalizedName"
+        parentid:
+          x-go-name: ParentID
+          type: string
+        principale:
+          x-go-name: Primary
+          type: string
+
+    Game:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        romid:
+          x-go-name: ROMID
+          type: string
+        notgame:
+          x-go-name: NotGame
+          type: string
+        nom:
+          x-go-name: Name
+          type: string
+        noms:
+          x-go-name: Names
+          type: array
+          items:
+            $ref: "#/components/schemas/NameEntry"
+        regionshortnames:
+          x-go-name: RegionShortNames
+          type: array
+          items:
+            type: string
+        cloneof:
+          x-go-name: CloneOf
+          type: string
+        systeme:
+          x-go-name: System
+          allOf:
+            - $ref: "#/components/schemas/SystemInfoRef"
+        editeur:
+          x-go-name: Publisher
+          allOf:
+            - $ref: "#/components/schemas/IDText"
+        developpeur:
+          x-go-name: Developer
+          allOf:
+            - $ref: "#/components/schemas/IDText"
+        joueurs:
+          x-go-name: Players
+          allOf:
+            - $ref: "#/components/schemas/Players"
+        note:
+          allOf:
+            - $ref: "#/components/schemas/Players"
+        topstaff:
+          x-go-name: TopStaff
+          type: string
+        rotation:
+          type: string
+        resolution:
+          type: string
+        synopsis:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalizedName"
+        classifications:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameClassification"
+        dates:
+          type: array
+          items:
+            $ref: "#/components/schemas/DateEntry"
+        genres:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameGenre"
+        modes:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameGenre"
+        familles:
+          x-go-name: Families
+          type: array
+          items:
+            $ref: "#/components/schemas/GameFamily"
+        numeros:
+          x-go-name: Numbers
+          type: array
+          items:
+            $ref: "#/components/schemas/GameGenre"
+        themes:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameGenre"
+        styles:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameGenre"
+        medias:
+          x-go-name: Media
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+        roms:
+          x-go-name: ROMs
+          type: array
+          items:
+            $ref: "#/components/schemas/ROM"
+        rom:
+          allOf:
+            - $ref: "#/components/schemas/ROM"
+
+    # --------------------------------------------------------------------------
+    # Reference Data Types
+    # --------------------------------------------------------------------------
+
+    System:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        parentid:
+          x-go-name: ParentID
+          type: integer
+        compagnie:
+          x-go-name: Company
+          type: string
+        type:
+          type: string
+        datedebut:
+          x-go-name: StartDate
+          type: string
+        datefin:
+          x-go-name: EndDate
+          type: string
+        extensions:
+          type: string
+        romtype:
+          x-go-name: ROMType
+          type: string
+        supporttype:
+          x-go-name: SupportType
+          type: string
+        noms:
+          x-go-name: Names
+          type: object
+          additionalProperties:
+            type: string
+        medias:
+          x-go-name: Media
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+
+    Genre:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom_de:
+          x-go-name: NameDE
+          type: string
+        nom_en:
+          x-go-name: NameEN
+          type: string
+        nom_es:
+          x-go-name: NameES
+          type: string
+        nom_fr:
+          x-go-name: NameFR
+          type: string
+        nom_it:
+          x-go-name: NameIT
+          type: string
+        nom_pt:
+          x-go-name: NamePT
+          type: string
+        parent:
+          type: string
+        medias:
+          x-go-name: Media
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+
+    Language:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom_de:
+          x-go-name: NameDE
+          type: string
+        nom_en:
+          x-go-name: NameEN
+          type: string
+        nom_es:
+          x-go-name: NameES
+          type: string
+        nom_fr:
+          x-go-name: NameFR
+          type: string
+        nom_it:
+          x-go-name: NameIT
+          type: string
+        nom_pt:
+          x-go-name: NamePT
+          type: string
+        parent:
+          type: string
+        medias:
+          x-go-name: Media
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+
+    RegionMedias:
+      type: object
+      properties:
+        media_pictomonochrome:
+          x-go-name: MediaMonochromePicto
+          type: string
+        media_pictomonochromesvg:
+          x-go-name: MediaMonochromePictoSVG
+          type: string
+        media_pictocouleur:
+          x-go-name: MediaColorPicto
+          type: string
+        media_pictocouleursvg:
+          x-go-name: MediaColorPictoSVG
+          type: string
+        media_background:
+          x-go-name: MediaBackground
+          type: string
+
+    Region:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom_de:
+          x-go-name: NameDE
+          type: string
+        nom_en:
+          x-go-name: NameEN
+          type: string
+        nom_es:
+          x-go-name: NameES
+          type: string
+        nom_fr:
+          x-go-name: NameFR
+          type: string
+        nom_it:
+          x-go-name: NameIT
+          type: string
+        nom_pt:
+          x-go-name: NamePT
+          type: string
+        parent:
+          type: string
+        medias:
+          x-go-name: Media
+          allOf:
+            - $ref: "#/components/schemas/RegionMedias"
+
+    Classification:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom_de:
+          x-go-name: NameDE
+          type: string
+        nom_en:
+          x-go-name: NameEN
+          type: string
+        nom_es:
+          x-go-name: NameES
+          type: string
+        nom_fr:
+          x-go-name: NameFR
+          type: string
+        nom_it:
+          x-go-name: NameIT
+          type: string
+        nom_pt:
+          x-go-name: NamePT
+          type: string
+        parent:
+          type: string
+        medias:
+          x-go-name: Media
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+
+    Family:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nom:
+          x-go-name: Name
+          type: string
+        medias:
+          x-go-name: Media
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+
+    MediaType:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom:
+          x-go-name: Name
+          type: string
+        categorie:
+          x-go-name: Category
+          type: string
+        plateformtypes:
+          x-go-name: PlatformTypes
+          type: string
+        plateforms:
+          x-go-name: Platforms
+          type: string
+        type:
+          type: string
+        fileformat:
+          x-go-name: FileFormat
+          type: string
+        fileformat2:
+          x-go-name: FileFormat2
+          type: string
+        autogen:
+          x-go-name: AutoGen
+          type: string
+        multiregions:
+          x-go-name: MultiRegions
+          type: string
+        multisupports:
+          x-go-name: MultiSupports
+          type: string
+        multiversions:
+          x-go-name: MultiVersions
+          type: string
+        extrainfostxt:
+          x-go-name: ExtraInfoText
+          type: string
+
+    PlayerCount:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nom:
+          x-go-name: Name
+          type: string
+        parent:
+          type: string
+
+    UserLevel:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nom_fr:
+          x-go-name: NameFR
+          type: string
+
+    GameInfoType:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom:
+          x-go-name: Name
+          type: string
+        categorie:
+          x-go-name: Category
+          type: string
+        plateformtypes:
+          x-go-name: PlatformTypes
+          type: string
+        plateforms:
+          x-go-name: Platforms
+          type: string
+        type:
+          type: string
+        autogen:
+          x-go-name: AutoGen
+          type: string
+        multiregions:
+          x-go-name: MultiRegions
+          type: string
+        multisupports:
+          x-go-name: MultiSupports
+          type: string
+        multiversions:
+          x-go-name: MultiVersions
+          type: string
+        multichoix:
+          x-go-name: MultiChoice
+          type: string
+
+    RomInfoType:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        nomcourt:
+          x-go-name: ShortName
+          type: string
+        nom:
+          x-go-name: Name
+          type: string
+        categorie:
+          x-go-name: Category
+          type: string
+        plateformtypes:
+          x-go-name: PlatformTypes
+          type: string
+        plateforms:
+          x-go-name: Platforms
+          type: string
+        type:
+          type: string
+        autogen:
+          x-go-name: AutoGen
+          type: string
+        multiregions:
+          x-go-name: MultiRegions
+          type: string
+        multisupports:
+          x-go-name: MultiSupports
+          type: string
+        multiversions:
+          x-go-name: MultiVersions
+          type: string
+        multichoix:
+          x-go-name: MultiChoice
+          type: string
+
+    # --------------------------------------------------------------------------
+    # Response Types
+    # --------------------------------------------------------------------------
+
+    GameInfoResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            jeu:
+              x-go-name: Game
+              allOf:
+                - $ref: "#/components/schemas/Game"
+
+    GameSearchResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            jeux:
+              x-go-name: Games
+              type: array
+              items:
+                $ref: "#/components/schemas/Game"
+
+    SystemsListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            systemes:
+              x-go-name: Systems
+              type: array
+              items:
+                $ref: "#/components/schemas/System"
+
+    GenresListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            genres:
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Genre"
+
+    LanguagesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            langues:
+              x-go-name: Languages
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Language"
+
+    RegionsListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            regions:
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Region"
+
+    ClassificationsListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            classifications:
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Classification"
+
+    FamiliesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            familles:
+              x-go-name: Families
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Family"
+
+    GameMediaTypesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            medias:
+              x-go-name: Media
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/MediaType"
+
+    SystemMediaTypesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            medias:
+              x-go-name: Media
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/MediaType"
+
+    PlayerCountsListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            nbjoueurs:
+              x-go-name: PlayerCounts
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/PlayerCount"
+
+    UserLevelsListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            userlevels:
+              x-go-name: UserLevels
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/UserLevel"
+
+    RomTypesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            romtypes:
+              x-go-name: ROMTypes
+              type: array
+              items:
+                type: string
+
+    SupportTypesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            supporttypes:
+              x-go-name: SupportTypes
+              type: array
+              items:
+                type: string
+
+    GameInfoTypesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            infos:
+              x-go-name: Info
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/GameInfoType"
+
+    RomInfoTypesListResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+            infos:
+              x-go-name: Info
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/RomInfoType"
+
+    UserInfoResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"
+            ssuser:
+              x-go-name: User
+              allOf:
+                - $ref: "#/components/schemas/UserInfo"
+
+    InfraInfoResponse:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        response:
+          type: object
+          properties:
+            serveurs:
+              x-go-name: Servers
+              allOf:
+                - $ref: "#/components/schemas/ServerInfo"

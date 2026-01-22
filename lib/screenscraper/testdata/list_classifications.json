@@ -1,0 +1,2789 @@
+{
+  "header": {
+    "APIversion": "2.0",
+    "dateTime": "2026-01-21 04:49:04",
+    "commandRequested": "https://neoclone.screenscraper.fr/api2/classificationsListe.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&output=json&ssid=xxx&sspassword=xxx",
+    "success": "true",
+    "error": ""
+  },
+  "response": {
+    "classifications": {
+      "3487": {
+        "id": 3487,
+        "nomcourt": "AAMA:Green",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3487&media=logo-monochrome&mediaformat=png",
+            "crc": "9f983183",
+            "md5": "17aa4e01e3846997a9737658657e47ef",
+            "sha1": "671312e95d2b74fb952b6a8da2a9e51c36879fea",
+            "size": "10711",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3487&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "ca04780a",
+            "md5": "dc72c8568e186b3ef0f6c80987195300",
+            "sha1": "d7e7d2cf23dbbdd17435e2d8a20098e77213f3d8",
+            "size": "10327",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3487&media=wheel&mediaformat=png",
+            "crc": "5ff3f935",
+            "md5": "e05c6392a72d41a68106a24e0ffd2f5f",
+            "sha1": "6f25b372f85b91cf30bb94e888083e65f15ef4d1",
+            "size": "6036",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3487&media=wheel-svg&mediaformat=svg",
+            "crc": "1b5c10b3",
+            "md5": "21c2c37dfb02d7e36b05b7c45872aa21",
+            "sha1": "eeed4de8e5550d260e102538359f95c3c1fe9fab",
+            "size": "68031",
+            "format": "png"
+          }
+        ]
+      },
+      "3490": {
+        "id": 3490,
+        "nomcourt": "AAMA:Red",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3490&media=logo-monochrome&mediaformat=png",
+            "crc": "50b6c645",
+            "md5": "4d745d9236b51aba8d41b3b59ba6be56",
+            "sha1": "9fa8c31b007ee657e410afea753adabeaf000ef2",
+            "size": "11491",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3490&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "e188ea33",
+            "md5": "4ad08724f3316b2a5c032ec7d526eccd",
+            "sha1": "8195866e857b70a9325ba2827f2a95134468db41",
+            "size": "7668",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3490&media=wheel&mediaformat=png",
+            "crc": "c1a04c7f",
+            "md5": "0a3e5ce1fb76bf62fa6d6e147fac02ca",
+            "sha1": "bd6aff02e87b651e08dbf365237eda64416fafc2",
+            "size": "8002",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3490&media=wheel-svg&mediaformat=svg",
+            "crc": "0f7c1f65",
+            "md5": "00f0ce8ec07adc5bb4fd527f5a0e1428",
+            "sha1": "5cfb6e60f2691159b23feeffd520b590341c6405",
+            "size": "52751",
+            "format": "png"
+          }
+        ]
+      },
+      "3489": {
+        "id": 3489,
+        "nomcourt": "AAMA:Yellow",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3489&media=logo-monochrome&mediaformat=png",
+            "crc": "24031e39",
+            "md5": "eaccf50a1c9aa79d118c84ce61974c20",
+            "sha1": "0cbc638d867f8b0508358babdc5c05e4c67d9939",
+            "size": "8680",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3489&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "3d9b5736",
+            "md5": "739ecba0b13d1c6b0dffb1e2745afc56",
+            "sha1": "900eff647b0d2d4c9d1face802d61ae99fb7cbca",
+            "size": "6677",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3489&media=wheel&mediaformat=png",
+            "crc": "1a59d874",
+            "md5": "fd8a90093e9b4d9d4899fa31c0310b6a",
+            "sha1": "2e669a78cb705aaf8d433ac7d5aa012a1e11d93e",
+            "size": "5474",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3489&media=wheel-svg&mediaformat=svg",
+            "crc": "fec4c31d",
+            "md5": "f2adbe56df9b80c23db03b1b842dc5a3",
+            "sha1": "d1b50588b8c2d32f4f8b4a869da89b52e66111c6",
+            "size": "49229",
+            "format": "png"
+          }
+        ]
+      },
+      "3610": {
+        "id": 3610,
+        "nomcourt": "ACB:G",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3610&media=logo-monochrome&mediaformat=png",
+            "crc": "9d165b52",
+            "md5": "dd00ae2a1ab8d7e0aa78c8254398e6e9",
+            "sha1": "d3fa60e04f49880581da9e678a73bb975abcb2e5",
+            "size": "9445",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3610&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "6f4a93d2",
+            "md5": "264a650465c43d068f1199a18dc8dd96",
+            "sha1": "bb45800136be535ca118288ce276d1d2f29cf1b1",
+            "size": "1909",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3610&media=wheel&mediaformat=png",
+            "crc": "6ba2cfa7",
+            "md5": "5bfdaadc849a9d35a6ee7dfb45962b7e",
+            "sha1": "03650ea1ef06c2c4b18c64f6fd942f534998b1e0",
+            "size": "22896",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3610&media=wheel-svg&mediaformat=svg",
+            "crc": "f1681843",
+            "md5": "d23f5975822d9f51e6f9b232932b97ab",
+            "sha1": "04a38c35b96ed1f74dc86ede4cedbf970ef20ddd",
+            "size": "24004",
+            "format": "png"
+          }
+        ]
+      },
+      "3612": {
+        "id": 3612,
+        "nomcourt": "ACB:M",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3612&media=logo-monochrome&mediaformat=png",
+            "crc": "22993532",
+            "md5": "fec1f905b16689aa89259ef0d2696b95",
+            "sha1": "500e1cc436f4bae2aecc39e86461d3d1e6d39f54",
+            "size": "86738",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3612&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "3c7e1c2f",
+            "md5": "5309b9bb36f4af98cfa9c7d937c27657",
+            "sha1": "c7928e7398be764e0a0935cc0d4aec4d1143f0d4",
+            "size": "2019",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3612&media=wheel&mediaformat=png",
+            "crc": "7073ae98",
+            "md5": "9393c36d6041d7c38db588737e9d0f3c",
+            "sha1": "d06378b319d015b53d4e5939539ffe3adb1f6787",
+            "size": "31601",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3612&media=wheel-svg&mediaformat=svg",
+            "crc": "f84c67f3",
+            "md5": "365645646f9719b86a516629c8d38fbb",
+            "sha1": "91bd0d9e29c54e70c50f4875cd6fa3a3af8c4c0c",
+            "size": "65306",
+            "format": "png"
+          }
+        ]
+      },
+      "3613": {
+        "id": 3613,
+        "nomcourt": "ACB:MA15+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3613&media=logo-monochrome&mediaformat=png",
+            "crc": "f7446e26",
+            "md5": "1a37a34e805b263bb9c5816b7bb6fdff",
+            "sha1": "bb5ac61b165151c6dda52b8ffbe66c5f977f9dd6",
+            "size": "75806",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3613&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "0b8ae836",
+            "md5": "abfbc91f6807a5774d30c2dc91dc7fe2",
+            "sha1": "a3bf9c145f06b16935c24db5d8bcac68cf836c95",
+            "size": "5178",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3613&media=wheel&mediaformat=png",
+            "crc": "a5d5f953",
+            "md5": "df9259225d8060f1f877fc9e8418e36e",
+            "sha1": "d151135f17e24a809e7c1fc17acbb0fb501a26fe",
+            "size": "49957",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3613&media=wheel-svg&mediaformat=svg",
+            "crc": "34848526",
+            "md5": "44d60cbbde3f41ff36ad144237a1c3bd",
+            "sha1": "0808bc529ed91183f084df9abf7d19f844c65ccb",
+            "size": "189501",
+            "format": "png"
+          }
+        ]
+      },
+      "3611": {
+        "id": 3611,
+        "nomcourt": "ACB:PG",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3611&media=logo-monochrome&mediaformat=png",
+            "crc": "fb395ec8",
+            "md5": "a1a58288e34ac25ae5ad7d1655eba502",
+            "sha1": "cc5f5d38a2aaa29528be8ca879768e7685fedc1f",
+            "size": "27144",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3611&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "75e1ddba",
+            "md5": "3f199bb7fd97e3fb6d1d4640495e1821",
+            "sha1": "d44686447ab73e7206d65f937a88bbef8116c1c4",
+            "size": "2239",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3611&media=wheel&mediaformat=png",
+            "crc": "21e01b49",
+            "md5": "d0da5cf966f8a6e9dd5ecabfc05f463a",
+            "sha1": "ec28156c25c19afb7113fe71586c09fa4ca31594",
+            "size": "18514",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3611&media=wheel-svg&mediaformat=svg",
+            "crc": "2a2807fc",
+            "md5": "ff4cbe34f8c6af5b0a34ec48a595fcbc",
+            "sha1": "a5bc8166566491d8f671dd800b5c11eda1bcda53",
+            "size": "62357",
+            "format": "png"
+          }
+        ]
+      },
+      "3614": {
+        "id": 3614,
+        "nomcourt": "ACB:R18+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3614&media=logo-monochrome&mediaformat=png",
+            "crc": "8cac9d76",
+            "md5": "594d5bebc253a5fd909cdafb2f7c60ab",
+            "sha1": "ab4db7b7fb2dd2cbdec62a715afb4fd1bb083b68",
+            "size": "37492",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3614&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "816245c0",
+            "md5": "2542a0b03156ac6f44a53ccdbe5e707f",
+            "sha1": "d782a78f5dc53926bcbbae498f461b79761ec4ae",
+            "size": "5451",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3614&media=wheel&mediaformat=png",
+            "crc": "59ed58a5",
+            "md5": "5d0e2258120000bb0b20e17d88bb632d",
+            "sha1": "cba084fa371ceef667a2abfdbc2ff0c23612599d",
+            "size": "36741",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3614&media=wheel-svg&mediaformat=svg",
+            "crc": "48548c39",
+            "md5": "d92203a98a0164a7b7959a32feebaef9",
+            "sha1": "60958ec3b7d79af13dc5d4e3ddee766e0e7d07d4",
+            "size": "71195",
+            "format": "png"
+          }
+        ]
+      },
+      "3615": {
+        "id": 3615,
+        "nomcourt": "ACB:X18+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3615&media=logo-monochrome&mediaformat=png",
+            "crc": "0c3e4d2b",
+            "md5": "ff8f00ea6173e783904f86e8e1a25d58",
+            "sha1": "e83049290f08517aa29ddb63ca761ccb5d79138d",
+            "size": "27674",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3615&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "aa7cd403",
+            "md5": "753707434b9d8f1e4a84e4bbbe392d2f",
+            "sha1": "1f4335a89b9d5ff49e2a4e0fa0bb132273ff77c2",
+            "size": "5097",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3615&media=wheel&mediaformat=png",
+            "crc": "e9bc5da5",
+            "md5": "b0c45f8bc2c3b4d3346b4b62bb8cb992",
+            "sha1": "4ad01ae99b9b6c7db084f2d418ff201d5ba37cc3",
+            "size": "32041",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3615&media=wheel-svg&mediaformat=svg",
+            "crc": "893085d7",
+            "md5": "8f904402288cae5af35f9069b0b14662",
+            "sha1": "68b5cd79ef974816e5cc6c11da523f4945b407ce",
+            "size": "70386",
+            "format": "png"
+          }
+        ]
+      },
+      "3618": {
+        "id": 3618,
+        "nomcourt": "BBFC:12",
+        "parent": "0"
+      },
+      "3619": {
+        "id": 3619,
+        "nomcourt": "BBFC:15",
+        "parent": "0"
+      },
+      "3620": {
+        "id": 3620,
+        "nomcourt": "BBFC:18",
+        "parent": "0"
+      },
+      "3617": {
+        "id": 3617,
+        "nomcourt": "BBFC:PG",
+        "parent": "0"
+      },
+      "3616": {
+        "id": 3616,
+        "nomcourt": "BBFC:U",
+        "parent": "0"
+      },
+      "3621": {
+        "id": 3621,
+        "nomcourt": "CERO:A",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3621&media=logo-monochrome&mediaformat=png",
+            "crc": "ae2c8a77",
+            "md5": "747f5e7d5d440a64f066ecc592f13899",
+            "sha1": "19b3e8723f425c74e84833f057c8f4a9749151ed",
+            "size": "16441",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3621&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "52622fec",
+            "md5": "b53b3d047633c9fa7f352c095e026fcc",
+            "sha1": "cab3112b80137d6366de7497dc389f0637a15bda",
+            "size": "8407",
+            "format": "png"
+          }
+        ]
+      },
+      "3622": {
+        "id": 3622,
+        "nomcourt": "CERO:B",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3622&media=logo-monochrome&mediaformat=png",
+            "crc": "26600233",
+            "md5": "6dc6a4052593d189b2ec003b28b93ee7",
+            "sha1": "665227450e46cf1267925bb6554fc4f86e5236ed",
+            "size": "21296",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3622&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "220ade25",
+            "md5": "7e6fcaa098ac0c1aaaff9cc669675e08",
+            "sha1": "29b1fe62a5972d65503a72b03aecf41b8e2c73ae",
+            "size": "7522",
+            "format": "png"
+          }
+        ]
+      },
+      "3623": {
+        "id": 3623,
+        "nomcourt": "CERO:C",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3623&media=logo-monochrome&mediaformat=png",
+            "crc": "6a0c4d4e",
+            "md5": "c18f0d01731ff02342ea14ad90337ee6",
+            "sha1": "d1053e44c70fb2fd36a5859d9073d8827f4c7286",
+            "size": "27090",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3623&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "a8e86ac7",
+            "md5": "7ca1ff7220cb10a6efd177d43bc9b484",
+            "sha1": "8b566bb1cf9c6175310240fad67b38a1efa1a7ef",
+            "size": "7769",
+            "format": "png"
+          }
+        ]
+      },
+      "3624": {
+        "id": 3624,
+        "nomcourt": "CERO:D",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3624&media=logo-monochrome&mediaformat=png",
+            "crc": "cd391cd6",
+            "md5": "f30675f61338c65302d66d3ce649dc3f",
+            "sha1": "3728f0bac424fbf276e19c0a01219f6cd0079934",
+            "size": "21626",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3624&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "e025a15c",
+            "md5": "7547190be124930f3b427886176d5cde",
+            "sha1": "bd4459594ae758b0f5d1152b24a2900c27b04cbb",
+            "size": "7162",
+            "format": "png"
+          }
+        ]
+      },
+      "3463": {
+        "id": 3463,
+        "nomcourt": "CERO:free",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3463&media=logo-monochrome&mediaformat=png",
+            "crc": "874e1d2e",
+            "md5": "071754e4a0d1989b65faa3c0df0c3717",
+            "sha1": "432c54f48075840caf14e6fce784a0001005dec0",
+            "size": "23452",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3463&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "9742e1b8",
+            "md5": "dfd2595c46dd01af83382285088a51be",
+            "sha1": "1fbd8957c9e9457dedc2be45ab95a245677791af",
+            "size": "11047",
+            "format": "png"
+          }
+        ]
+      },
+      "3625": {
+        "id": 3625,
+        "nomcourt": "CERO:Z",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3625&media=logo-monochrome&mediaformat=png",
+            "crc": "f3794617",
+            "md5": "bb28e5bb0ae922b0f50179595561817d",
+            "sha1": "e410f58bc517caee3a705149009d6c84f10b3c58",
+            "size": "21485",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3625&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "93751a03",
+            "md5": "66584b4e3efecbdf5eb733e12120b02b",
+            "sha1": "2f14c20740eab44169a85988f124e2c2b3a2ca37",
+            "size": "8092",
+            "format": "png"
+          }
+        ]
+      },
+      "3626": {
+        "id": 3626,
+        "nomcourt": "CSRR:0+",
+        "parent": "0"
+      },
+      "3628": {
+        "id": 3628,
+        "nomcourt": "CSRR:12+",
+        "parent": "0"
+      },
+      "3629": {
+        "id": 3629,
+        "nomcourt": "CSRR:15+",
+        "parent": "0"
+      },
+      "3630": {
+        "id": 3630,
+        "nomcourt": "CSRR:18+",
+        "parent": "0"
+      },
+      "3627": {
+        "id": 3627,
+        "nomcourt": "CSRR:6+",
+        "parent": "0"
+      },
+      "3632": {
+        "id": 3632,
+        "nomcourt": "DJCTQ:10",
+        "parent": "0"
+      },
+      "3633": {
+        "id": 3633,
+        "nomcourt": "DJCTQ:12",
+        "parent": "0"
+      },
+      "3634": {
+        "id": 3634,
+        "nomcourt": "DJCTQ:14",
+        "parent": "0"
+      },
+      "3635": {
+        "id": 3635,
+        "nomcourt": "DJCTQ:16",
+        "parent": "0"
+      },
+      "3636": {
+        "id": 3636,
+        "nomcourt": "DJCTQ:18",
+        "parent": "0"
+      },
+      "3631": {
+        "id": 3631,
+        "nomcourt": "DJCTQ:L",
+        "parent": "0"
+      },
+      "3638": {
+        "id": 3638,
+        "nomcourt": "ELSPA:11",
+        "parent": "0"
+      },
+      "3639": {
+        "id": 3639,
+        "nomcourt": "ELSPA:15",
+        "parent": "0"
+      },
+      "3640": {
+        "id": 3640,
+        "nomcourt": "ELSPA:18",
+        "parent": "0"
+      },
+      "3637": {
+        "id": 3637,
+        "nomcourt": "ELSPA:3",
+        "parent": "0"
+      },
+      "3642": {
+        "id": 3642,
+        "nomcourt": "EOCS:12",
+        "parent": "0"
+      },
+      "3643": {
+        "id": 3643,
+        "nomcourt": "EOCS:15",
+        "parent": "0"
+      },
+      "3645": {
+        "id": 3645,
+        "nomcourt": "EOCS:18",
+        "parent": "0"
+      },
+      "3641": {
+        "id": 3641,
+        "nomcourt": "EOCS:General",
+        "parent": "0"
+      },
+      "3644": {
+        "id": 3644,
+        "nomcourt": "EOCS:R",
+        "parent": "0"
+      },
+      "3648": {
+        "id": 3648,
+        "nomcourt": "ESRA:+12",
+        "parent": "0"
+      },
+      "3649": {
+        "id": 3649,
+        "nomcourt": "ESRA:+15",
+        "parent": "0"
+      },
+      "3650": {
+        "id": 3650,
+        "nomcourt": "ESRA:+18",
+        "parent": "0"
+      },
+      "3651": {
+        "id": 3651,
+        "nomcourt": "ESRA:+25",
+        "parent": "0"
+      },
+      "3646": {
+        "id": 3646,
+        "nomcourt": "ESRA:+3",
+        "parent": "0"
+      },
+      "3647": {
+        "id": 3647,
+        "nomcourt": "ESRA:+7",
+        "parent": "0"
+      },
+      "3657": {
+        "id": 3657,
+        "nomcourt": "ESRB:AO",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3657&media=logo-monochrome&mediaformat=png",
+            "crc": "42bfcc35",
+            "md5": "cba06e9f358094383d4122097ac979a9",
+            "sha1": "dfafcebcae94bb34b64e9969b5f041ad7ccaf8fd",
+            "size": "17681",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3657&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "39fbf9f8",
+            "md5": "991a884e5650474cb3516f89c4aaf485",
+            "sha1": "d0ec17d3bb01ee9c0d811ab88721b5f2a20f6502",
+            "size": "7318",
+            "format": "png"
+          }
+        ]
+      },
+      "3653": {
+        "id": 3653,
+        "nomcourt": "ESRB:E",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3653&media=logo-monochrome&mediaformat=png",
+            "crc": "e4f09f59",
+            "md5": "031f5b008fd851f56fea852bf9f95126",
+            "sha1": "8160d583dde154dcbd717217182d2b310e756e92",
+            "size": "10670",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3653&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "f7ffb74a",
+            "md5": "dac458a023f27e6425b452cdccd89a8a",
+            "sha1": "65ceda1f77b18d0d9eb8db3a61c2b757d21b4d88",
+            "size": "5063",
+            "format": "png"
+          }
+        ]
+      },
+      "3654": {
+        "id": 3654,
+        "nomcourt": "ESRB:E10+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3654&media=logo-monochrome&mediaformat=png",
+            "crc": "159d36ee",
+            "md5": "e52241ae4d0dfa5581f98eff8434698a",
+            "sha1": "fcbfc829e61c8b5294e6205a5d82bdc597c3be8c",
+            "size": "15384",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3654&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "bc230266",
+            "md5": "41f39fd9ea31d3f2ea47f1cad62ada28",
+            "sha1": "bae4e19c7e892537e47f8a958c1ab77e89f76ac5",
+            "size": "9388",
+            "format": "png"
+          }
+        ]
+      },
+      "3652": {
+        "id": 3652,
+        "nomcourt": "ESRB:EC",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3652&media=logo-monochrome&mediaformat=png",
+            "crc": "da7aa805",
+            "md5": "f10d61c3c45ee328c6853df539bc82ce",
+            "sha1": "61131d46ff65916c4078c33b7259ee63a210456f",
+            "size": "14168",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3652&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "16646f2a",
+            "md5": "fe85f3a7ef56d2d4e2fa1c3e8c9afa38",
+            "sha1": "5e1e5f0d40fcf96dedc80c1a00acef1bc8d99fa0",
+            "size": "10254",
+            "format": "png"
+          }
+        ]
+      },
+      "3326": {
+        "id": 3326,
+        "nomcourt": "ESRB:KA",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3326&media=logo-monochrome&mediaformat=png",
+            "crc": "2209ca9d",
+            "md5": "69ae2e55d29213699692a507575f03a2",
+            "sha1": "15923f1cc22ea88ffe1ac0f29a4be547eaae1cdd",
+            "size": "15025",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3326&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "c5cfd710",
+            "md5": "4947ebc57d34e4f9735a0be7924f14d7",
+            "sha1": "f2a432b10f1e33279d215e936614b1b68839c4a2",
+            "size": "9467",
+            "format": "png"
+          }
+        ]
+      },
+      "3656": {
+        "id": 3656,
+        "nomcourt": "ESRB:M",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3656&media=logo-monochrome&mediaformat=png",
+            "crc": "631dfdc0",
+            "md5": "b2747543d8fa5564705bbf7a0955aa64",
+            "sha1": "d368c167d777aa8a2e42dcaaf3ad8024b3c76f8c",
+            "size": "12340",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3656&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "2a45d2e9",
+            "md5": "a9c51d80c3c55ccec178792f768946ca",
+            "sha1": "20a3fa8d3bf03031dca86fa8e6f9562b2183ee07",
+            "size": "5285",
+            "format": "png"
+          }
+        ]
+      },
+      "3494": {
+        "id": 3494,
+        "nomcourt": "ESRB:NOT RATED",
+        "parent": "0"
+      },
+      "3655": {
+        "id": 3655,
+        "nomcourt": "ESRB:T",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3655&media=logo-monochrome&mediaformat=png",
+            "crc": "96259040",
+            "md5": "90e89e11784488e589766014a7bcbef8",
+            "sha1": "779b2f15a86178070bee15fcd0ee3c6f647b7cc2",
+            "size": "10636",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3655&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "9f630884",
+            "md5": "d7e069aa185e19ca57b7f42c42ed76f2",
+            "sha1": "1b40876a77ba158cdba6952f06875ebb53b153bd",
+            "size": "6772",
+            "format": "png"
+          }
+        ]
+      },
+      "3660": {
+        "id": 3660,
+        "nomcourt": "FPB:10",
+        "parent": "0"
+      },
+      "3661": {
+        "id": 3661,
+        "nomcourt": "FPB:10M",
+        "parent": "0"
+      },
+      "3662": {
+        "id": 3662,
+        "nomcourt": "FPB:13",
+        "parent": "0"
+      },
+      "3663": {
+        "id": 3663,
+        "nomcourt": "FPB:16",
+        "parent": "0"
+      },
+      "3664": {
+        "id": 3664,
+        "nomcourt": "FPB:18",
+        "parent": "0"
+      },
+      "3658": {
+        "id": 3658,
+        "nomcourt": "FPB:A",
+        "parent": "0"
+      },
+      "3659": {
+        "id": 3659,
+        "nomcourt": "FPB:PG",
+        "parent": "0"
+      },
+      "3666": {
+        "id": 3666,
+        "nomcourt": "GRB:12",
+        "parent": "0"
+      },
+      "3667": {
+        "id": 3667,
+        "nomcourt": "GRB:15",
+        "parent": "0"
+      },
+      "3668": {
+        "id": 3668,
+        "nomcourt": "GRB:18",
+        "parent": "0"
+      },
+      "3665": {
+        "id": 3665,
+        "nomcourt": "GRB:All",
+        "parent": "0"
+      },
+      "3468": {
+        "id": 3468,
+        "nomcourt": "HSRS:AD",
+        "parent": "0"
+      },
+      "3465": {
+        "id": 3465,
+        "nomcourt": "HSRS:GA",
+        "parent": "0"
+      },
+      "3498": {
+        "id": 3498,
+        "nomcourt": "HSRS:PG",
+        "parent": "0"
+      },
+      "26927": {
+        "id": 26927,
+        "nomcourt": "IARC:12+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26927&media=logo-monochrome&mediaformat=png",
+            "crc": "9c955042",
+            "md5": "e62085fd91520411e0184e4956ccc321",
+            "sha1": "b90ea373def873c9e6ebde9f329e626a859693e7",
+            "size": "12600",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26927&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "e711d6a9",
+            "md5": "0ac8a93e710e350ed608f4885d047d5a",
+            "sha1": "a583cd3405587addbabcdc40eb35e4bd3a959fe4",
+            "size": "3037",
+            "format": "png"
+          }
+        ]
+      },
+      "26930": {
+        "id": 26930,
+        "nomcourt": "IARC:16+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26930&media=logo-monochrome&mediaformat=png",
+            "crc": "9cbf4f58",
+            "md5": "74b07fee0e9ee32807359c6f4cb0e667",
+            "sha1": "7822b28933626d8f491ace89731bff5ef2848e10",
+            "size": "13881",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26930&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "03d712cc",
+            "md5": "8cfde6ede09377d4899e165be82e80d1",
+            "sha1": "5377664d5864d096afba505850ec693f3606b532",
+            "size": "3271",
+            "format": "png"
+          }
+        ]
+      },
+      "26933": {
+        "id": 26933,
+        "nomcourt": "IARC:18+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26933&media=logo-monochrome&mediaformat=png",
+            "crc": "e95a259d",
+            "md5": "e0505c4bbe34657bc3914f8828378559",
+            "sha1": "71c6761437c3c1ea81c8e6d063a6265887a7b918",
+            "size": "60297",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26933&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "f6f0f8bc",
+            "md5": "df465585fcff6b6f0464812b34aa6712",
+            "sha1": "64b4b9e07ed34e6fd1e37dbdfb80cb9e793b7598",
+            "size": "3621",
+            "format": "png"
+          }
+        ]
+      },
+      "26921": {
+        "id": 26921,
+        "nomcourt": "IARC:3+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26921&media=logo-monochrome&mediaformat=png",
+            "crc": "21e163b5",
+            "md5": "11c32a09670b9a5691fd404024c12dc9",
+            "sha1": "6e8e2c54b935aa33e041372456de80dca091b103",
+            "size": "11541",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26921&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "65f5102e",
+            "md5": "a5c402a3213dff9be6538f706fc07383",
+            "sha1": "07b02bc1c565c0e5e9ae611281543be93e79f436",
+            "size": "3009",
+            "format": "png"
+          }
+        ]
+      },
+      "26924": {
+        "id": 26924,
+        "nomcourt": "IARC:7+",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26924&media=logo-monochrome&mediaformat=png",
+            "crc": "81d8bddd",
+            "md5": "f02b5114dcfed8aad9c9df31b3bd21c8",
+            "sha1": "b438588044380353d6b637862660f58fc619d6b4",
+            "size": "10783",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=26924&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "91797cdc",
+            "md5": "08ec6636f1a7ce58a08b010b056c90f0",
+            "sha1": "a1e6c52b39c3213acee81f189dd2a451edf03834",
+            "size": "2619",
+            "format": "png"
+          }
+        ]
+      },
+      "3674": {
+        "id": 3674,
+        "nomcourt": "IGAC:12",
+        "parent": "0"
+      },
+      "3676": {
+        "id": 3676,
+        "nomcourt": "IGAC:16",
+        "parent": "0"
+      },
+      "3678": {
+        "id": 3678,
+        "nomcourt": "IGAC:18",
+        "parent": "0"
+      },
+      "3670": {
+        "id": 3670,
+        "nomcourt": "IGAC:4",
+        "parent": "0"
+      },
+      "3672": {
+        "id": 3672,
+        "nomcourt": "IGAC:6",
+        "parent": "0"
+      },
+      "3677": {
+        "id": 3677,
+        "nomcourt": "IGAC:M",
+        "parent": "0"
+      },
+      "3680": {
+        "id": 3680,
+        "nomcourt": "INCAA:13",
+        "parent": "0"
+      },
+      "3681": {
+        "id": 3681,
+        "nomcourt": "INCAA:16",
+        "parent": "0"
+      },
+      "3682": {
+        "id": 3682,
+        "nomcourt": "INCAA:18",
+        "parent": "0"
+      },
+      "3679": {
+        "id": 3679,
+        "nomcourt": "INCAA:ATP",
+        "parent": "0"
+      },
+      "3414": {
+        "id": 3414,
+        "nomcourt": "JV:+12 ans",
+        "parent": "0"
+      },
+      "3431": {
+        "id": 3431,
+        "nomcourt": "JV:+16 ans",
+        "parent": "0"
+      },
+      "3454": {
+        "id": 3454,
+        "nomcourt": "JV:+17 ans",
+        "parent": "0"
+      },
+      "3430": {
+        "id": 3430,
+        "nomcourt": "JV:+18 ans",
+        "parent": "0"
+      },
+      "3408": {
+        "id": 3408,
+        "nomcourt": "JV:+3 ans",
+        "parent": "0"
+      },
+      "3450": {
+        "id": 3450,
+        "nomcourt": "JV:+4 ans",
+        "parent": "0"
+      },
+      "3411": {
+        "id": 3411,
+        "nomcourt": "JV:+7 ans",
+        "parent": "0"
+      },
+      "3418": {
+        "id": 3418,
+        "nomcourt": "JV:+9 ans",
+        "parent": "0"
+      },
+      "3684": {
+        "id": 3684,
+        "nomcourt": "KMRB:12",
+        "parent": "0"
+      },
+      "3685": {
+        "id": 3685,
+        "nomcourt": "KMRB:15",
+        "parent": "0"
+      },
+      "3686": {
+        "id": 3686,
+        "nomcourt": "KMRB:18",
+        "parent": "0"
+      },
+      "3683": {
+        "id": 3683,
+        "nomcourt": "KMRB:A",
+        "parent": "0"
+      },
+      "3687": {
+        "id": 3687,
+        "nomcourt": "MDA:G",
+        "parent": "0"
+      },
+      "3691": {
+        "id": 3691,
+        "nomcourt": "MDA:M 18",
+        "parent": "0"
+      },
+      "3690": {
+        "id": 3690,
+        "nomcourt": "MDA:NC 16",
+        "parent": "0"
+      },
+      "3688": {
+        "id": 3688,
+        "nomcourt": "MDA:PG",
+        "parent": "0"
+      },
+      "3689": {
+        "id": 3689,
+        "nomcourt": "MDA:PG 13",
+        "parent": "0"
+      },
+      "3692": {
+        "id": 3692,
+        "nomcourt": "MDA:R",
+        "parent": "0"
+      },
+      "3693": {
+        "id": 3693,
+        "nomcourt": "MTRCB:G",
+        "parent": "0"
+      },
+      "3694": {
+        "id": 3694,
+        "nomcourt": "MTRCB:PG",
+        "parent": "0"
+      },
+      "3695": {
+        "id": 3695,
+        "nomcourt": "MTRCB:R-13",
+        "parent": "0"
+      },
+      "3696": {
+        "id": 3696,
+        "nomcourt": "MTRCB:R-16",
+        "parent": "0"
+      },
+      "3697": {
+        "id": 3697,
+        "nomcourt": "MTRCB:R-18",
+        "parent": "0"
+      },
+      "3698": {
+        "id": 3698,
+        "nomcourt": "OFLC:G",
+        "parent": "0"
+      },
+      "3700": {
+        "id": 3700,
+        "nomcourt": "OFLC:M",
+        "parent": "0"
+      },
+      "3701": {
+        "id": 3701,
+        "nomcourt": "OFLC:MA15+",
+        "parent": "0"
+      },
+      "3699": {
+        "id": 3699,
+        "nomcourt": "OFLC:PG",
+        "parent": "0"
+      },
+      "3706": {
+        "id": 3706,
+        "nomcourt": "OFLC:R13",
+        "parent": "0"
+      },
+      "3707": {
+        "id": 3707,
+        "nomcourt": "OFLC:R15",
+        "parent": "0"
+      },
+      "3708": {
+        "id": 3708,
+        "nomcourt": "OFLC:R16",
+        "parent": "0"
+      },
+      "3709": {
+        "id": 3709,
+        "nomcourt": "OFLC:R18",
+        "parent": "0"
+      },
+      "3702": {
+        "id": 3702,
+        "nomcourt": "OFLC:R18+",
+        "parent": "0"
+      },
+      "3703": {
+        "id": 3703,
+        "nomcourt": "OFLC:X18+",
+        "parent": "0"
+      },
+      "3712": {
+        "id": 3712,
+        "nomcourt": "PEGI:12",
+        "parent": "0"
+      },
+      "3713": {
+        "id": 3713,
+        "nomcourt": "PEGI:16",
+        "parent": "0"
+      },
+      "3714": {
+        "id": 3714,
+        "nomcourt": "PEGI:18",
+        "parent": "0"
+      },
+      "3710": {
+        "id": 3710,
+        "nomcourt": "PEGI:3",
+        "parent": "0"
+      },
+      "3711": {
+        "id": 3711,
+        "nomcourt": "PEGI:7",
+        "parent": "0"
+      },
+      "3384": {
+        "id": 3384,
+        "nomcourt": "SEGA:18",
+        "parent": "0"
+      },
+      "3389": {
+        "id": 3389,
+        "nomcourt": "SEGA:Force02UK",
+        "parent": "0"
+      },
+      "3379": {
+        "id": 3379,
+        "nomcourt": "SEGA:Force03UK",
+        "parent": "0"
+      },
+      "3340": {
+        "id": 3340,
+        "nomcourt": "SEGA:Force04UK",
+        "parent": "0"
+      },
+      "3387": {
+        "id": 3387,
+        "nomcourt": "SEGA:Force06UK",
+        "parent": "0"
+      },
+      "3377": {
+        "id": 3377,
+        "nomcourt": "SEGA:Force07UK",
+        "parent": "0"
+      },
+      "3372": {
+        "id": 3372,
+        "nomcourt": "SEGA:Force08UK",
+        "parent": "0"
+      },
+      "3375": {
+        "id": 3375,
+        "nomcourt": "SEGA:Force09UK",
+        "parent": "0"
+      },
+      "3354": {
+        "id": 3354,
+        "nomcourt": "SEGA:Force10UK",
+        "parent": "0"
+      },
+      "3381": {
+        "id": 3381,
+        "nomcourt": "SEGA:Force11UK",
+        "parent": "0"
+      },
+      "3378": {
+        "id": 3378,
+        "nomcourt": "SEGA:Force12UK",
+        "parent": "0"
+      },
+      "3349": {
+        "id": 3349,
+        "nomcourt": "SEGA:Force13UK",
+        "parent": "0"
+      },
+      "3367": {
+        "id": 3367,
+        "nomcourt": "SEGA:Force14UK",
+        "parent": "0"
+      },
+      "3320": {
+        "id": 3320,
+        "nomcourt": "SEGA:Force15UK",
+        "parent": "0"
+      },
+      "3334": {
+        "id": 3334,
+        "nomcourt": "SEGA:Force16UK",
+        "parent": "0"
+      },
+      "3392": {
+        "id": 3392,
+        "nomcourt": "SEGA:Force17UK",
+        "parent": "0"
+      },
+      "3343": {
+        "id": 3343,
+        "nomcourt": "SEGA:Force18UK",
+        "parent": "0"
+      },
+      "3360": {
+        "id": 3360,
+        "nomcourt": "SEGA:Force19UK",
+        "parent": "0"
+      },
+      "3385": {
+        "id": 3385,
+        "nomcourt": "SEGA:ForceMega01",
+        "parent": "0"
+      },
+      "3324": {
+        "id": 3324,
+        "nomcourt": "SEGA:ForceMega02",
+        "parent": "0"
+      },
+      "3358": {
+        "id": 3358,
+        "nomcourt": "SEGA:ForceMega03",
+        "parent": "0"
+      },
+      "3388": {
+        "id": 3388,
+        "nomcourt": "SEGA:ForceMega04",
+        "parent": "0"
+      },
+      "3391": {
+        "id": 3391,
+        "nomcourt": "SEGA:ForceMega05",
+        "parent": "0"
+      },
+      "3317": {
+        "id": 3317,
+        "nomcourt": "SEGA:ForceMega06",
+        "parent": "0"
+      },
+      "3319": {
+        "id": 3319,
+        "nomcourt": "SEGA:G",
+        "parent": "0"
+      },
+      "3397": {
+        "id": 3397,
+        "nomcourt": "SEGA:MasterForce01",
+        "parent": "0"
+      },
+      "3404": {
+        "id": 3404,
+        "nomcourt": "SEGA:MasterForce02",
+        "parent": "0"
+      },
+      "3396": {
+        "id": 3396,
+        "nomcourt": "SEGA:MasterForce03",
+        "parent": "0"
+      },
+      "3403": {
+        "id": 3403,
+        "nomcourt": "SEGA:MasterForce04",
+        "parent": "0"
+      },
+      "3395": {
+        "id": 3395,
+        "nomcourt": "SEGA:MasterForce05",
+        "parent": "0"
+      },
+      "3327": {
+        "id": 3327,
+        "nomcourt": "SEGA:pro_UK_01",
+        "parent": "0"
+      },
+      "3371": {
+        "id": 3371,
+        "nomcourt": "SEGA:pro_UK_02",
+        "parent": "0"
+      },
+      "3338": {
+        "id": 3338,
+        "nomcourt": "SEGA:pro_UK_03",
+        "parent": "0"
+      },
+      "3347": {
+        "id": 3347,
+        "nomcourt": "SEGA:pro_UK_04",
+        "parent": "0"
+      },
+      "3346": {
+        "id": 3346,
+        "nomcourt": "SEGA:pro_UK_05",
+        "parent": "0"
+      },
+      "3313": {
+        "id": 3313,
+        "nomcourt": "SEGA:pro_UK_06",
+        "parent": "0"
+      },
+      "3383": {
+        "id": 3383,
+        "nomcourt": "SEGA:pro_UK_07",
+        "parent": "0"
+      },
+      "3370": {
+        "id": 3370,
+        "nomcourt": "SEGA:pro_UK_08",
+        "parent": "0"
+      },
+      "3380": {
+        "id": 3380,
+        "nomcourt": "SEGA:pro_UK_09",
+        "parent": "0"
+      },
+      "3344": {
+        "id": 3344,
+        "nomcourt": "SEGA:X",
+        "parent": "0"
+      },
+      "3716": {
+        "id": 3716,
+        "nomcourt": "SELL:12",
+        "parent": "0"
+      },
+      "3717": {
+        "id": 3717,
+        "nomcourt": "SELL:16",
+        "parent": "0"
+      },
+      "3718": {
+        "id": 3718,
+        "nomcourt": "SELL:18",
+        "parent": "0"
+      },
+      "3715": {
+        "id": 3715,
+        "nomcourt": "SELL:TP",
+        "parent": "0"
+      },
+      "3791": {
+        "id": 3791,
+        "nomcourt": "SS:01",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3791&media=logo-monochrome&mediaformat=png",
+            "crc": "6ac10be7",
+            "md5": "e42db762eeb13f70a5bbcfbf1aed0ea5",
+            "sha1": "fc4d0708f2871df880e6111f6c4c1a5e9dfcaa02",
+            "size": "3556",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3791&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "749e6913",
+            "md5": "15a531347cc361af9cae9e4f1187e5f7",
+            "sha1": "3db0b8452a5cd838a1aa2ab4c826b70f799d68e5",
+            "size": "3955",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3791&media=wheel&mediaformat=png",
+            "crc": "1cb0b0d8",
+            "md5": "ed9368a62cb6cfa84b28b657b0d1b8a1",
+            "sha1": "636a098d3e1c94ad28752584349839d3cf42ae93",
+            "size": "57424",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3791&media=wheel-svg&mediaformat=svg",
+            "crc": "4033c08a",
+            "md5": "e7634552b85c5495c2499eebb68a72b1",
+            "sha1": "486d47485f1500980e5049750737152fe2d2115e",
+            "size": "250674",
+            "format": "png"
+          }
+        ]
+      },
+      "3792": {
+        "id": 3792,
+        "nomcourt": "SS:02",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3792&media=logo-monochrome&mediaformat=png",
+            "crc": "fc9363d5",
+            "md5": "e4ceffa6e6329ee2a723df57348249b4",
+            "sha1": "2d901259a27ae5da9127193be772f5e6ca41a562",
+            "size": "6963",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3792&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "28439411",
+            "md5": "6c2ccfa838b44cc59712c59703f2cfce",
+            "sha1": "00b73290a6b44ab5dc59b1e09ba462c97ed48fe5",
+            "size": "4288",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3792&media=wheel&mediaformat=png",
+            "crc": "8ab64a1e",
+            "md5": "14ee086ef5895f2facc971a0d9fae7e1",
+            "sha1": "fe1a00167f2c51f5d3adbf733349a80a9c877e1b",
+            "size": "59521",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3792&media=wheel-svg&mediaformat=svg",
+            "crc": "bd2a2c1a",
+            "md5": "9408c8c7b6626f8c85b61acccc0fb196",
+            "sha1": "24dee04dbcc02b0776bc0c4bcf8d21d052638c7c",
+            "size": "249496",
+            "format": "png"
+          }
+        ]
+      },
+      "3793": {
+        "id": 3793,
+        "nomcourt": "SS:03",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3793&media=logo-monochrome&mediaformat=png",
+            "crc": "83ee647d",
+            "md5": "6e58d7fc6a4a70400a1fb14a27d65076",
+            "sha1": "858ad44980740825232470f68fa34d3bc062e1e7",
+            "size": "4488",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3793&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "be4f7bfa",
+            "md5": "315be6530a4552ece22ef4cafdfd5e94",
+            "sha1": "f28dd121fcf3c92ee7c57b0527ac268bf8149f2c",
+            "size": "4489",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3793&media=wheel&mediaformat=png",
+            "crc": "c05a68d4",
+            "md5": "06b03b861cb146b1243986eb7198fcdf",
+            "sha1": "c7c015d80c0253240126513a01d307bee68a74c1",
+            "size": "22221",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3793&media=wheel-svg&mediaformat=svg",
+            "crc": "82529dac",
+            "md5": "6bd65edcc21652c4798ca945f8150432",
+            "sha1": "0c1b424a9c0ea8755136f39eac2cce385f369170",
+            "size": "284521",
+            "format": "png"
+          }
+        ]
+      },
+      "3794": {
+        "id": 3794,
+        "nomcourt": "SS:04",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3794&media=logo-monochrome&mediaformat=png",
+            "crc": "88215ba9",
+            "md5": "e61e1a0471be3ad8e8f64aae4c01041f",
+            "sha1": "e0d500a1db2d5ec03c5aa44effb1e19c06504e77",
+            "size": "5565",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3794&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "05bcb98c",
+            "md5": "4f741501cb6384483e01595270194d6f",
+            "sha1": "3dc7f36771b2ef5f824bc1d42089ebacdf564262",
+            "size": "4067",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3794&media=wheel&mediaformat=png",
+            "crc": "ba2c72e4",
+            "md5": "05de3d81ddd0da4d9c1bad96bcbc0229",
+            "sha1": "a4a85f86107e303df8c468ce7da0c9568044ff2b",
+            "size": "58420",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3794&media=wheel-svg&mediaformat=svg",
+            "crc": "67af68a7",
+            "md5": "036aa69149d962fa986f410d2973e0cd",
+            "sha1": "662b9ed7315158823bd43224a45f9004dde1972c",
+            "size": "252590",
+            "format": "png"
+          }
+        ]
+      },
+      "3795": {
+        "id": 3795,
+        "nomcourt": "SS:05",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3795&media=logo-monochrome&mediaformat=png",
+            "crc": "b8465400",
+            "md5": "4af3d5211f65b8ae8b92bea1b35255e1",
+            "sha1": "f4ae33bc8a82e44dd1a8961e361b8aadfa24f072",
+            "size": "6065",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3795&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "94883ff2",
+            "md5": "69cc95559b73af7f155e4bd2f71d8744",
+            "sha1": "336cc4cbf2d943f96e9e1d2e6a18564cb665b904",
+            "size": "4260",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3795&media=wheel&mediaformat=png",
+            "crc": "6575a31b",
+            "md5": "e5cad2fd62957137415e321c98312a1d",
+            "sha1": "55c2dea481b7bc3f54a733d8921bea8948a7a2ce",
+            "size": "58476",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3795&media=wheel-svg&mediaformat=svg",
+            "crc": "54e1bf52",
+            "md5": "47f8711f801825cddae6cbb0bc0c7825",
+            "sha1": "b4b2c9475b7984d99cf0abf3a8f29614fb4b568f",
+            "size": "253790",
+            "format": "png"
+          }
+        ]
+      },
+      "3796": {
+        "id": 3796,
+        "nomcourt": "SS:06",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3796&media=logo-monochrome&mediaformat=png",
+            "crc": "c51618a3",
+            "md5": "476209ddc567705a022f4b5518a9895a",
+            "sha1": "dbb3291ef992c500a02193e7d8aa38994fe86560",
+            "size": "4465",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3796&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "072e161a",
+            "md5": "752e87553c6bc6aeebd7180e1ba5b827",
+            "sha1": "35e88aa8e53d3d1a85bcd1bb3a0b4d4fe8a8bd9e",
+            "size": "4416",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3796&media=wheel&mediaformat=png",
+            "crc": "d076a18b",
+            "md5": "c4fb570c824bca6ae83bd0e65f28e48e",
+            "sha1": "12e9e3296714f62091f4c7ebd09cf5d02841cd07",
+            "size": "22247",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3796&media=wheel-svg&mediaformat=svg",
+            "crc": "6d8d5c72",
+            "md5": "b827538f658c81667ebeb9878a0bfe86",
+            "sha1": "57f09cbab1da731ecd3083af2a91093b37512a6a",
+            "size": "286828",
+            "format": "png"
+          }
+        ]
+      },
+      "3797": {
+        "id": 3797,
+        "nomcourt": "SS:07",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3797&media=logo-monochrome&mediaformat=png",
+            "crc": "4feeed3b",
+            "md5": "5a44a25d1dd10f4833e24ed74b582a49",
+            "sha1": "221db43cec9cf3d4bead0e86a469eefe857d45d2",
+            "size": "3973",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3797&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "3c15e11c",
+            "md5": "ee0796866234e2d5fee97197bf1635f1",
+            "sha1": "089b68d1e9daf29a847cdd46092c77b9e57493ec",
+            "size": "4026",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3797&media=wheel&mediaformat=png",
+            "crc": "44c41628",
+            "md5": "7c7446b0c4dc4a16aab3d12b5d658692",
+            "sha1": "2d577263ed592e92727d0a70dffa9bb0f3e346af",
+            "size": "22220",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3797&media=wheel-svg&mediaformat=svg",
+            "crc": "6baa7a9c",
+            "md5": "18b07e636fcf0d43ac2ddc82a06583e0",
+            "sha1": "7bce397a5612288922442d82d57b6b7791c02591",
+            "size": "269093",
+            "format": "png"
+          }
+        ]
+      },
+      "3798": {
+        "id": 3798,
+        "nomcourt": "SS:08",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3798&media=logo-monochrome&mediaformat=png",
+            "crc": "87cc2e4c",
+            "md5": "42b2a5fa8bc70bf312d3a30e145827a8",
+            "sha1": "c9e408dae008fb3530c08f953dac1de27edbeba8",
+            "size": "4709",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3798&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "4134aec0",
+            "md5": "36f55bbab1a104efeef241b5ddc3e717",
+            "sha1": "0bc1d6131bb96a2605e047cb0a76611f8c441bf4",
+            "size": "4646",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3798&media=wheel&mediaformat=png",
+            "crc": "ef33dcb8",
+            "md5": "eed9ce64af63cdebda4e17aa26e62400",
+            "sha1": "ef7f2679c13488377bf114667721b39d54a92eff",
+            "size": "22198",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3798&media=wheel-svg&mediaformat=svg",
+            "crc": "b2561286",
+            "md5": "d1fc49c69cf08a23bf72c4b40c28138a",
+            "sha1": "4914e7d39f9b9889283e1901d53212ac4fd637cc",
+            "size": "286830",
+            "format": "png"
+          }
+        ]
+      },
+      "3799": {
+        "id": 3799,
+        "nomcourt": "SS:09",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3799&media=logo-monochrome&mediaformat=png",
+            "crc": "8fb20e25",
+            "md5": "160aa98499332cc65fffc24ff62e2db0",
+            "sha1": "6d5e4cd3acb290eea7bb4651b6cb325ebeb72afa",
+            "size": "4460",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3799&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "e5f862cc",
+            "md5": "18a95ae053974c7096ae791a2cc6f6f7",
+            "sha1": "d906b92e85b85595f73ca7b2c15fe8ead1fc11b0",
+            "size": "4484",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3799&media=wheel&mediaformat=png",
+            "crc": "4c3c8cde",
+            "md5": "6790b48596db102d779183d5e6a097c3",
+            "sha1": "9f0d9bdb469a03954b5182890e378b43f37951f9",
+            "size": "22075",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3799&media=wheel-svg&mediaformat=svg",
+            "crc": "09946d1f",
+            "md5": "a73dd2b42ff8b6c7dc0c9b261e88317e",
+            "sha1": "133cf482c94242127a21d9a63d063099b8162693",
+            "size": "291576",
+            "format": "png"
+          }
+        ]
+      },
+      "3800": {
+        "id": 3800,
+        "nomcourt": "SS:10",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3800&media=logo-monochrome&mediaformat=png",
+            "crc": "e8050a3f",
+            "md5": "5e304fefc1d1bc4b154ef7ddecebd461",
+            "sha1": "2e7f338dd63f5fdf9ca06a602c0a974cdfb55b97",
+            "size": "4420",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3800&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "e945c966",
+            "md5": "510c2f8dd979fa403267829dfbdd6926",
+            "sha1": "b1042ddf3202809b983b7d7836f0d78e107b828f",
+            "size": "4442",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3800&media=wheel&mediaformat=png",
+            "crc": "2d88e8a6",
+            "md5": "68d0981c04e1d42075a6ebc650288588",
+            "sha1": "9c14dde752b87a66dee529c3a794b86118423bda",
+            "size": "22292",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3800&media=wheel-svg&mediaformat=svg",
+            "crc": "7f5b62c7",
+            "md5": "1e0acdc32d5d94a7b1c163b340c60f14",
+            "sha1": "227f8f81718421a9becf9614637f47c7a06a1889",
+            "size": "278411",
+            "format": "png"
+          }
+        ]
+      },
+      "3801": {
+        "id": 3801,
+        "nomcourt": "SS:11",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3801&media=logo-monochrome&mediaformat=png",
+            "crc": "a3a60de7",
+            "md5": "5c29d6e2bd2e043178fb5f183ed8acce",
+            "sha1": "6568bf68373508df88bf9235574539a19fce1dd8",
+            "size": "3673",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3801&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "636d20d2",
+            "md5": "898c7e2a2ffac7d0ce91c78208fda3bc",
+            "sha1": "a27e1367b5aa580d667bc6bddf6db2db302d798c",
+            "size": "4108",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3801&media=wheel&mediaformat=png",
+            "crc": "bf5550c5",
+            "md5": "ce38ab2cf060296d2b0c5c04b6a1b1e4",
+            "sha1": "f5ee41c285422b59403f0171b854e5c6c1a2f131",
+            "size": "21181",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3801&media=wheel-svg&mediaformat=svg",
+            "crc": "564fee59",
+            "md5": "78e7ad239bbb03b2bbfbf6d71211b519",
+            "sha1": "a5d37b62452af25e172311cd30dbb1321f48e43d",
+            "size": "282565",
+            "format": "png"
+          }
+        ]
+      },
+      "3802": {
+        "id": 3802,
+        "nomcourt": "SS:12",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3802&media=logo-monochrome&mediaformat=png",
+            "crc": "03c1dae1",
+            "md5": "6cbbbddd1fa8454260174f410e0e49c7",
+            "sha1": "2969b7ed6a7723a654981ba55992f2f11d72058f",
+            "size": "4722",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3802&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "153ade60",
+            "md5": "f633c01169b3343248c2dee9bdd086f8",
+            "sha1": "5ecb4185bf7cc464dafdb2c7eef87c4cd404e2c7",
+            "size": "4441",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3802&media=wheel&mediaformat=png",
+            "crc": "5c958002",
+            "md5": "1da5454534619e3e1391975d01f663e8",
+            "sha1": "861e0ed652fc589097566ff6ce40c6cc8c06150a",
+            "size": "22535",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3802&media=wheel-svg&mediaformat=svg",
+            "crc": "b40cd180",
+            "md5": "c47f98568d3daec5823388b83a5a0dc0",
+            "sha1": "dfb4c141c375d92eb39b624f924b00ab8d8d73be",
+            "size": "278493",
+            "format": "png"
+          }
+        ]
+      },
+      "3803": {
+        "id": 3803,
+        "nomcourt": "SS:13",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3803&media=logo-monochrome&mediaformat=png",
+            "crc": "cbb9a287",
+            "md5": "b98b12431dc66bcba63a1da00e0a74f9",
+            "sha1": "d546dc3a226403568814be92e75f95c6adbed603",
+            "size": "4718",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3803&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "ca64e94e",
+            "md5": "b94a553753de91716756980859c8b361",
+            "sha1": "99cfbf5d24dbe7508f542deff73d6306418e3875",
+            "size": "4642",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3803&media=wheel&mediaformat=png",
+            "crc": "1133ab04",
+            "md5": "a8c413d6633734fe52b0abd33a95d17e",
+            "sha1": "053ea224efaf122bca10c8824bb6e0e990b4245f",
+            "size": "22330",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3803&media=wheel-svg&mediaformat=svg",
+            "crc": "66b4ebee",
+            "md5": "9aacd6784d9570f76d853bda83a5f02c",
+            "sha1": "3b71e63b2c4aec75aa98e04c3752939a9427809d",
+            "size": "293343",
+            "format": "png"
+          }
+        ]
+      },
+      "3804": {
+        "id": 3804,
+        "nomcourt": "SS:14",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3804&media=logo-monochrome&mediaformat=png",
+            "crc": "9d7d95d1",
+            "md5": "cc4bf80c4dfcdda34d095b38ddea4a14",
+            "sha1": "6a4069b8085998e29da2c2f215206164bfc5f863",
+            "size": "4341",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3804&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "3a1899f2",
+            "md5": "5ae5cdbf7bea18ed1054ad9b4e917e78",
+            "sha1": "4c2f863f29d22c79fd2791a164224b3f3c25b045",
+            "size": "4220",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3804&media=wheel&mediaformat=png",
+            "crc": "7e3e82a6",
+            "md5": "38461b4348ed035dfdc8b5bde05b9422",
+            "sha1": "549c038eae9570066a9244b533e59df8356783fd",
+            "size": "21956",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3804&media=wheel-svg&mediaformat=svg",
+            "crc": "84edfa0a",
+            "md5": "8872ef81b231b0e3c0d8523d8cf324ce",
+            "sha1": "f1fd19055b4fae140c15ec1a5cf6a506d1440ca2",
+            "size": "269916",
+            "format": "png"
+          }
+        ]
+      },
+      "3805": {
+        "id": 3805,
+        "nomcourt": "SS:15",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3805&media=logo-monochrome&mediaformat=png",
+            "crc": "fc4f8c89",
+            "md5": "ebbde68340c9fcc2ba387574c99c652d",
+            "sha1": "15780f16339d474790324e6df2b9a96fd9905c3a",
+            "size": "4340",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3805&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "6f963e72",
+            "md5": "3862d493c32ee2fb5118bce0c788023c",
+            "sha1": "7fafbd661363306d835facd7aff4bdc77f8cb464",
+            "size": "4413",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3805&media=wheel&mediaformat=png",
+            "crc": "b0042999",
+            "md5": "c661419872a42b06a0bc1c81f47d27a2",
+            "sha1": "9f67690f6815085a93d7966c5e8933bbf863f260",
+            "size": "22118",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3805&media=wheel-svg&mediaformat=svg",
+            "crc": "05781f1a",
+            "md5": "542395dd3735204a0865177a7592a3bc",
+            "sha1": "e4a3322e46a36f16fde054295f5b2ac7d5af1e11",
+            "size": "274324",
+            "format": "png"
+          }
+        ]
+      },
+      "3806": {
+        "id": 3806,
+        "nomcourt": "SS:16",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3806&media=logo-monochrome&mediaformat=png",
+            "crc": "d652d56b",
+            "md5": "bc51c18fc39cb090ba38a4e2532d6a73",
+            "sha1": "da169ef9011eb52130b704fd5d1fa52dcfb9da03",
+            "size": "4633",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3806&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "63b086d1",
+            "md5": "f814cb87dc7d5304127c0f7084f273f1",
+            "sha1": "1dd6b7078e1fca07fd383f357bb94d104b11d5a5",
+            "size": "4569",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3806&media=wheel&mediaformat=png",
+            "crc": "35c103d3",
+            "md5": "4da18e6aa4e2ff93472aac7ec4645e4d",
+            "sha1": "02c3e600d8e759cb358d1e854c1e04c7c318b34b",
+            "size": "22202",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3806&media=wheel-svg&mediaformat=svg",
+            "crc": "c746aacd",
+            "md5": "f1856de4379874e5a76b10cf547caac7",
+            "sha1": "43f5ed61298e80cbd0bbeaa262368698542244dd",
+            "size": "270086",
+            "format": "png"
+          }
+        ]
+      },
+      "3807": {
+        "id": 3807,
+        "nomcourt": "SS:17",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3807&media=logo-monochrome&mediaformat=png",
+            "crc": "715d8c0b",
+            "md5": "e21e2212e706c8a01eca6420d159046f",
+            "sha1": "c89d90f7ef45dc280a7aa56cd5e5588aa297d5a3",
+            "size": "4403",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3807&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "154ecb8d",
+            "md5": "4e95bb40fdc951ba7bc20622eecca252",
+            "sha1": "ffd1d6f5894544fbf70be38b4bf00c55bcd614b3",
+            "size": "4179",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3807&media=wheel&mediaformat=png",
+            "crc": "cb116348",
+            "md5": "867566680d8ae2a3a71d03d272c47ab6",
+            "sha1": "1f319e393865c41be155585167cc091de74541e5",
+            "size": "22474",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3807&media=wheel-svg&mediaformat=svg",
+            "crc": "d3f9bb22",
+            "md5": "c147a2347aafd0517011b8b70f11b6df",
+            "sha1": "635e126ba8283b534b9091346485d41c56058624",
+            "size": "272383",
+            "format": "png"
+          }
+        ]
+      },
+      "3808": {
+        "id": 3808,
+        "nomcourt": "SS:18",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3808&media=logo-monochrome&mediaformat=png",
+            "crc": "5a2674c0",
+            "md5": "efad0300331f8dd110199e6afbc63e0e",
+            "sha1": "9757eab83113d4ff444a3bc668e789f5db4af78e",
+            "size": "4948",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3808&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "575267e5",
+            "md5": "672fa67440a63a7cb47d30e2a69e6b6c",
+            "sha1": "a564ad4928999923c5da3554ef7a7b791ec6f709",
+            "size": "4799",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3808&media=wheel&mediaformat=png",
+            "crc": "5845677a",
+            "md5": "cf22daa620804366bb2473613214a8fd",
+            "sha1": "d073d123ba7f9440e0c75db5df03ed1141ae2ad5",
+            "size": "22389",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3808&media=wheel-svg&mediaformat=svg",
+            "crc": "88103390",
+            "md5": "ce61f3bf20fb923d61e6bfa2efe5ff7e",
+            "sha1": "d9e8e519aafe9d715157f96c5e7f4bc816764048",
+            "size": "271876",
+            "format": "png"
+          }
+        ]
+      },
+      "3330": {
+        "id": 3330,
+        "nomcourt": "Tectoy:13",
+        "parent": "0"
+      },
+      "3333": {
+        "id": 3333,
+        "nomcourt": "Tectoy:18",
+        "parent": "0"
+      },
+      "3345": {
+        "id": 3345,
+        "nomcourt": "Tectoy:TI",
+        "parent": "0"
+      },
+      "3721": {
+        "id": 3721,
+        "nomcourt": "TIGRS:Adult Content",
+        "parent": "0"
+      },
+      "3719": {
+        "id": 3719,
+        "nomcourt": "TIGRS:Family Friendly",
+        "parent": "0"
+      },
+      "3720": {
+        "id": 3720,
+        "nomcourt": "TIGRS:Teen Content",
+        "parent": "0"
+      },
+      "3722": {
+        "id": 3722,
+        "nomcourt": "USK:0",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3722&media=logo-monochrome&mediaformat=png",
+            "crc": "d45cfad7",
+            "md5": "7eb5bfde3c8d3fe8c088aa1e9dbd49e4",
+            "sha1": "c33378e33427cdd159dc50582c078bc015352055",
+            "size": "33168",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3722&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "fc5c04c2",
+            "md5": "2fa133f6cee00123ffdaaff5a8b1a1e1",
+            "sha1": "acecdcb41927a54e515a0a67aacf135de6fb0fd2",
+            "size": "5681",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3722&media=wheel&mediaformat=png",
+            "crc": "539230ff",
+            "md5": "fc8a61330e35f4caabf9a1fcd972e3e2",
+            "sha1": "73feeda7888f22ea94b55e9df4dae129b1e84c67",
+            "size": "23961",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3722&media=wheel-svg&mediaformat=svg",
+            "crc": "07be7bad",
+            "md5": "3383aff21a8e513f2eaed8a1160a9959",
+            "sha1": "7ba21528d9e6f1d91eca89de5c5fd907355dcb13",
+            "size": "157450",
+            "format": "png"
+          }
+        ]
+      },
+      "3724": {
+        "id": 3724,
+        "nomcourt": "USK:12",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3724&media=logo-monochrome&mediaformat=png",
+            "crc": "4eef35c9",
+            "md5": "7f93d649b70a7572bdfff9ba3cb1c147",
+            "sha1": "9729e5d13b0bb4f7e1dcc972e82c40b524be18a8",
+            "size": "37700",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3724&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "82aac7ec",
+            "md5": "8e584e75c9a7e8b7028fefa81aa57d41",
+            "sha1": "4eaa55ddbbd892874f8cadccb3a88ed6a6c25cc6",
+            "size": "8195",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3724&media=wheel&mediaformat=png",
+            "crc": "1bb7e016",
+            "md5": "a2c69430e9aa825ac7903c2f945ff8c2",
+            "sha1": "dfc5c11de1789b114d1322780fcd1b0226cc9d80",
+            "size": "36478",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3724&media=wheel-svg&mediaformat=svg",
+            "crc": "6cf73fd2",
+            "md5": "19752f99c54a7aa2c083887b88643337",
+            "sha1": "15138bab58fb2544fbf13d2794e5b999f9e1bb75",
+            "size": "158782",
+            "format": "png"
+          }
+        ]
+      },
+      "3725": {
+        "id": 3725,
+        "nomcourt": "USK:16",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3725&media=logo-monochrome&mediaformat=png",
+            "crc": "356e9b1a",
+            "md5": "96b7f3314fe80135133747c896390691",
+            "sha1": "c286c0555cf84c785faa312e842164f2f445551d",
+            "size": "37886",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3725&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "7c51ad40",
+            "md5": "cb86d27bfc49f164b51062a3d5e3d0b3",
+            "sha1": "2bd114f8bd5bfb994606d5d5eb633621657512a7",
+            "size": "6071",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3725&media=wheel&mediaformat=png",
+            "crc": "7f75ca44",
+            "md5": "c28c809c545995bd940cfe8bd3a9cc95",
+            "sha1": "f6cbe1816c6e21c9cd1b9079f5c45e469bc96648",
+            "size": "36811",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3725&media=wheel-svg&mediaformat=svg",
+            "crc": "48f93e95",
+            "md5": "e777528ef56d7d3c447417998ac76959",
+            "sha1": "9b6ac16396cfe41cb68031485653bd1804c5cc90",
+            "size": "154602",
+            "format": "png"
+          }
+        ]
+      },
+      "3726": {
+        "id": 3726,
+        "nomcourt": "USK:18",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3726&media=logo-monochrome&mediaformat=png",
+            "crc": "58d23981",
+            "md5": "9fe664817294cec885343c414476f4c0",
+            "sha1": "5916137fd9275f19e8807d50f618e0a317fbcec4",
+            "size": "33472",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3726&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "10166f09",
+            "md5": "a3f9d227ead63a85dda6a6218ed50493",
+            "sha1": "a4e1cbdc1cf2769b65a71a7672ed14faad11585f",
+            "size": "3452",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3726&media=wheel&mediaformat=png",
+            "crc": "8f361de1",
+            "md5": "377df9e42f40d23a1d55c9c5e68f674f",
+            "sha1": "9aad4081d5222848f228872b0774e584ae2c77ec",
+            "size": "32181",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3726&media=wheel-svg&mediaformat=svg",
+            "crc": "8b0f2ec8",
+            "md5": "0f0bc9fe2859d400871a7419d2208d53",
+            "sha1": "ded69cbbd8b89fdd406736880a843b581059c92d",
+            "size": "148157",
+            "format": "png"
+          }
+        ]
+      },
+      "3723": {
+        "id": 3723,
+        "nomcourt": "USK:6",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3723&media=logo-monochrome&mediaformat=png",
+            "crc": "e8766e22",
+            "md5": "d7aae934ea94e8e419d9320351460bed",
+            "sha1": "929d4eb79d19aec3f23abdbcc63f2a6cf6ca4014",
+            "size": "37559",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3723&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "d720368c",
+            "md5": "1e41906fb415d5a0d73be54def538733",
+            "sha1": "893783554fdd82d367583b677d4f4b6e3090f4f9",
+            "size": "5840",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3723&media=wheel&mediaformat=png",
+            "crc": "7ed29364",
+            "md5": "07eda5985a3e077615f29790e3efaabc",
+            "sha1": "92ac33707adc6ddcd4d517b77680b9bdfbb34ddd",
+            "size": "34080",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3723&media=wheel-svg&mediaformat=svg",
+            "crc": "bd1efa27",
+            "md5": "4f46f3b0eefba2d610e00d01e0750a54",
+            "sha1": "ad4ec7af6f141b613a9e371d20930bc85d2b4ccd",
+            "size": "157088",
+            "format": "png"
+          }
+        ]
+      },
+      "3729": {
+        "id": 3729,
+        "nomcourt": "VET:12",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3729&media=logo-monochrome&mediaformat=png",
+            "crc": "c10ec17c",
+            "md5": "c36ae4f39da16df806a3e47cff87d185",
+            "sha1": "5ea93bde50441c48ac507065f4c599c5fc9f8d6a",
+            "size": "22451",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3729&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "2b9904f5",
+            "md5": "8723746f58c3d31278e27fc101eaaf50",
+            "sha1": "1a841c4535088bfee5dab5e8acbafce9f195a85b",
+            "size": "1446",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3729&media=wheel&mediaformat=png",
+            "crc": "c397210d",
+            "md5": "3fd42a91202f0cfe4a9c7ee86074d099",
+            "sha1": "e2e74973bc516105c1b864c382fffa28cae3480f",
+            "size": "24730",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3729&media=wheel-svg&mediaformat=svg",
+            "crc": "d9154d2f",
+            "md5": "8859908a28791c82407da909fcce299e",
+            "sha1": "f46c36573350fd65c0b691dddec969ac8d2c2738",
+            "size": "6431",
+            "format": "png"
+          }
+        ]
+      },
+      "3731": {
+        "id": 3731,
+        "nomcourt": "VET:16",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3731&media=logo-monochrome&mediaformat=png",
+            "crc": "5af7364e",
+            "md5": "654403990b25fdaec0bba44ab6ba9360",
+            "sha1": "e16aba8bfe7c32b9dc3516b8cc12c861ac03046c",
+            "size": "24265",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3731&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "65715cf7",
+            "md5": "f5709df7140c56c9cbd8e6e57fe249ce",
+            "sha1": "9c2e2c4ee702f62aa1b96f4049ddd23ceeb6a289",
+            "size": "1650",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3731&media=wheel&mediaformat=png",
+            "crc": "2bebe323",
+            "md5": "cfe2547436185f5eb3ca8430b0001d42",
+            "sha1": "2c2d69dbd6339f37ad074b352a4315237e98b96e",
+            "size": "27317",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3731&media=wheel-svg&mediaformat=svg",
+            "crc": "74707ccd",
+            "md5": "93a92afdd62f7b7207fec158fc9a1d55",
+            "sha1": "7d8e524040befa618dba1a3dc1e3d7e66a351d62",
+            "size": "6873",
+            "format": "png"
+          }
+        ]
+      },
+      "3732": {
+        "id": 3732,
+        "nomcourt": "VET:18",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3732&media=logo-monochrome&mediaformat=png",
+            "crc": "c5e7aa69",
+            "md5": "d4bedb193c311f8e0c23b7fbb0a9942f",
+            "sha1": "905d57e966f5256c5684f36d61e88529092cd2bd",
+            "size": "23727",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3732&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "9061e941",
+            "md5": "7e05d58a6763552e99c092ec27f254f3",
+            "sha1": "11018fea3e8c9e9adb11559860ec0ce57ba3b3e5",
+            "size": "1808",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3732&media=wheel&mediaformat=png",
+            "crc": "2dc1d01b",
+            "md5": "d47482f92d25ec2b39092678f74ac5e8",
+            "sha1": "72663742f73d7e1a1e356a5843678b88c4b949ec",
+            "size": "27322",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3732&media=wheel-svg&mediaformat=svg",
+            "crc": "ebc8f6f5",
+            "md5": "194ec3761b8d2e2c3a6861b80267ce6b",
+            "sha1": "3be38a8468a145069bb733f0fe42cecfc3cbe1c4",
+            "size": "5818",
+            "format": "png"
+          }
+        ]
+      },
+      "3727": {
+        "id": 3727,
+        "nomcourt": "VET:3",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3727&media=logo-monochrome&mediaformat=png",
+            "crc": "a421db4a",
+            "md5": "6eb3ad82d068daf5eeba00b19274a9a8",
+            "sha1": "21d956e050bf691b232a9eb9944186e6e77cd30f",
+            "size": "22362",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3727&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "a6c36948",
+            "md5": "10f7e0f9e67f7250f89722267229d258",
+            "sha1": "75b1e2479a5f72676be1fc0930affa0df09c3797",
+            "size": "1458",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3727&media=wheel&mediaformat=png",
+            "crc": "1848f7ec",
+            "md5": "a74cde74fae307a43552973c0a203d1d",
+            "sha1": "89c5213cad1d5b67f80c144f79c2263929c8311e",
+            "size": "24753",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3727&media=wheel-svg&mediaformat=svg",
+            "crc": "3c98d743",
+            "md5": "0f14960143c45ce4f6b928bc8131db01",
+            "sha1": "be2887e843f479b98a04eeb5c70344027624383b",
+            "size": "5555",
+            "format": "png"
+          }
+        ]
+      },
+      "3728": {
+        "id": 3728,
+        "nomcourt": "VET:7",
+        "parent": "0",
+        "medias": [
+          {
+            "type": "pictomonochrome",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3728&media=logo-monochrome&mediaformat=png",
+            "crc": "f09f2619",
+            "md5": "ff670de69bdfd97dc24279ce8093108b",
+            "sha1": "c35dee4878b4d44bb6bfb19463be23c6d53d04e0",
+            "size": "19319",
+            "format": "png"
+          },
+          {
+            "type": "pictomonochromesvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3728&media=logo-monochrome-svg&mediaformat=svg",
+            "crc": "8db4770f",
+            "md5": "22b1362988b00741592785f9e1687240",
+            "sha1": "6acd2900e3d5ad969397088d37dffa0987e0cb6e",
+            "size": "932",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleur",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3728&media=wheel&mediaformat=png",
+            "crc": "327d2ecd",
+            "md5": "20335a11998aeb80fc11556f2ab67ca4",
+            "sha1": "a791c2d8cb9bc85831f06d3395f99e2a085fbdd9",
+            "size": "20170",
+            "format": "png"
+          },
+          {
+            "type": "pictocouleursvg",
+            "url": "https://neoclone.screenscraper.fr/api2/mediaGroup.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&ssid=xxx&sspassword=xxx&groupid=3728&media=wheel-svg&mediaformat=svg",
+            "crc": "795921b1",
+            "md5": "7a1dced69204dd20aca6e82083943ba8",
+            "sha1": "084324835c4cf1e66907ba1681a789a992e49bd5",
+            "size": "4169",
+            "format": "png"
+          }
+        ]
+      },
+      "3734": {
+        "id": 3734,
+        "nomcourt": "VRC:13",
+        "parent": "0"
+      },
+      "3735": {
+        "id": 3735,
+        "nomcourt": "VRC:17",
+        "parent": "0"
+      },
+      "3733": {
+        "id": 3733,
+        "nomcourt": "VRC:GA",
+        "parent": "0"
+      }
+    }
+  }
+}

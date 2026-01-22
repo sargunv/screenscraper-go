@@ -5,6 +5,10 @@ local linters = new Mapping<String, Step> {
     ["go-fmt"] = Builtins.go_fmt
     ["gomod-tidy"] = Builtins.gomod_tidy
     ["prettier"] = Builtins.prettier
+    ["go-vet"] = new Step {
+        glob = "*.go"
+        check = "go vet ./..."
+    }
 }
 
 hooks {

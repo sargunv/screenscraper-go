@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"github.com/sargunv/rom-tools/internal/cli/cache"
 	"github.com/sargunv/rom-tools/internal/cli/identify"
 	"github.com/sargunv/rom-tools/internal/cli/scrape"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper"
@@ -15,6 +16,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	rootCmd.AddCommand(cache.Cmd)
 	rootCmd.AddCommand(identify.Cmd)
 	rootCmd.AddCommand(scrape.Cmd)
 	rootCmd.AddCommand(screenscraper.Cmd)

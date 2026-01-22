@@ -1,0 +1,244 @@
+{
+  "header": {
+    "APIversion": "2.0",
+    "dateTime": "2026-01-21 04:48:49",
+    "commandRequested": "https://neoclone.screenscraper.fr/api2/languesListe.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&output=json&ssid=xxx&sspassword=xxx",
+    "success": "true",
+    "error": ""
+  },
+  "response": {
+    "langues": {
+      "70": {
+        "id": 70,
+        "nomcourt": "de",
+        "nom_fr": "Allemand",
+        "nom_de": "Deutsch",
+        "nom_en": "German",
+        "nom_es": "Alemán",
+        "nom_it": "Tedesco",
+        "nom_pt": "Alemão",
+        "parent": "0"
+      },
+      "68": {
+        "id": 68,
+        "nomcourt": "en",
+        "nom_fr": "Anglais",
+        "nom_de": "Englisch",
+        "nom_en": "English",
+        "nom_es": "Inglés",
+        "nom_it": "Inglese",
+        "nom_pt": "Inglês",
+        "parent": "0"
+      },
+      "2620": {
+        "id": 2620,
+        "nomcourt": "zh",
+        "nom_fr": "Chinois",
+        "nom_de": "Chinesisch",
+        "nom_en": "Chinese",
+        "nom_es": "Chino",
+        "nom_it": "Cinese",
+        "nom_pt": "Chinês",
+        "parent": "0"
+      },
+      "133": {
+        "id": 133,
+        "nomcourt": "kr",
+        "nom_fr": "Coréen",
+        "nom_de": "Koreanisch",
+        "nom_en": "Korean",
+        "nom_es": "Coreano",
+        "nom_it": "Coreano",
+        "nom_pt": "Coreano",
+        "parent": "0"
+      },
+      "3893": {
+        "id": 3893,
+        "nomcourt": "da",
+        "nom_fr": "Danois",
+        "nom_de": "Dänisch",
+        "nom_en": "Danish",
+        "nom_es": "Danés",
+        "nom_it": "Danese",
+        "nom_pt": "Dinamarquês",
+        "parent": "0"
+      },
+      "71": {
+        "id": 71,
+        "nomcourt": "es",
+        "nom_fr": "Espagnol",
+        "nom_de": "Spanisch",
+        "nom_en": "Spanish",
+        "nom_es": "Español",
+        "nom_it": "Spagnolo",
+        "nom_pt": "Espanhol",
+        "parent": "0"
+      },
+      "120": {
+        "id": 120,
+        "nomcourt": "fi",
+        "nom_fr": "Finlandais",
+        "nom_de": "Finnisch",
+        "nom_en": "Finnish",
+        "nom_es": "Finlandés",
+        "nom_it": "Finlandese",
+        "nom_pt": "Finlandês",
+        "parent": "0"
+      },
+      "69": {
+        "id": 69,
+        "nomcourt": "fr",
+        "nom_fr": "Français",
+        "nom_de": "Französisch",
+        "nom_en": "French",
+        "nom_es": "Francés",
+        "nom_it": "Francese",
+        "nom_pt": "Francês",
+        "parent": "0"
+      },
+      "3831": {
+        "id": 3831,
+        "nomcourt": "hu",
+        "nom_fr": "Hongrois",
+        "nom_de": "Ungarisch",
+        "nom_en": "Hungarian",
+        "nom_es": "Húngaro",
+        "nom_it": "Ungherese",
+        "nom_pt": "Húngaro",
+        "parent": "0"
+      },
+      "72": {
+        "id": 72,
+        "nomcourt": "it",
+        "nom_fr": "Italien",
+        "nom_de": "Italienisch",
+        "nom_en": "Italian",
+        "nom_es": "Italiano",
+        "nom_it": "Italiano",
+        "nom_pt": "Italiano",
+        "parent": "0"
+      },
+      "73": {
+        "id": 73,
+        "nomcourt": "ja",
+        "nom_fr": "Japonais",
+        "nom_de": "Japanisch",
+        "nom_en": "Japanese",
+        "nom_es": "Japonés",
+        "nom_it": "Giapponese",
+        "nom_pt": "Japonês",
+        "parent": "0"
+      },
+      "76": {
+        "id": 76,
+        "nomcourt": "nl",
+        "nom_fr": "Néerlandais",
+        "nom_de": "Holländisch",
+        "nom_en": "Dutch",
+        "nom_es": "Holandés",
+        "nom_it": "Olandese",
+        "nom_pt": "Holandês",
+        "parent": "0"
+      },
+      "113": {
+        "id": 113,
+        "nomcourt": "no",
+        "nom_fr": "Norvégien",
+        "nom_de": "Norwegisch",
+        "nom_en": "Norwegian",
+        "nom_es": "Noruego",
+        "nom_it": "Norvegese",
+        "nom_pt": "Norueguês",
+        "parent": "0"
+      },
+      "2619": {
+        "id": 2619,
+        "nomcourt": "pl",
+        "nom_fr": "Polonais",
+        "nom_de": "Polnisch",
+        "nom_en": "Polish",
+        "nom_es": "Polaco",
+        "nom_it": "Polacco",
+        "nom_pt": "Polonês",
+        "parent": "0"
+      },
+      "75": {
+        "id": 75,
+        "nomcourt": "pt",
+        "nom_fr": "Portugais",
+        "nom_de": "Portugiesisch",
+        "nom_en": "Portuguese",
+        "nom_es": "Portugués",
+        "nom_it": "Portoghese",
+        "nom_pt": "Português",
+        "parent": "0"
+      },
+      "3224": {
+        "id": 3224,
+        "nomcourt": "ru",
+        "nom_fr": "Russe",
+        "nom_de": "Russisch",
+        "nom_en": "Russian",
+        "nom_es": "Ruso",
+        "nom_it": "Russo",
+        "nom_pt": "Russo",
+        "parent": "0"
+      },
+      "3830": {
+        "id": 3830,
+        "nomcourt": "sk",
+        "nom_fr": "Slovaque",
+        "nom_de": "Slowakisch",
+        "nom_en": "Slovak",
+        "nom_es": "Eslovaco",
+        "nom_it": "Slovacco",
+        "nom_pt": "Eslovaco",
+        "parent": "0"
+      },
+      "74": {
+        "id": 74,
+        "nomcourt": "sv",
+        "nom_fr": "Suédois",
+        "nom_de": "Schwedisch",
+        "nom_en": "Swedish",
+        "nom_es": "Sueco",
+        "nom_it": "Svedese",
+        "nom_pt": "Sueco",
+        "parent": "0"
+      },
+      "27071": {
+        "id": 27071,
+        "nomcourt": "tw",
+        "nom_fr": "Taïwanais",
+        "nom_de": "Taiwanese",
+        "nom_en": "Taiwanese",
+        "nom_es": "Taiwanés",
+        "nom_it": "Taiwanese",
+        "nom_pt": "Taiwanês",
+        "parent": "0"
+      },
+      "3819": {
+        "id": 3819,
+        "nomcourt": "cz",
+        "nom_fr": "Tcheque",
+        "nom_de": "Tschechisch",
+        "nom_en": "Czech",
+        "nom_es": "Checo",
+        "nom_it": "Ceco",
+        "nom_pt": "Tcheco",
+        "parent": "0"
+      },
+      "3226": {
+        "id": 3226,
+        "nomcourt": "tr",
+        "nom_fr": "Turc",
+        "nom_de": "Türkisch",
+        "nom_en": "Turkish",
+        "nom_es": "Turco",
+        "nom_it": "Turco",
+        "nom_pt": "Turco",
+        "parent": "0"
+      }
+    }
+  }
+}

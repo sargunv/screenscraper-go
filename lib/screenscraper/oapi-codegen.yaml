@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
+package: screenscraper
+output: client.gen.go
+generate:
+  client: true
+  models: true
+  embedded-spec: false
+output-options:
+  prefer-skip-optional-pointer: true

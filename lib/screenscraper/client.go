@@ -1,123 +1,58 @@
 package screenscraper
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
+	"context"
 	"net/http"
-	"net/url"
-	"time"
 )
 
-const BaseURL = "https://api.screenscraper.fr/api2"
-
-// Client is a Screenscraper API client.
-//
-// The ScreenScraper API can only be integrated into applications that are entirely free and distributed,
-// or, otherwise, with prior authorization and conditions set by the ScreenScraper team.
-// Contact the ScreenScraper forum to obtain developer credentials.
-type Client struct {
-	HTTPClient  *http.Client
-	DevID       string // Developer identifier (required for all requests)
-	DevPassword string // Developer password (required for all requests)
-	SoftName    string // Name of the calling software (required for all requests)
-	SSID        string // ScreenScraper user identifier (optional, required for submitting ratings/proposals)
-	SSPassword  string // ScreenScraper user password (optional, required for submitting ratings/proposals)
+// ScreenscraperClient wraps the generated client with stored credentials
+type ScreenscraperClient struct {
+	*ClientWithResponses
+	devID       string
+	devPassword string
+	softName    string
+	ssID        string
+	ssPassword  string
 }
 
-// NewClient creates a new Screenscraper API client.
-// Developer credentials must be obtained from the ScreenScraper forum.
-func NewClient(devID, devPassword, softName, ssid, sspassword string) *Client {
-	return &Client{
-		HTTPClient: &http.Client{
-			Timeout: 30 * time.Second,
-		},
-		DevID:       devID,
-		DevPassword: devPassword,
-		SoftName:    softName,
-		SSID:        ssid,
-		SSPassword:  sspassword,
-	}
-}
-
-func (c *Client) buildURL(endpoint string, params map[string]string) string {
-	u := fmt.Sprintf("%s/%s", BaseURL, endpoint)
-	v := url.Values{}
-
-	// Add required credentials
-	v.Set("devid", c.DevID)
-	v.Set("devpassword", c.DevPassword)
-	v.Set("softname", c.SoftName)
-	v.Set("output", "json")
-
-	// Add optional user credentials if provided
-	if c.SSID != "" {
-		v.Set("ssid", c.SSID)
-	}
-	if c.SSPassword != "" {
-		v.Set("sspassword", c.SSPassword)
-	}
-
-	// Add additional parameters
-	for key, val := range params {
-		if val != "" {
-			v.Set(key, val)
-		}
-	}
-
-	return u + "?" + v.Encode()
-}
-
-func validateResponse(header Header) error {
-	// Check if success field indicates failure
-	if header.Success != "" && header.Success != "true" {
-		// If we have an error message, use it; otherwise use a generic message
-		if header.Error != "" {
-			// Try to map the error message to a status code
-			// Most API errors come through HTTP status codes, but some may come through Header.Error
-			// Default to 400 for errors in Header.Error without a status code
-			return newAPIError(400, header.Error)
-		}
-		return fmt.Errorf("API request failed: success=%s", header.Success)
-	}
-
-	// Check if error field is set (even if success is true, error might be set)
-	if header.Error != "" {
-		return newAPIError(400, header.Error)
-	}
-
-	return nil
-}
-
-func (c *Client) get(endpoint string, params map[string]string) ([]byte, error) {
-	apiURL := c.buildURL(endpoint, params)
-
-	resp, err := c.HTTPClient.Get(apiURL)
+// NewScreenscraperClient creates a client with stored credentials.
+// devID, devPassword, and softName are required developer credentials.
+// ssID and ssPassword are optional user credentials.
+func NewScreenscraperClient(devID, devPassword, softName, ssID, ssPassword string) (*ScreenscraperClient, error) {
+	inner, err := NewClientWithResponses(
+		"https://api.screenscraper.fr/api2",
+		WithRequestEditorFn(credentialEditor(devID, devPassword, softName, ssID, ssPassword)),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request: %w", err)
+		return nil, err
 	}
-	defer resp.Body.Close()
+	return &ScreenscraperClient{
+		ClientWithResponses: inner,
+		devID:               devID,
+		devPassword:         devPassword,
+		softName:            softName,
+		ssID:                ssID,
+		ssPassword:          ssPassword,
+	}, nil
+}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response: %w", err)
-	}
-
-	// Check for HTTP errors
-	if resp.StatusCode != http.StatusOK {
-		// Try to extract error message from response body
-		message := string(body)
-		// Try to parse as JSON to extract error message if possible
-		var jsonResp struct {
-			Header struct {
-				Error string `json:"error"`
-			} `json:"header"`
+func credentialEditor(devID, devPassword, softName, ssID, ssPassword string) RequestEditorFn {
+	return func(ctx context.Context, req *http.Request) error {
+		q := req.URL.Query()
+		q.Set("devid", devID)
+		q.Set("devpassword", devPassword)
+		q.Set("softname", softName)
+		q.Set("output", "json")
+		// For botProposition, user creds go in the form body (handled by proposal.go)
+		if req.URL.Path != "/api2/botProposition.php" {
+			if ssID != "" {
+				q.Set("ssid", ssID)
+			}
+			if ssPassword != "" {
+				q.Set("sspassword", ssPassword)
+			}
 		}
-		if err := json.Unmarshal(body, &jsonResp); err == nil && jsonResp.Header.Error != "" {
-			message = jsonResp.Header.Error
-		}
-		return nil, newAPIError(resp.StatusCode, message)
+		req.URL.RawQuery = q.Encode()
+		return nil
 	}
-
-	return body, nil
 }

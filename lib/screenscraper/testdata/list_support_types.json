@@ -1,0 +1,32 @@
+{
+  "header": {
+    "APIversion": "2.0",
+    "dateTime": "2026-01-21 04:49:47",
+    "commandRequested": "https://neoclone.screenscraper.fr/api2/supportTypesListe.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&output=json&ssid=xxx&sspassword=xxx",
+    "success": "true",
+    "error": ""
+  },
+  "response": {
+    "supporttypes": [
+      "Bluray",
+      "carte",
+      "cartouche",
+      "cartouche&cd",
+      "cartouche&download",
+      "cartouche&k7",
+      "cartouche&k7&disquette",
+      "cd",
+      "cd&disquette",
+      "disquette",
+      "download",
+      "hardware",
+      "k7",
+      "k7&disquette",
+      "non-applicable",
+      "pcb",
+      "smc",
+      "videotape",
+      "web"
+    ]
+  }
+}

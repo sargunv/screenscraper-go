@@ -1,6 +1,7 @@
 package screenscraper
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -42,22 +43,28 @@ var downloadGameMediaCmd = &cobra.Command{
 			return fmt.Errorf("--system, --game-id, and --media are required")
 		}
 
-		params := screenscraper.DownloadMediaParams{
+		params := &screenscraper.DownloadGameMediaParams{
 			SystemID:     dlSystemID,
 			GameID:       dlGameID,
 			Media:        dlMedia,
 			MaxWidth:     dlMaxWidth,
 			MaxHeight:    dlMaxHeight,
-			OutputFormat: dlFormat,
+			OutputFormat: screenscraper.DownloadGameMediaParamsOutputformat(dlFormat),
 		}
 
-		data, err := shared.Client.DownloadGameMedia(params)
+		resp, err := shared.Client.DownloadGameMediaWithResponse(context.Background(), params)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		data := resp.Body
+
 		// Check if it's a text response (NOMEDIA, CRCOK, etc.)
-		if len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
+		if len(data) > 0 && len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
 			fmt.Printf("Response: %s\n", string(data))
 			return nil
 		}
@@ -88,21 +95,27 @@ var downloadSystemMediaCmd = &cobra.Command{
 			return fmt.Errorf("--system and --media are required")
 		}
 
-		params := screenscraper.DownloadMediaParams{
+		params := &screenscraper.DownloadSystemMediaParams{
 			SystemID:     dlSystemID,
 			Media:        dlMedia,
 			MaxWidth:     dlMaxWidth,
 			MaxHeight:    dlMaxHeight,
-			OutputFormat: dlFormat,
+			OutputFormat: screenscraper.DownloadSystemMediaParamsOutputformat(dlFormat),
 		}
 
-		data, err := shared.Client.DownloadSystemMedia(params)
+		resp, err := shared.Client.DownloadSystemMediaWithResponse(context.Background(), params)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		data := resp.Body
+
 		// Check if it's a text response (NOMEDIA, CRCOK, etc.)
-		if len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
+		if len(data) > 0 && len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
 			fmt.Printf("Response: %s\n", string(data))
 			return nil
 		}
@@ -133,21 +146,27 @@ var downloadGroupMediaCmd = &cobra.Command{
 			return fmt.Errorf("--group-id and --media are required")
 		}
 
-		params := screenscraper.DownloadGroupMediaParams{
+		params := &screenscraper.DownloadGroupMediaParams{
 			GroupID:      dlGroupID,
 			Media:        dlMedia,
 			MaxWidth:     dlMaxWidth,
 			MaxHeight:    dlMaxHeight,
-			OutputFormat: dlFormat,
+			OutputFormat: screenscraper.DownloadGroupMediaParamsOutputformat(dlFormat),
 		}
 
-		data, err := shared.Client.DownloadGroupMedia(params)
+		resp, err := shared.Client.DownloadGroupMediaWithResponse(context.Background(), params)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		data := resp.Body
+
 		// Check if it's a text response (NOMEDIA, CRCOK, etc.)
-		if len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
+		if len(data) > 0 && len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
 			fmt.Printf("Response: %s\n", string(data))
 			return nil
 		}
@@ -178,21 +197,27 @@ var downloadCompanyMediaCmd = &cobra.Command{
 			return fmt.Errorf("--company-id and --media are required")
 		}
 
-		params := screenscraper.DownloadCompanyMediaParams{
+		params := &screenscraper.DownloadCompanyMediaParams{
 			CompanyID:    dlCompanyID,
 			Media:        dlMedia,
 			MaxWidth:     dlMaxWidth,
 			MaxHeight:    dlMaxHeight,
-			OutputFormat: dlFormat,
+			OutputFormat: screenscraper.DownloadCompanyMediaParamsOutputformat(dlFormat),
 		}
 
-		data, err := shared.Client.DownloadCompanyMedia(params)
+		resp, err := shared.Client.DownloadCompanyMediaWithResponse(context.Background(), params)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		data := resp.Body
+
 		// Check if it's a text response (NOMEDIA, CRCOK, etc.)
-		if len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
+		if len(data) > 0 && len(data) < 100 && data[0] != 0xFF && data[0] != 0x89 { // not binary
 			fmt.Printf("Response: %s\n", string(data))
 			return nil
 		}

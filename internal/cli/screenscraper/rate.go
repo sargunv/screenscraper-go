@@ -1,6 +1,7 @@
 package screenscraper
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -25,18 +26,25 @@ Your rating will be associated with your ScreenScraper account.`,
 	Example: `  # Rate a game 18 out of 20
   rom-tools screenscraper rate --id=3 --rating=18`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		params := screenscraper.SubmitRatingParams{
+		params := &screenscraper.SubmitRatingParams{
 			GameID: rateID,
 			Rating: rateRating,
 		}
 
-		resp, err := shared.Client.SubmitRating(params)
+		resp, err := shared.Client.SubmitRatingWithResponse(context.Background(), params)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
 		if shared.JsonOutput {
-			formatted, err := json.MarshalIndent(resp, "", "  ")
+			formatted, err := json.MarshalIndent(map[string]interface{}{
+				"status": resp.Status(),
+				"body":   string(resp.Body),
+			}, "", "  ")
 			if err != nil {
 				return fmt.Errorf("failed to format JSON: %w", err)
 			}
@@ -44,7 +52,10 @@ Your rating will be associated with your ScreenScraper account.`,
 			return nil
 		}
 
-		fmt.Println(resp.Message)
+		fmt.Printf("Rating submitted successfully (HTTP %d)\n", resp.StatusCode())
+		if len(resp.Body) > 0 {
+			fmt.Printf("Response: %s\n", string(resp.Body))
+		}
 		return nil
 	},
 }

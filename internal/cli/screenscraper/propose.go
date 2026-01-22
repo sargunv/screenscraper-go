@@ -1,14 +1,15 @@
 package screenscraper
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/shared"
 	"github.com/sargunv/rom-tools/lib/screenscraper"
-
 	"github.com/spf13/cobra"
 )
 
@@ -60,24 +61,31 @@ regions, langues, clonetype, hacktype, friendly, serial, description`,
 			return fmt.Errorf("exactly one of --game-id or --rom-id must be specified")
 		}
 
-		params := screenscraper.SubmitInfoProposalParams{
-			GameID:   proposeGameID,
-			ROMID:    proposeROMID,
-			InfoType: proposeType,
-			Text:     proposeText,
-			Region:   proposeRegion,
-			Language: proposeLanguage,
-			Version:  proposeVersion,
-			Source:   proposeSource,
+		body := screenscraper.SubmitProposalMultipartBody{
+			GameID:         proposeGameID,
+			ROMID:          proposeROMID,
+			ModifyInfoType: proposeType,
+			ModifyText:     proposeText,
+			ModifyRegion:   proposeRegion,
+			ModifyLanguage: proposeLanguage,
+			ModifyVersion:  proposeVersion,
+			ModifySource:   proposeSource,
 		}
 
-		resp, err := shared.Client.SubmitInfoProposal(params)
+		resp, err := shared.Client.SubmitProposalWithResponse(context.Background(), body)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d - %s", resp.StatusCode(), string(resp.Body))
+		}
+
 		if shared.JsonOutput {
-			formatted, err := json.MarshalIndent(resp, "", "  ")
+			formatted, err := json.MarshalIndent(map[string]interface{}{
+				"status": resp.Status(),
+				"body":   string(resp.Body),
+			}, "", "  ")
 			if err != nil {
 				return fmt.Errorf("failed to format JSON: %w", err)
 			}
@@ -85,7 +93,10 @@ regions, langues, clonetype, hacktype, friendly, serial, description`,
 			return nil
 		}
 
-		fmt.Println(resp.Message)
+		fmt.Printf("Proposal submitted successfully (HTTP %d)\n", resp.StatusCode())
+		if len(resp.Body) > 0 {
+			fmt.Printf("Response: %s\n", string(resp.Body))
+		}
 		return nil
 	},
 }
@@ -122,46 +133,58 @@ Use --file=- to read from stdin.`,
 			return fmt.Errorf("exactly one of --file or --url must be specified")
 		}
 
-		params := screenscraper.SubmitMediaProposalParams{
-			GameID:        proposeGameID,
-			ROMID:         proposeROMID,
-			MediaType:     proposeType,
-			MediaFileURL:  proposeURL,
-			Region:        proposeRegion,
-			SupportNumber: proposeSupportNum,
-			Version:       proposeVersion,
-			Source:        proposeSource,
+		body := screenscraper.SubmitProposalMultipartBody{
+			GameID:              proposeGameID,
+			ROMID:               proposeROMID,
+			ModifyMediaType:     proposeType,
+			ModifyMediaFileURL:  proposeURL,
+			ModifyTypeRegion:    proposeRegion,
+			ModifySupportNumber: proposeSupportNum,
+			ModifyVersion:       proposeVersion,
+			ModifySource:        proposeSource,
 		}
 
 		// Handle file input if provided
 		if proposeFile != "" {
-			var file *os.File
+			var fileData []byte
+			var fileName string
 			var err error
 
 			if proposeFile == "-" {
 				// Read from stdin
-				file = os.Stdin
-				params.MediaFileName = "stdin"
+				fileData, err = os.ReadFile("/dev/stdin")
+				if err != nil {
+					return fmt.Errorf("failed to read from stdin: %w", err)
+				}
+				fileName = "stdin"
 			} else {
 				// Read from file
-				file, err = os.Open(proposeFile)
+				fileData, err = os.ReadFile(proposeFile)
 				if err != nil {
-					return fmt.Errorf("failed to open file: %w", err)
+					return fmt.Errorf("failed to read file: %w", err)
 				}
-				defer file.Close()
-				params.MediaFileName = filepath.Base(proposeFile)
+				fileName = filepath.Base(proposeFile)
 			}
 
-			params.MediaFile = file
+			var file openapi_types.File
+			file.InitFromBytes(fileData, fileName)
+			body.ModifyMediaFile = file
 		}
 
-		resp, err := shared.Client.SubmitMediaProposal(params)
+		resp, err := shared.Client.SubmitProposalWithResponse(context.Background(), body)
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d - %s", resp.StatusCode(), string(resp.Body))
+		}
+
 		if shared.JsonOutput {
-			formatted, err := json.MarshalIndent(resp, "", "  ")
+			formatted, err := json.MarshalIndent(map[string]interface{}{
+				"status": resp.Status(),
+				"body":   string(resp.Body),
+			}, "", "  ")
 			if err != nil {
 				return fmt.Errorf("failed to format JSON: %w", err)
 			}
@@ -169,7 +192,10 @@ Use --file=- to read from stdin.`,
 			return nil
 		}
 
-		fmt.Println(resp.Message)
+		fmt.Printf("Proposal submitted successfully (HTTP %d)\n", resp.StatusCode())
+		if len(resp.Body) > 0 {
+			fmt.Printf("Response: %s\n", string(resp.Body))
+		}
 		return nil
 	},
 }

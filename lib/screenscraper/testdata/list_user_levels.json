@@ -1,0 +1,117 @@
+{
+  "header": {
+    "APIversion": "2.0",
+    "dateTime": "2026-01-21 04:49:32",
+    "commandRequested": "https://neoclone.screenscraper.fr/api2/userlevelsListe.php?devid=xxx&devpassword=xxx&softname=rom-tools-test&output=json&ssid=xxx&sspassword=xxx",
+    "success": "true",
+    "error": ""
+  },
+  "response": {
+    "userlevels": {
+      "1": {
+        "id": 1,
+        "nom_fr": "Membre"
+      },
+      "10": {
+        "id": 10,
+        "nom_fr": "Contributeur Occasionnel"
+      },
+      "11": {
+        "id": 11,
+        "nom_fr": "Infographiste Contributeur Occasionnel"
+      },
+      "15": {
+        "id": 15,
+        "nom_fr": "Contributeur"
+      },
+      "16": {
+        "id": 16,
+        "nom_fr": "Infographiste Contributeur"
+      },
+      "20": {
+        "id": 20,
+        "nom_fr": "Fervent Contributeur"
+      },
+      "21": {
+        "id": 21,
+        "nom_fr": "Fervent Infographiste Contributeur"
+      },
+      "25": {
+        "id": 25,
+        "nom_fr": "Maître Contributeur"
+      },
+      "26": {
+        "id": 26,
+        "nom_fr": "Maître Infographiste Contributeur"
+      },
+      "30": {
+        "id": 30,
+        "nom_fr": "Grand Grourou Contributeur"
+      },
+      "31": {
+        "id": 31,
+        "nom_fr": "Grand Gourou Infographiste Contributeur"
+      },
+      "35": {
+        "id": 35,
+        "nom_fr": "Contributeur de Confiance"
+      },
+      "36": {
+        "id": 36,
+        "nom_fr": "Infographiste Contributeur de Confiance"
+      },
+      "40": {
+        "id": 40,
+        "nom_fr": "Traducteur"
+      },
+      "42": {
+        "id": 42,
+        "nom_fr": "Community Manager"
+      },
+      "45": {
+        "id": 45,
+        "nom_fr": "Modérateur Système(s)"
+      },
+      "49": {
+        "id": 49,
+        "nom_fr": "Modérateur"
+      },
+      "59": {
+        "id": 59,
+        "nom_fr": "Super Modérateur"
+      },
+      "69": {
+        "id": 69,
+        "nom_fr": "Admin"
+      },
+      "99": {
+        "id": 99,
+        "nom_fr": "Super Admin"
+      },
+      "101": {
+        "id": 101,
+        "nom_fr": "Robot"
+      },
+      "199": {
+        "id": 199,
+        "nom_fr": "Darwiniste qui en veut"
+      },
+      "500": {
+        "id": 500,
+        "nom_fr": "Demi Dieu"
+      },
+      "502": {
+        "id": 502,
+        "nom_fr": "2/3 de Dieu"
+      },
+      "1000": {
+        "id": 1000,
+        "nom_fr": "Dieu tout puissant"
+      },
+      "2000": {
+        "id": 2000,
+        "nom_fr": "Chuck Norris"
+      }
+    }
+  }
+}

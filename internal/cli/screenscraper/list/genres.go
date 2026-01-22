@@ -1,11 +1,13 @@
 package list
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/sargunv/rom-tools/internal/cli/screenscraper/shared"
 	"github.com/sargunv/rom-tools/internal/format"
+	"github.com/sargunv/rom-tools/lib/screenscraper"
 
 	"github.com/spf13/cobra"
 )
@@ -15,13 +17,23 @@ var genresCmd = &cobra.Command{
 	Short: "Get list of genres",
 	Long:  "Retrieves the list of all game genres",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resp, err := shared.Client.GetGenresList()
+		resp, err := shared.Client.ListGenresWithResponse(context.Background())
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		if resp.JSON200 == nil {
+			return fmt.Errorf("no genres data in response")
+		}
+
+		genres := resp.JSON200.Response.Genres
+
 		if shared.JsonOutput {
-			formatted, err := json.MarshalIndent(resp.Response.Genres, "", "  ")
+			formatted, err := json.MarshalIndent(genres, "", "  ")
 			if err != nil {
 				return fmt.Errorf("failed to format JSON: %w", err)
 			}
@@ -30,7 +42,7 @@ var genresCmd = &cobra.Command{
 		}
 
 		lang := format.GetPreferredLanguage(shared.Locale)
-		fmt.Print(format.RenderGenresList(resp.Response.Genres, lang))
+		fmt.Print(format.RenderGenresList(genres, lang))
 		return nil
 	},
 }

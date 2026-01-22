@@ -1,6 +1,7 @@
 package detail
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -21,16 +22,26 @@ var systemCmd = &cobra.Command{
 	Long:    "Retrieves detailed information about a specific system/console",
 	Example: `  rom-tools screenscraper detail system --id=1`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resp, err := shared.Client.GetSystemsList()
+		resp, err := shared.Client.ListSystemsWithResponse(context.Background())
 		if err != nil {
 			return err
 		}
 
+		if !screenscraper.IsSuccess(resp) {
+			return fmt.Errorf("API error: HTTP %d", resp.StatusCode())
+		}
+
+		if resp.JSON200 == nil {
+			return fmt.Errorf("no systems data in response")
+		}
+
+		systems := resp.JSON200.Response.Systems
+
 		// Find system by ID
 		var found *screenscraper.System
-		for i := range resp.Response.Systems {
-			if resp.Response.Systems[i].ID == systemDetailID {
-				found = &resp.Response.Systems[i]
+		for i := range systems {
+			if systems[i].Id == systemDetailID {
+				found = &systems[i]
 				break
 			}
 		}

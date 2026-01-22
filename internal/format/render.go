@@ -68,6 +68,20 @@ func RenderID(id string) string {
 	return DimStyle.Render("(" + id + ")")
 }
 
+// appendKV appends a key-value pair if the value is non-empty
+func appendKV(pairs *[]KVPair, key string, val string) {
+	if val != "" {
+		*pairs = append(*pairs, KVPair{key, val})
+	}
+}
+
+// appendKVf appends a key-value pair with a formatted value if the value is non-empty
+func appendKVf(pairs *[]KVPair, key string, val string, format string) {
+	if val != "" {
+		*pairs = append(*pairs, KVPair{key, fmt.Sprintf(format, val)})
+	}
+}
+
 // RenderSystemsList renders a list of systems
 func RenderSystemsList(systems []screenscraper.System, lang string) string {
 	if len(systems) == 0 {
@@ -76,7 +90,7 @@ func RenderSystemsList(systems []screenscraper.System, lang string) string {
 
 	// Sort by ID
 	sort.Slice(systems, func(i, j int) bool {
-		return systems[i].ID < systems[j].ID
+		return systems[i].Id < systems[j].Id
 	})
 
 	headers := []string{"ID", "Name", "Company", "Type"}
@@ -85,11 +99,11 @@ func RenderSystemsList(systems []screenscraper.System, lang string) string {
 	for _, sys := range systems {
 		name := GetLocalizedFromMap(lang, sys.Names)
 		if name == "" {
-			name = fmt.Sprintf("System %d", sys.ID)
+			name = fmt.Sprintf("System %d", sys.Id)
 		}
 
 		rows = append(rows, []string{
-			strconv.Itoa(sys.ID),
+			strconv.Itoa(sys.Id),
 			name,
 			sys.Company,
 			sys.Type,
@@ -115,7 +129,7 @@ func RenderRegionsList(regions map[string]screenscraper.Region, lang string) str
 		entries = append(entries, regionEntry{k, r})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].region.ID < entries[j].region.ID
+		return entries[i].region.Id < entries[j].region.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name"}
@@ -129,7 +143,7 @@ func RenderRegionsList(regions map[string]screenscraper.Region, lang string) str
 		}
 
 		rows = append(rows, []string{
-			strconv.Itoa(r.ID),
+			strconv.Itoa(r.Id),
 			r.ShortName,
 			name,
 		})
@@ -154,7 +168,7 @@ func RenderGenresList(genres map[string]screenscraper.Genre, lang string) string
 		entries = append(entries, genreEntry{k, g})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].genre.ID < entries[j].genre.ID
+		return entries[i].genre.Id < entries[j].genre.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name"}
@@ -168,7 +182,7 @@ func RenderGenresList(genres map[string]screenscraper.Genre, lang string) string
 		}
 
 		rows = append(rows, []string{
-			strconv.Itoa(g.ID),
+			strconv.Itoa(g.Id),
 			g.ShortName,
 			name,
 		})
@@ -193,7 +207,7 @@ func RenderLanguagesList(languages map[string]screenscraper.Language, lang strin
 		entries = append(entries, langEntry{k, l})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].language.ID < entries[j].language.ID
+		return entries[i].language.Id < entries[j].language.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name"}
@@ -207,7 +221,7 @@ func RenderLanguagesList(languages map[string]screenscraper.Language, lang strin
 		}
 
 		rows = append(rows, []string{
-			strconv.Itoa(l.ID),
+			strconv.Itoa(l.Id),
 			l.ShortName,
 			name,
 		})
@@ -232,7 +246,7 @@ func RenderFamiliesList(families map[string]screenscraper.Family, lang string) s
 		entries = append(entries, familyEntry{k, f})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].family.ID < entries[j].family.ID
+		return entries[i].family.Id < entries[j].family.Id
 	})
 
 	headers := []string{"ID", "Name"}
@@ -241,7 +255,7 @@ func RenderFamiliesList(families map[string]screenscraper.Family, lang string) s
 	for _, entry := range entries {
 		f := entry.family
 		rows = append(rows, []string{
-			strconv.Itoa(f.ID),
+			strconv.Itoa(f.Id),
 			f.Name,
 		})
 	}
@@ -265,7 +279,7 @@ func RenderClassificationsList(classifications map[string]screenscraper.Classifi
 		entries = append(entries, classEntry{k, c})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].classification.ID < entries[j].classification.ID
+		return entries[i].classification.Id < entries[j].classification.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name"}
@@ -279,7 +293,7 @@ func RenderClassificationsList(classifications map[string]screenscraper.Classifi
 		}
 
 		rows = append(rows, []string{
-			strconv.Itoa(c.ID),
+			strconv.Itoa(c.Id),
 			c.ShortName,
 			name,
 		})
@@ -312,7 +326,7 @@ func RenderMediaTypesList(medias map[string]screenscraper.MediaType, lang string
 		entries = append(entries, mediaEntry{k, m})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].media.ID < entries[j].media.ID
+		return entries[i].media.Id < entries[j].media.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name", "Format", "Region", "Support #", "Version"}
@@ -321,7 +335,7 @@ func RenderMediaTypesList(medias map[string]screenscraper.MediaType, lang string
 	for _, entry := range entries {
 		m := entry.media
 		rows = append(rows, []string{
-			strconv.Itoa(m.ID),
+			strconv.Itoa(m.Id),
 			m.ShortName,
 			m.Name,
 			m.FileFormat,
@@ -368,7 +382,7 @@ func RenderPlayerCountsList(playerCounts map[string]screenscraper.PlayerCount, l
 		entries = append(entries, pcEntry{k, pc})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].playerCount.ID < entries[j].playerCount.ID
+		return entries[i].playerCount.Id < entries[j].playerCount.Id
 	})
 
 	headers := []string{"ID", "Name"}
@@ -377,7 +391,7 @@ func RenderPlayerCountsList(playerCounts map[string]screenscraper.PlayerCount, l
 	for _, entry := range entries {
 		pc := entry.playerCount
 		rows = append(rows, []string{
-			strconv.Itoa(pc.ID),
+			strconv.Itoa(pc.Id),
 			pc.Name,
 		})
 	}
@@ -472,7 +486,7 @@ func RenderGame(game screenscraper.Game, lang string) string {
 	}
 
 	// Media URLs - group by type, show only main types
-	if len(game.Medias) > 0 {
+	if len(game.Media) > 0 {
 		// Main media types to show
 		mainTypes := map[string]bool{
 			"sstitle":         true,
@@ -493,18 +507,20 @@ func RenderGame(game screenscraper.Game, lang string) string {
 		}
 		mediaByType := make(map[string][]mediaEntry)
 		var typeOrder []string
-		for _, media := range game.Medias {
-			if media.URL == "" || !mainTypes[media.Type] {
+		for _, media := range game.Media {
+			mediaType := media.Type
+			mediaURL := media.Url
+			if mediaURL == "" || !mainTypes[mediaType] {
 				continue
 			}
-			if _, seen := mediaByType[media.Type]; !seen {
-				typeOrder = append(typeOrder, media.Type)
+			if _, seen := mediaByType[mediaType]; !seen {
+				typeOrder = append(typeOrder, mediaType)
 			}
 			region := media.Region
 			if region == "" {
 				region = "link"
 			}
-			mediaByType[media.Type] = append(mediaByType[media.Type], mediaEntry{region, media.URL})
+			mediaByType[mediaType] = append(mediaByType[mediaType], mediaEntry{region, mediaURL})
 		}
 
 		if len(typeOrder) > 0 {
@@ -543,7 +559,7 @@ func RenderGamesList(games []screenscraper.Game, lang string) string {
 		}
 
 		rows = append(rows, []string{
-			game.ID,
+			game.Id,
 			name,
 			game.System.Text,
 			game.Publisher.Text,
@@ -559,12 +575,10 @@ func RenderUser(user screenscraper.UserInfo, lang string) string {
 
 	// Account
 	var accountPairs []KVPair
-	if user.ID != "" {
-		accountPairs = append(accountPairs, KVPair{"User", user.ID + " " + RenderID(user.NumID)})
+	if user.Id != "" {
+		accountPairs = append(accountPairs, KVPair{"User", user.Id + " " + RenderID(user.NumID)})
 	}
-	if user.Level != "" {
-		accountPairs = append(accountPairs, KVPair{"Level", user.Level})
-	}
+	appendKV(&accountPairs, "Level", user.Level)
 	if user.Contribution != "" {
 		contribLevel := user.Contribution
 		if contribLevel == "2" {
@@ -574,9 +588,7 @@ func RenderUser(user screenscraper.UserInfo, lang string) string {
 		}
 		accountPairs = append(accountPairs, KVPair{"Contribution", contribLevel})
 	}
-	if user.FavoriteRegion != "" {
-		accountPairs = append(accountPairs, KVPair{"Favorite Region", user.FavoriteRegion})
-	}
+	appendKV(&accountPairs, "Favorite Region", user.FavoriteRegion)
 	if len(accountPairs) > 0 {
 		parts = append(parts, HeaderStyle.Render("Account:"))
 		parts = append(parts, RenderKeyValue(accountPairs))
@@ -584,21 +596,11 @@ func RenderUser(user screenscraper.UserInfo, lang string) string {
 
 	// Limits
 	var limitPairs []KVPair
-	if user.MaxThreads != "" {
-		limitPairs = append(limitPairs, KVPair{"Max Threads", user.MaxThreads})
-	}
-	if user.MaxDownloadSpeed != "" {
-		limitPairs = append(limitPairs, KVPair{"Max Download Speed", user.MaxDownloadSpeed + " KB/s"})
-	}
-	if user.MaxRequestsPerMin != "" {
-		limitPairs = append(limitPairs, KVPair{"Max Requests Per Minute", user.MaxRequestsPerMin})
-	}
-	if user.MaxRequestsPerDay != "" {
-		limitPairs = append(limitPairs, KVPair{"Max Requests Per Day", user.MaxRequestsPerDay})
-	}
-	if user.MaxRequestsKOPerDay != "" {
-		limitPairs = append(limitPairs, KVPair{"Max Failed Requests Per Day", user.MaxRequestsKOPerDay})
-	}
+	appendKV(&limitPairs, "Max Threads", user.MaxThreads)
+	appendKVf(&limitPairs, "Max Download Speed", user.MaxDownloadSpeed, "%s KB/s")
+	appendKV(&limitPairs, "Max Requests Per Minute", user.MaxRequestsPerMin)
+	appendKV(&limitPairs, "Max Requests Per Day", user.MaxRequestsPerDay)
+	appendKV(&limitPairs, "Max Failed Requests Per Day", user.MaxFailedRequestsPerDay)
 	if len(limitPairs) > 0 {
 		parts = append(parts, "")
 		parts = append(parts, HeaderStyle.Render("Limits:"))
@@ -613,18 +615,14 @@ func RenderUser(user screenscraper.UserInfo, lang string) string {
 			user.RequestsToday + " / " + user.MaxRequestsPerDay,
 		})
 	}
-	if user.RequestsKOToday != "" && user.MaxRequestsKOPerDay != "" {
+	if user.FailedRequestsToday != "" && user.MaxFailedRequestsPerDay != "" {
 		usagePairs = append(usagePairs, KVPair{
 			"Failed Requests Today",
-			user.RequestsKOToday + " / " + user.MaxRequestsKOPerDay,
+			user.FailedRequestsToday + " / " + user.MaxFailedRequestsPerDay,
 		})
 	}
-	if user.Visites != "" {
-		usagePairs = append(usagePairs, KVPair{"Total Visits", user.Visites})
-	}
-	if user.LastVisitDate != "" {
-		usagePairs = append(usagePairs, KVPair{"Last Visit", user.LastVisitDate})
-	}
+	appendKV(&usagePairs, "Total Visits", user.Visits)
+	appendKV(&usagePairs, "Last Visit", user.LastVisitDate)
 	if len(usagePairs) > 0 {
 		parts = append(parts, "")
 		parts = append(parts, HeaderStyle.Render("Usage:"))
@@ -633,24 +631,12 @@ func RenderUser(user screenscraper.UserInfo, lang string) string {
 
 	// Contributions
 	var contribPairs []KVPair
-	if user.UploadSystem != "" {
-		contribPairs = append(contribPairs, KVPair{"System Media", user.UploadSystem})
-	}
-	if user.UploadInfos != "" {
-		contribPairs = append(contribPairs, KVPair{"Text Info", user.UploadInfos})
-	}
-	if user.UploadMedia != "" {
-		contribPairs = append(contribPairs, KVPair{"Game Media", user.UploadMedia})
-	}
-	if user.ROMAsso != "" {
-		contribPairs = append(contribPairs, KVPair{"ROM Associations", user.ROMAsso})
-	}
-	if user.PropositionOK != "" {
-		contribPairs = append(contribPairs, KVPair{"Proposals Accepted", user.PropositionOK})
-	}
-	if user.PropositionKO != "" {
-		contribPairs = append(contribPairs, KVPair{"Proposals Rejected", user.PropositionKO})
-	}
+	appendKV(&contribPairs, "System Media", user.SystemUpload)
+	appendKV(&contribPairs, "Text Info", user.InfoUpload)
+	appendKV(&contribPairs, "Game Media", user.MediaUpload)
+	appendKV(&contribPairs, "ROM Associations", user.ROMAssociation)
+	appendKV(&contribPairs, "Proposals Accepted", user.ApprovedProposals)
+	appendKV(&contribPairs, "Proposals Rejected", user.RejectedProposals)
 	if len(contribPairs) > 0 {
 		parts = append(parts, "")
 		parts = append(parts, HeaderStyle.Render("Contributions:"))
@@ -664,22 +650,18 @@ func RenderUser(user screenscraper.UserInfo, lang string) string {
 func RenderInfra(servers screenscraper.ServerInfo, lang string) string {
 	var kvPairs []KVPair
 
-	if servers.APIAccess != "" {
-		kvPairs = append(kvPairs, KVPair{"API Access", servers.APIAccess})
-	}
-	if servers.NbScrapeurs != "" {
-		kvPairs = append(kvPairs, KVPair{"Scrapers", servers.NbScrapeurs})
-	}
-	if servers.CPU1 != "" {
-		cpus := []string{servers.CPU1}
-		if servers.CPU2 != "" {
-			cpus = append(cpus, servers.CPU2)
+	appendKV(&kvPairs, "API Access", servers.APIAccess)
+	appendKV(&kvPairs, "Scrapers", servers.ScraperCount)
+	if servers.Cpu1 != "" {
+		cpus := []string{servers.Cpu1}
+		if servers.Cpu2 != "" {
+			cpus = append(cpus, servers.Cpu2)
 		}
-		if servers.CPU3 != "" {
-			cpus = append(cpus, servers.CPU3)
+		if servers.Cpu3 != "" {
+			cpus = append(cpus, servers.Cpu3)
 		}
-		if servers.CPU4 != "" {
-			cpus = append(cpus, servers.CPU4)
+		if servers.Cpu4 != "" {
+			cpus = append(cpus, servers.Cpu4)
 		}
 		kvPairs = append(kvPairs, KVPair{"CPUs", strings.Join(cpus, ", ")})
 	}
@@ -694,7 +676,7 @@ func RenderInfra(servers screenscraper.ServerInfo, lang string) string {
 }
 
 // RenderROMInfoTypesList renders a list of ROM info types
-func RenderROMInfoTypesList(infoTypes map[string]screenscraper.ROMInfoType, lang string) string {
+func RenderROMInfoTypesList(infoTypes map[string]screenscraper.RomInfoType, lang string) string {
 	if len(infoTypes) == 0 {
 		return "No ROM info types found.\n"
 	}
@@ -702,14 +684,14 @@ func RenderROMInfoTypesList(infoTypes map[string]screenscraper.ROMInfoType, lang
 	// Convert to slice and sort by ID
 	type infoEntry struct {
 		key  string
-		info screenscraper.ROMInfoType
+		info screenscraper.RomInfoType
 	}
 	var entries []infoEntry
 	for k, info := range infoTypes {
 		entries = append(entries, infoEntry{k, info})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].info.ID < entries[j].info.ID
+		return entries[i].info.Id < entries[j].info.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name", "Type", "Region", "Version", "Multi"}
@@ -718,13 +700,13 @@ func RenderROMInfoTypesList(infoTypes map[string]screenscraper.ROMInfoType, lang
 	for _, entry := range entries {
 		info := entry.info
 		rows = append(rows, []string{
-			strconv.Itoa(info.ID),
+			strconv.Itoa(info.Id),
 			info.ShortName,
 			info.Name,
 			info.Type,
 			boolCheck(info.MultiRegions),
 			boolCheck(info.MultiVersions),
-			boolCheck(info.MultiChoix),
+			boolCheck(info.MultiChoice),
 		})
 	}
 
@@ -747,7 +729,7 @@ func RenderGameInfoTypesList(infoTypes map[string]screenscraper.GameInfoType, la
 		entries = append(entries, infoEntry{k, info})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].info.ID < entries[j].info.ID
+		return entries[i].info.Id < entries[j].info.Id
 	})
 
 	headers := []string{"ID", "Short Name", "Name", "Type", "Region", "Version", "Multi"}
@@ -756,13 +738,13 @@ func RenderGameInfoTypesList(infoTypes map[string]screenscraper.GameInfoType, la
 	for _, entry := range entries {
 		info := entry.info
 		rows = append(rows, []string{
-			strconv.Itoa(info.ID),
+			strconv.Itoa(info.Id),
 			info.ShortName,
 			info.Name,
 			info.Type,
 			boolCheck(info.MultiRegions),
 			boolCheck(info.MultiVersions),
-			boolCheck(info.MultiChoix),
+			boolCheck(info.MultiChoice),
 		})
 	}
 
@@ -803,7 +785,7 @@ func RenderUserLevelsList(userLevels map[string]screenscraper.UserLevel, lang st
 		entries = append(entries, ulEntry{k, ul})
 	}
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].userLevel.ID < entries[j].userLevel.ID
+		return entries[i].userLevel.Id < entries[j].userLevel.Id
 	})
 
 	headers := []string{"ID", "Name"}
@@ -813,10 +795,10 @@ func RenderUserLevelsList(userLevels map[string]screenscraper.UserLevel, lang st
 		ul := entry.userLevel
 		name := ul.NameFR
 		if name == "" {
-			name = "Level " + strconv.Itoa(ul.ID)
+			name = "Level " + strconv.Itoa(ul.Id)
 		}
 		rows = append(rows, []string{
-			strconv.Itoa(ul.ID),
+			strconv.Itoa(ul.Id),
 			name,
 		})
 	}
@@ -831,38 +813,24 @@ func RenderSystemDetail(system screenscraper.System, lang string) string {
 	// Title
 	name := GetLocalizedFromMap(lang, system.Names)
 	if name == "" {
-		name = fmt.Sprintf("System %d", system.ID)
+		name = fmt.Sprintf("System %d", system.Id)
 	}
-	parts = append(parts, TitleStyle.Render(fmt.Sprintf("%s %s", name, RenderID(strconv.Itoa(system.ID)))))
+	parts = append(parts, TitleStyle.Render(fmt.Sprintf("%s %s", name, RenderID(strconv.Itoa(system.Id)))))
 
 	var kvPairs []KVPair
 
 	// Basic info
-	kvPairs = append(kvPairs, KVPair{"ID", strconv.Itoa(system.ID)})
+	kvPairs = append(kvPairs, KVPair{"ID", strconv.Itoa(system.Id)})
 	if system.ParentID != 0 {
 		kvPairs = append(kvPairs, KVPair{"Parent ID", strconv.Itoa(system.ParentID)})
 	}
-	if system.Company != "" {
-		kvPairs = append(kvPairs, KVPair{"Company", system.Company})
-	}
-	if system.Type != "" {
-		kvPairs = append(kvPairs, KVPair{"Type", system.Type})
-	}
-	if system.StartDate != "" {
-		kvPairs = append(kvPairs, KVPair{"Start Date", system.StartDate})
-	}
-	if system.EndDate != "" {
-		kvPairs = append(kvPairs, KVPair{"End Date", system.EndDate})
-	}
-	if system.Extensions != "" {
-		kvPairs = append(kvPairs, KVPair{"Extensions", system.Extensions})
-	}
-	if system.ROMType != "" {
-		kvPairs = append(kvPairs, KVPair{"ROM Type", system.ROMType})
-	}
-	if system.SupportType != "" {
-		kvPairs = append(kvPairs, KVPair{"Support Type", system.SupportType})
-	}
+	appendKV(&kvPairs, "Company", system.Company)
+	appendKV(&kvPairs, "Type", system.Type)
+	appendKV(&kvPairs, "Start Date", system.StartDate)
+	appendKV(&kvPairs, "End Date", system.EndDate)
+	appendKV(&kvPairs, "Extensions", system.Extensions)
+	appendKV(&kvPairs, "ROM Type", system.ROMType)
+	appendKV(&kvPairs, "Support Type", system.SupportType)
 
 	if len(kvPairs) > 0 {
 		parts = append(parts, RenderKeyValue(kvPairs))
@@ -883,7 +851,7 @@ func RenderSystemDetail(system screenscraper.System, lang string) string {
 	}
 
 	// Media section
-	if len(system.Medias) > 0 {
+	if len(system.Media) > 0 {
 		// Main media types to show for systems
 		mainTypes := map[string]bool{
 			"photo":        true,
@@ -900,18 +868,20 @@ func RenderSystemDetail(system screenscraper.System, lang string) string {
 		}
 		mediaByType := make(map[string][]mediaEntry)
 		var typeOrder []string
-		for _, media := range system.Medias {
-			if media.URL == "" || !mainTypes[media.Type] {
+		for _, media := range system.Media {
+			mediaType := media.Type
+			mediaURL := media.Url
+			if mediaURL == "" || !mainTypes[mediaType] {
 				continue
 			}
-			if _, seen := mediaByType[media.Type]; !seen {
-				typeOrder = append(typeOrder, media.Type)
+			if _, seen := mediaByType[mediaType]; !seen {
+				typeOrder = append(typeOrder, mediaType)
 			}
 			region := media.Region
 			if region == "" {
 				region = "link"
 			}
-			mediaByType[media.Type] = append(mediaByType[media.Type], mediaEntry{region, media.URL})
+			mediaByType[mediaType] = append(mediaByType[mediaType], mediaEntry{region, mediaURL})
 		}
 
 		if len(typeOrder) > 0 {

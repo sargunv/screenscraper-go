@@ -8,7 +8,7 @@ import (
 	"slices"
 
 	"github.com/sargunv/rom-tools/internal/format"
-	"github.com/sargunv/rom-tools/lib/romident"
+	romident "github.com/sargunv/rom-tools/lib/identify"
 
 	"github.com/spf13/cobra"
 )
@@ -158,21 +158,11 @@ func outputTextSingle(rom *romident.ROM) {
 	if rom.Ident != nil {
 		fmt.Println(format.HeaderStyle.Render("Identification:"))
 		fmt.Printf("  Platform: %s\n", rom.Ident.Platform)
-		if rom.Ident.TitleID != "" {
-			fmt.Printf("  Title ID: %s\n", rom.Ident.TitleID)
-		}
 		if rom.Ident.Title != "" {
 			fmt.Printf("  Title: %s\n", rom.Ident.Title)
 		}
-
-		if rom.Ident.MakerCode != "" {
-			fmt.Printf("  Maker Code: %s\n", rom.Ident.MakerCode)
-		}
-		if rom.Ident.Version != nil {
-			fmt.Printf("  Version: %d\n", *rom.Ident.Version)
-		}
-		if rom.Ident.DiscNumber != nil {
-			fmt.Printf("  Disc Number: %d\n", *rom.Ident.DiscNumber)
+		if rom.Ident.Serial != "" {
+			fmt.Printf("  Serial: %s\n", rom.Ident.Serial)
 		}
 		if rom.Ident.Extra != nil {
 			extraJSON, _ := json.Marshal(rom.Ident.Extra)
