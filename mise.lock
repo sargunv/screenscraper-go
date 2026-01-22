@@ -7,6 +7,10 @@ backend = "core:go"
 "platforms.macos-x64" = { checksum = "sha256:1641050b422b80dfd6299f8aa7eb8798d1cd23eac7e79f445728926e881b7bcd", url = "https://dl.google.com/go/go1.25.3.darwin-amd64.tar.gz"}
 "platforms.windows-x64" = { checksum = "sha256:bc249a599c6fe9d0d4093c363856f6c6320dbbe05e5d5d8818b711fb4a14fc23", url = "https://dl.google.com/go/go1.25.3.windows-amd64.zip"}
 
+[[tools."go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen"]]
+version = "2.5.1"
+backend = "go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen"
+
 [[tools."go:golang.org/x/pkgsite/cmd/pkgsite"]]
 version = "latest"
 backend = "go:golang.org/x/pkgsite/cmd/pkgsite"
@@ -31,7 +35,3 @@ backend = "aqua:apple/pkl"
 [[tools.prettier]]
 version = "3.6.2"
 backend = "npm:prettier"
-
-[[tools.uv]]
-version = "0.9.7"
-backend = "aqua:astral-sh/uv"
