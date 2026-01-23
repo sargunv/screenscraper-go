@@ -39,14 +39,12 @@ const (
 	FormatGB      Format = "gb"
 	FormatMD      Format = "md"
 	FormatSMD     Format = "smd"
-	Format32X     Format = "32x"
 	FormatNDS     Format = "nds"
 	FormatNES     Format = "nes"
 	FormatSNES    Format = "snes"
 	FormatGCM     Format = "gcm"
 	FormatRVZ     Format = "rvz"
 	FormatSMS     Format = "sms"
-	FormatGG      Format = "gg"
 )
 
 // HashAlgorithm identifies a hash algorithm.

@@ -2,140 +2,16 @@ package identify
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 
 	"github.com/sargunv/rom-tools/lib/chd"
 	"github.com/sargunv/rom-tools/lib/iso9660"
 	"github.com/sargunv/rom-tools/lib/roms/dreamcast"
-	"github.com/sargunv/rom-tools/lib/roms/gamecube"
-	"github.com/sargunv/rom-tools/lib/roms/gb"
-	"github.com/sargunv/rom-tools/lib/roms/gba"
 	"github.com/sargunv/rom-tools/lib/roms/megadrive"
-	"github.com/sargunv/rom-tools/lib/roms/n64"
-	"github.com/sargunv/rom-tools/lib/roms/nds"
-	"github.com/sargunv/rom-tools/lib/roms/nes"
 	"github.com/sargunv/rom-tools/lib/roms/playstation_cnf"
 	"github.com/sargunv/rom-tools/lib/roms/playstation_sfo"
 	"github.com/sargunv/rom-tools/lib/roms/saturn"
-	"github.com/sargunv/rom-tools/lib/roms/sms"
-	"github.com/sargunv/rom-tools/lib/roms/snes"
-	"github.com/sargunv/rom-tools/lib/roms/xbox"
 )
-
-// Simple parsers: GBA, GB, NES, NDS, SNES, SMS
-
-func identifyGBA(r io.ReaderAt, size int64) (GameInfo, error) {
-	return gba.ParseGBA(r, size)
-}
-
-func identifyGB(r io.ReaderAt, size int64) (GameInfo, error) {
-	return gb.ParseGB(r, size)
-}
-
-func identifyNES(r io.ReaderAt, size int64) (GameInfo, error) {
-	return nes.ParseNES(r, size)
-}
-
-func identifyNDS(r io.ReaderAt, size int64) (GameInfo, error) {
-	return nds.ParseNDS(r, size)
-}
-
-func identifySNES(r io.ReaderAt, size int64) (GameInfo, error) {
-	return snes.ParseSNES(r, size)
-}
-
-func identifySMS(r io.ReaderAt, size int64) (GameInfo, error) {
-	return sms.ParseSMS(r, size)
-}
-
-// MD, GCM, XBE
-
-func identifyMD(r io.ReaderAt, size int64) (GameInfo, error) {
-	info, err := megadrive.Parse(r, size)
-	if err != nil {
-		return nil, err
-	}
-	if info.SourceFormat != megadrive.FormatMD {
-		return nil, fmt.Errorf("format mismatch: expected MD, got SMD")
-	}
-	return info, nil
-}
-
-func identifyGCM(r io.ReaderAt, size int64) (GameInfo, error) {
-	return gamecube.ParseGCM(r, size)
-}
-
-func identifyXBE(r io.ReaderAt, size int64) (GameInfo, error) {
-	return xbox.ParseXBE(r, size)
-}
-
-// N64: unified ParseN64 handles all byte orderings
-
-func identifyZ64(r io.ReaderAt, size int64) (GameInfo, error) {
-	info, err := n64.ParseN64(r, size)
-	if err != nil {
-		return nil, err
-	}
-	if info.ByteOrder != n64.N64BigEndian {
-		return nil, fmt.Errorf("byte order mismatch: expected z64, got %s", info.ByteOrder)
-	}
-	return info, nil
-}
-
-func identifyV64(r io.ReaderAt, size int64) (GameInfo, error) {
-	info, err := n64.ParseN64(r, size)
-	if err != nil {
-		return nil, err
-	}
-	if info.ByteOrder != n64.N64ByteSwapped {
-		return nil, fmt.Errorf("byte order mismatch: expected v64, got %s", info.ByteOrder)
-	}
-	return info, nil
-}
-
-func identifyN64(r io.ReaderAt, size int64) (GameInfo, error) {
-	info, err := n64.ParseN64(r, size)
-	if err != nil {
-		return nil, err
-	}
-	if info.ByteOrder != n64.N64LittleEndian {
-		return nil, fmt.Errorf("byte order mismatch: expected n64, got %s", info.ByteOrder)
-	}
-	return info, nil
-}
-
-// Delegation: SMD->MD, RVZ->GCM, XISO->XBE, CHD->ISO9660
-
-func identifySMD(r io.ReaderAt, size int64) (GameInfo, error) {
-	info, err := megadrive.Parse(r, size)
-	if err != nil {
-		return nil, err
-	}
-	if info.SourceFormat != megadrive.FormatSMD {
-		return nil, fmt.Errorf("format mismatch: expected SMD, got MD")
-	}
-	return info, nil
-}
-
-func identify32X(r io.ReaderAt, size int64) (GameInfo, error) {
-	info, err := megadrive.Parse(r, size)
-	if err != nil {
-		return nil, err
-	}
-	if !info.Is32X {
-		return nil, fmt.Errorf("not a 32X ROM: MARS header not found")
-	}
-	return info, nil
-}
-
-func identifyRVZ(r io.ReaderAt, size int64) (GameInfo, error) {
-	return gamecube.ParseRVZ(r, size)
-}
-
-func identifyXISO(r io.ReaderAt, size int64) (GameInfo, error) {
-	return xbox.ParseXISO(r, size)
-}
 
 func identifyCHD(r io.ReaderAt, size int64) (GameInfo, error) {
 	reader, err := chd.NewReader(r, size)
@@ -153,8 +29,6 @@ func identifyCHD(r io.ReaderAt, size int64) (GameInfo, error) {
 	// No tracks or all audio - try raw CHD access
 	return identifyISO9660(reader, reader.Size())
 }
-
-// Dispatcher: ISO9660 (tries Saturn, Dreamcast, PlayStation, PSP)
 
 func identifyISO9660(r io.ReaderAt, size int64) (GameInfo, error) {
 	reader, err := iso9660.NewReader(r, size)
