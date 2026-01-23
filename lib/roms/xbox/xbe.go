@@ -39,13 +39,18 @@ const (
 	xbeCertAddrOffset = 0x118
 	xbeHeaderSize     = 0x178
 
-	xbeCertTitleIDOff   = 0x08
-	xbeCertTitleNameOff = 0x0C
-	xbeCertTitleNameLen = 80
-	xbeCertRegionOff    = 0xA0
-	xbeCertDiscNumOff   = 0xA8
-	xbeCertVersionOff   = 0xAC
-	xbeCertSize         = 0x1D0
+	xbeCertTimestampOff     = 0x04
+	xbeCertTitleIDOff       = 0x08
+	xbeCertTitleNameOff     = 0x0C
+	xbeCertTitleNameLen     = 80
+	xbeCertAltTitleIDsOff   = 0x5C
+	xbeCertAltTitleIDsCount = 16
+	xbeCertMediaTypesOff    = 0x9C
+	xbeCertRegionOff        = 0xA0
+	xbeCertRatingsOff       = 0xA4
+	xbeCertDiscNumOff       = 0xA8
+	xbeCertVersionOff       = 0xAC
+	xbeCertSize             = 0x1D0
 )
 
 // XboxRegion represents Xbox region flags.
@@ -56,6 +61,23 @@ const (
 	XboxRegionJapan XboxRegion = 0x00000002 // Japan
 	XboxRegionEUAU  XboxRegion = 0x00000004 // Europe and Australia combined
 	XboxRegionDebug XboxRegion = 0x80000000 // Debug/development region
+)
+
+// XboxMediaType represents Xbox allowed media type flags.
+type XboxMediaType uint32
+
+const (
+	XboxMediaHardDisk      XboxMediaType = 0x00000001
+	XboxMediaDVDX2         XboxMediaType = 0x00000002
+	XboxMediaDVDCD         XboxMediaType = 0x00000004
+	XboxMediaCD            XboxMediaType = 0x00000008
+	XboxMediaDVD5RO        XboxMediaType = 0x00000010
+	XboxMediaDVD9RO        XboxMediaType = 0x00000020
+	XboxMediaDVD5RW        XboxMediaType = 0x00000040
+	XboxMediaDVD9RW        XboxMediaType = 0x00000080
+	XboxMediaUSB           XboxMediaType = 0x00000100
+	XboxMediaMemoryUnit    XboxMediaType = 0x00000200
+	XboxMediaOnlineContent XboxMediaType = 0x00000400
 )
 
 // XBEInfo contains metadata extracted from an Xbox XBE file.
@@ -70,8 +92,16 @@ type XBEInfo struct {
 	GameNumber uint16
 	// Title is the game title.
 	Title string
+	// Timestamp is the certificate timestamp (seconds since 2000-01-01).
+	Timestamp uint32
+	// AlternateTitleIDs contains alternate title IDs for region variants.
+	AlternateTitleIDs []uint32
+	// AllowedMediaTypes is a bitmask of allowed media types.
+	AllowedMediaTypes XboxMediaType
 	// RegionFlags is the bitmask of XboxRegion values.
-	RegionFlags uint32
+	RegionFlags XboxRegion
+	// GameRatings contains game rating flags.
+	GameRatings uint32
 	// DiscNumber is the disc number for multi-disc games.
 	DiscNumber uint32
 	// Version is the game version.
@@ -80,12 +110,17 @@ type XBEInfo struct {
 
 // ParseXBE extracts game information from an XBE file.
 func ParseXBE(r io.ReaderAt, size int64) (*XBEInfo, error) {
-	return parseXBEAt(r, 0)
+	return parseXBEAt(r, 0, size)
 }
 
 // parseXBEAt extracts game information from an XBE file at the given offset.
 // This is useful when the XBE is embedded within another file (e.g., in an XISO).
-func parseXBEAt(r io.ReaderAt, xbeOffset int64) (*XBEInfo, error) {
+func parseXBEAt(r io.ReaderAt, xbeOffset int64, size int64) (*XBEInfo, error) {
+	// Validate minimum size
+	if size < xbeHeaderSize {
+		return nil, fmt.Errorf("file too small for XBE header: %d bytes (need at least %d)", size, xbeHeaderSize)
+	}
+
 	// Read XBE header
 	header := make([]byte, xbeHeaderSize)
 	if _, err := r.ReadAt(header, xbeOffset); err != nil {
@@ -111,8 +146,11 @@ func parseXBEAt(r io.ReaderAt, xbeOffset int64) (*XBEInfo, error) {
 	}
 
 	// Parse certificate fields
+	timestamp := binary.LittleEndian.Uint32(cert[xbeCertTimestampOff:])
 	titleID := binary.LittleEndian.Uint32(cert[xbeCertTitleIDOff:])
+	mediaTypes := binary.LittleEndian.Uint32(cert[xbeCertMediaTypesOff:])
 	regionFlags := binary.LittleEndian.Uint32(cert[xbeCertRegionOff:])
+	gameRatings := binary.LittleEndian.Uint32(cert[xbeCertRatingsOff:])
 	discNumber := binary.LittleEndian.Uint32(cert[xbeCertDiscNumOff:])
 	version := binary.LittleEndian.Uint32(cert[xbeCertVersionOff:])
 
@@ -120,18 +158,32 @@ func parseXBEAt(r io.ReaderAt, xbeOffset int64) (*XBEInfo, error) {
 	titleBytes := cert[xbeCertTitleNameOff : xbeCertTitleNameOff+xbeCertTitleNameLen]
 	title := decodeUTF16LE(titleBytes)
 
+	// Parse alternate title IDs
+	altTitleIDs := make([]uint32, 0, xbeCertAltTitleIDsCount)
+	for i := 0; i < xbeCertAltTitleIDsCount; i++ {
+		off := xbeCertAltTitleIDsOff + i*4
+		altID := binary.LittleEndian.Uint32(cert[off:])
+		if altID != 0 {
+			altTitleIDs = append(altTitleIDs, altID)
+		}
+	}
+
 	// Decode title ID into publisher code and game number
 	publisherCode, gameNumber := decodeTitleID(titleID)
 
 	return &XBEInfo{
-		TitleID:       titleID,
-		TitleIDHex:    fmt.Sprintf("%08X", titleID),
-		PublisherCode: publisherCode,
-		GameNumber:    gameNumber,
-		Title:         title,
-		RegionFlags:   regionFlags,
-		DiscNumber:    discNumber,
-		Version:       version,
+		TitleID:           titleID,
+		TitleIDHex:        fmt.Sprintf("%08X", titleID),
+		PublisherCode:     publisherCode,
+		GameNumber:        gameNumber,
+		Title:             title,
+		Timestamp:         timestamp,
+		AlternateTitleIDs: altTitleIDs,
+		AllowedMediaTypes: XboxMediaType(mediaTypes),
+		RegionFlags:       XboxRegion(regionFlags),
+		GameRatings:       gameRatings,
+		DiscNumber:        discNumber,
+		Version:           version,
 	}, nil
 }
 
