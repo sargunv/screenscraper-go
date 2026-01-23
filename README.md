@@ -5,9 +5,9 @@ A suite of utilities for working with video game ROMs for classic platforms.
 The project is a work in progress and portions are AI-generated. See the maturity legend to understand the quality of the components listed in this README:
 
 - 🤖 Vibe coded with minimal human review, but it probably works on my machine.
-- 🧹 AI generated, but cleaned up by a human. May still have logic bugs of AI origin.
-- 🏗️ Deeply reviewed for accuracy and style, or human-engineered from the start. Bugs here are of human origin only.
-- ✅ Thoroughly tested for correctness. Bugs here are likely edge cases only.
+- 🧹 AI generated, but cleaned up by a human. Likely contains defects of AI origin.
+- 🏗️ Reviewed for architecture or human-engineered from the start. Defects here are of human origin only.
+- ✅ Human-engineered and tested on a real game library. Remaining defects are probably edge cases.
 
 ## CLI
 
@@ -45,8 +45,8 @@ See the [CLI documentation](./docs/rom-tools.md) for complete usage information.
 - 🏗️ [./lib/roms/n64](./lib/roms/n64): Nintendo 64 ROM parsing with support for Z64, V64, and N64 byte orders.
 - 🧹 [./lib/roms/nds](./lib/roms/nds): Nintendo DS ROM header parsing.
 - 🏗️ [./lib/roms/nes](./lib/roms/nes): NES ROM parsing for iNES and NES 2.0 formats.
-- 🧹 [./lib/roms/playstation_cnf](./lib/roms/playstation_cnf): PlayStation 1/2 SYSTEM.CNF parsing for disc identification.
-- 🧹 [./lib/roms/playstation_sfo](./lib/roms/playstation_sfo): PlayStation SFO metadata format for PSP, PS3, PS Vita, and PS4.
+- 🏗️ [./lib/roms/playstation_cnf](./lib/roms/playstation_cnf): PlayStation 1/2 SYSTEM.CNF parsing for disc identification.
+- 🏗️ [./lib/roms/playstation_sfo](./lib/roms/playstation_sfo): PlayStation SFO metadata format for PSP, PS3, PS Vita, and PS4.
 - 🧹 [./lib/roms/saturn](./lib/roms/saturn): Sega Saturn disc identification from system area headers.
 - 🏗️ [./lib/roms/sms](./lib/roms/sms): Sega Master System and Game Gear ROM header parsing.
 - 🏗️ [./lib/roms/snes](./lib/roms/snes): Super Nintendo ROM header parsing with LoROM/HiROM detection.
