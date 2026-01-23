@@ -39,6 +39,7 @@ const (
 	FormatGB      Format = "gb"
 	FormatMD      Format = "md"
 	FormatSMD     Format = "smd"
+	Format32X     Format = "32x"
 	FormatNDS     Format = "nds"
 	FormatNES     Format = "nes"
 	FormatSNES    Format = "snes"

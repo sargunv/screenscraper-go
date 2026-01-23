@@ -118,6 +118,17 @@ func identifySMD(r io.ReaderAt, size int64) (GameInfo, error) {
 	return info, nil
 }
 
+func identify32X(r io.ReaderAt, size int64) (GameInfo, error) {
+	info, err := megadrive.Parse(r, size)
+	if err != nil {
+		return nil, err
+	}
+	if !info.Is32X {
+		return nil, fmt.Errorf("not a 32X ROM: MARS header not found")
+	}
+	return info, nil
+}
+
 func identifyRVZ(r io.ReaderAt, size int64) (GameInfo, error) {
 	return gamecube.ParseRVZ(r, size)
 }
@@ -151,9 +162,12 @@ func identifyISO9660(r io.ReaderAt, size int64) (GameInfo, error) {
 		return nil, err
 	}
 
-	// Try to read system area (sector 0) for Saturn/Dreamcast identification
+	// Try to read system area (sector 0) for Sega CD/Saturn/Dreamcast identification
 	systemArea := make([]byte, 2048)
 	if _, err := reader.ReadAt(systemArea, 0); err == nil {
+		if info, err := megadrive.ParseSegaCD(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
+			return info, nil
+		}
 		if info, err := saturn.ParseSaturn(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
 			return info, nil
 		}
