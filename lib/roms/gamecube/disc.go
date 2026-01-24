@@ -18,7 +18,7 @@ import (
 // Disc header layout (relevant fields):
 //
 //	Offset  Size  Description
-//	0x000   1     Disc ID (G=GameCube, R/S=Wii, D=GC Demo)
+//	0x000   1     System code (G=GameCube, R/S=Wii, etc.)
 //	0x001   2     Game code
 //	0x003   1     Region code (E=USA, P=PAL, J=Japan, etc.)
 //	0x004   2     Maker code
@@ -28,13 +28,72 @@ import (
 //	0x01C   4     GameCube magic word (0xC2339F3D for GameCube, 0x00000000 for Wii)
 //	0x020   64    Game title (ASCII, null-terminated)
 
+// SystemCode represents the console/platform identifier (first byte of disc ID).
+// Source: https://wiki.dolphin-emu.org/index.php?title=GameIDs
+type SystemCode byte
+
+const (
+	// Physical disc platforms
+	SystemCodeGameCube      SystemCode = 'G' // GameCube
+	SystemCodeGameCubeRerel SystemCode = 'D' // GameCube rerelease (Master Quest, demo discs)
+	SystemCodeGameCubePromo SystemCode = 'P' // Promotional GameCube (shared with TurboGrafx-16 VC)
+	SystemCodeWii           SystemCode = 'R' // Older Wii releases
+	SystemCodeWiiNew        SystemCode = 'S' // Newer Wii releases
+
+	// Virtual Console platforms
+	SystemCodeNES            SystemCode = 'F' // NES Virtual Console
+	SystemCodeSNES           SystemCode = 'J' // Super Nintendo Virtual Console
+	SystemCodeN64            SystemCode = 'N' // Nintendo 64 Virtual Console
+	SystemCodeSMS            SystemCode = 'L' // Sega Master System Virtual Console
+	SystemCodeGenesis        SystemCode = 'M' // Sega Genesis Virtual Console
+	SystemCodeTurboGrafx16   SystemCode = 'P' // TurboGrafx-16 Virtual Console
+	SystemCodeTurboGrafx16CD SystemCode = 'Q' // TurboGrafx-16 CD Virtual Console
+	SystemCodeC64            SystemCode = 'C' // Commodore 64 Virtual Console
+	SystemCodeArcade         SystemCode = 'E' // Arcade / Neo Geo Virtual Console
+	SystemCodeMSX            SystemCode = 'X' // MSX Virtual Console (shared with WiiWare demos)
+
+	// Wii digital
+	SystemCodeWiiChannels  SystemCode = 'H' // Wii Channels
+	SystemCodeWiiWare      SystemCode = 'W' // WiiWare
+	SystemCodeWiiWareDemos SystemCode = 'X' // WiiWare Demos (shared with MSX)
+)
+
+// Region represents the target region (fourth byte of disc ID).
+// Source: https://wiki.dolphin-emu.org/index.php?title=GameIDs
+type Region byte
+
+const (
+	RegionJapan          Region = 'J' // Japan
+	RegionNorthAmerica   Region = 'E' // USA / North America
+	RegionEurope         Region = 'P' // Europe and other PAL regions
+	RegionAustralia      Region = 'U' // Australia (also Europe alternate)
+	RegionKorea          Region = 'K' // Korea
+	RegionTaiwan         Region = 'W' // Taiwan / Hong Kong / Macau
+	RegionGermany        Region = 'D' // Germany
+	RegionFrance         Region = 'F' // France
+	RegionSpain          Region = 'S' // Spain
+	RegionItaly          Region = 'I' // Italy
+	RegionNetherlands    Region = 'H' // Netherlands (also Europe alternate)
+	RegionRussia         Region = 'R' // Russia
+	RegionScandinavia    Region = 'V' // Scandinavia
+	RegionSystemChannels Region = 'A' // System Wii Channels
+	RegionJPImportPAL    Region = 'L' // Japanese import to PAL regions
+	RegionUSImportPAL    Region = 'M' // American import to PAL regions
+	RegionJPImportNTSC   Region = 'N' // Japanese import to NTSC regions
+	RegionJPImportKorea  Region = 'Q' // Japanese VC import to Korea
+	RegionUSImportKorea  Region = 'T' // American VC import to Korea
+	RegionSpecialX       Region = 'X' // Europe/US special releases
+	RegionSpecialY       Region = 'Y' // Europe/US special releases
+	RegionSpecialZ       Region = 'Z' // Europe/US special releases
+)
+
 const (
 	discHeaderSize = 0x60 // We only need first 96 bytes for identification
 
-	discIDOffset      = 0x000
+	systemCodeOffset  = 0x000
 	gameCodeOffset    = 0x001
 	gameCodeLen       = 2
-	regionCodeOffset  = 0x003
+	regionOffset      = 0x003
 	makerCodeOffset   = 0x004
 	makerCodeLen      = 2
 	discNumberOffset  = 0x006
@@ -50,12 +109,12 @@ const (
 
 // GCMInfo contains metadata extracted from a GameCube/Wii disc header.
 type GCMInfo struct {
-	// DiscID is the console identifier (G=GameCube, R/S=Wii, D=GC Demo).
-	DiscID byte `json:"disc_id"`
+	// SystemCode is the console/platform identifier (G=GameCube, R/S=Wii, etc.).
+	SystemCode SystemCode `json:"system_code"`
 	// GameCode is the 2-character unique game identifier.
 	GameCode string `json:"game_code,omitempty"`
-	// RegionCode is the region code (E=USA, P=PAL, J=Japan, etc.).
-	RegionCode byte `json:"region_code"`
+	// Region is the region code (E=USA, P=PAL, J=Japan, etc.).
+	Region Region `json:"region"`
 	// MakerCode is the 2-character publisher identifier.
 	MakerCode string `json:"maker_code,omitempty"`
 	// DiscNumber is the disc number for multi-disc games.
@@ -74,9 +133,9 @@ func (i *GCMInfo) GamePlatform() core.Platform { return i.platform }
 // GameTitle implements identify.GameInfo.
 func (i *GCMInfo) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo. Returns the full game ID (DiscID + GameCode + RegionCode).
+// GameSerial implements identify.GameInfo. Returns the full game ID (SystemCode + GameCode + Region).
 func (i *GCMInfo) GameSerial() string {
-	return fmt.Sprintf("%c%s%c", i.DiscID, i.GameCode, i.RegionCode)
+	return fmt.Sprintf("%c%s%c", i.SystemCode, i.GameCode, i.Region)
 }
 
 // ParseGCM parses a GameCube/Wii disc header from a reader.
@@ -115,18 +174,18 @@ func parseGCMBytes(header []byte) (*GCMInfo, error) {
 	}
 
 	// Extract fields
-	discID := header[discIDOffset]
+	systemCode := SystemCode(header[systemCodeOffset])
 	gameCode := util.ExtractASCII(header[gameCodeOffset : gameCodeOffset+gameCodeLen])
-	regionCode := header[regionCodeOffset]
+	region := Region(header[regionOffset])
 	makerCode := util.ExtractASCII(header[makerCodeOffset : makerCodeOffset+makerCodeLen])
 	discNumber := int(header[discNumberOffset])
 	version := int(header[discVersionOffset])
 	title := util.ExtractASCII(header[titleOffset : titleOffset+titleLen])
 
 	return &GCMInfo{
-		DiscID:     discID,
+		SystemCode: systemCode,
 		GameCode:   gameCode,
-		RegionCode: regionCode,
+		Region:     region,
 		MakerCode:  makerCode,
 		DiscNumber: discNumber,
 		Version:    version,
