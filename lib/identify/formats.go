@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/lib/chd"
+	"github.com/sargunv/rom-tools/lib/core"
 	"github.com/sargunv/rom-tools/lib/iso9660"
 	"github.com/sargunv/rom-tools/lib/roms/dreamcast"
 	"github.com/sargunv/rom-tools/lib/roms/megadrive"
@@ -13,24 +14,35 @@ import (
 	"github.com/sargunv/rom-tools/lib/roms/saturn"
 )
 
-func identifyCHD(r io.ReaderAt, size int64) (GameInfo, error) {
+func identifyCHD(r io.ReaderAt, size int64) (core.GameInfo, error) {
 	reader, err := chd.NewReader(r, size)
 	if err != nil {
 		return nil, err
 	}
 
-	// Find first non-audio track
+	header := reader.Header()
+	info := &chd.Info{
+		RawSHA1: header.RawSHA1,
+		SHA1:    header.SHA1,
+	}
+
+	// Find first non-audio track and try to identify its content
 	for _, track := range reader.Tracks {
 		if track.Type != "AUDIO" {
-			return identifyISO9660(track.Open(), track.Size())
+			info.Content, _ = identifyISO9660(track.Open(), track.Size())
+			break
 		}
 	}
 
-	// No tracks or all audio - try raw CHD access
-	return identifyISO9660(reader, reader.Size())
+	// If no tracks identified, try raw CHD access
+	if info.Content == nil {
+		info.Content, _ = identifyISO9660(reader, reader.Size())
+	}
+
+	return info, nil
 }
 
-func identifyISO9660(r io.ReaderAt, size int64) (GameInfo, error) {
+func identifyISO9660(r io.ReaderAt, size int64) (core.GameInfo, error) {
 	reader, err := iso9660.NewReader(r, size)
 	if err != nil {
 		return nil, err
@@ -70,6 +82,6 @@ func identifyISO9660(r io.ReaderAt, size int64) (GameInfo, error) {
 		}
 	}
 
-	// No platform identified - valid ISO but unknown content
+	// Valid ISO but unknown content - return nil to try next parser
 	return nil, nil
 }

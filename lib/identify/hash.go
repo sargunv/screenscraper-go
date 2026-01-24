@@ -9,8 +9,8 @@ import (
 	"io"
 )
 
-// calculateHashes computes SHA1, MD5, and CRC32 hashes from a reader in a single pass.
-func calculateHashes(r io.Reader) (Hashes, error) {
+// calculateHashes computes SHA1, MD5, and CRC32 hashes from a ReaderAt in a single pass.
+func calculateHashes(r io.ReaderAt, size int64) (Hashes, error) {
 	sha1Hash := sha1.New()
 	md5Hash := md5.New()
 	crc32Hash := crc32.NewIEEE()
@@ -18,7 +18,9 @@ func calculateHashes(r io.Reader) (Hashes, error) {
 	// MultiWriter writes to all hashes simultaneously
 	multiWriter := io.MultiWriter(sha1Hash, md5Hash, crc32Hash)
 
-	if _, err := io.Copy(multiWriter, r); err != nil {
+	// Use SectionReader to read from offset 0 to size
+	sectionReader := io.NewSectionReader(r, 0, size)
+	if _, err := io.Copy(multiWriter, sectionReader); err != nil {
 		return nil, fmt.Errorf("failed to read data for hashing: %w", err)
 	}
 

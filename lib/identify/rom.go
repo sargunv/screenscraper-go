@@ -1,6 +1,7 @@
 package identify
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -10,7 +11,11 @@ import (
 	"github.com/sargunv/rom-tools/internal/container/zip"
 	"github.com/sargunv/rom-tools/internal/util"
 	"github.com/sargunv/rom-tools/lib/chd"
+	"github.com/sargunv/rom-tools/lib/core"
 )
+
+// ZIP magic bytes
+var zipMagic = []byte{0x50, 0x4B, 0x03, 0x04}
 
 // Identify identifies a ROM file, ZIP archive, or folder.
 // Returns a Result with identified items and their hashes.
@@ -127,12 +132,6 @@ func identifyZIP(path string, opts Options) (*Result, error) {
 			items = append(items, *item)
 		} else {
 			// Fast/default mode: use ZIP metadata only (no decompression)
-			candidates := candidatesByExtension(entry.Name)
-			detectedFormat := FormatUnknown
-			if len(candidates) == 1 {
-				detectedFormat = candidates[0]
-			}
-
 			hashes := make(Hashes)
 			if entry.CRC32 != 0 {
 				hashes[HashZipCRC32] = fmt.Sprintf("%08x", entry.CRC32)
@@ -141,7 +140,6 @@ func identifyZIP(path string, opts Options) (*Result, error) {
 			items = append(items, Item{
 				Name:   entry.Name,
 				Size:   entry.Size,
-				Format: detectedFormat,
 				Hashes: hashes,
 				Game:   nil, // No identification in fast mode
 			})
@@ -155,33 +153,23 @@ func identifyZIP(path string, opts Options) (*Result, error) {
 }
 
 // identifyReader identifies a single file from a reader.
-// Returns an Item with format, hashes, and game info.
+// Returns an Item with hashes and game info.
 // Accepts either *os.File or util.RandomAccessReader.
 func identifyReader(r util.RandomAccessReader, size int64, name string, opts Options) (*Item, error) {
-	// Try to identify format and game in one pass
-	format, game := identifyGame(r, size, name)
+	// Try to identify game
+	game := identifyGame(r, size, name)
 
 	item := &Item{
-		Name:   name,
-		Size:   size,
-		Format: format,
-		Game:   game,
+		Name: name,
+		Size: size,
+		Game: game,
 	}
 
-	// Handle hashes based on format
-	if format == FormatCHD {
-		// CHD: extract hashes from header (fast, no decompression needed)
-		if _, err := r.Seek(0, io.SeekStart); err != nil {
-			return nil, fmt.Errorf("failed to seek: %w", err)
-		}
-		chdReader, err := chd.NewReader(r, size)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse CHD header: %w", err)
-		}
-		header := chdReader.Header()
+	// Handle CHD: extract hashes from the parsed info
+	if chdInfo, ok := game.(*chd.Info); ok {
 		item.Hashes = Hashes{
-			HashCHDUncompressedSHA1: header.RawSHA1,
-			HashCHDCompressedSHA1:   header.SHA1,
+			HashCHDUncompressedSHA1: chdInfo.RawSHA1,
+			HashCHDCompressedSHA1:   chdInfo.SHA1,
 		}
 		return item, nil
 	}
@@ -191,12 +179,8 @@ func identifyReader(r util.RandomAccessReader, size int64, name string, opts Opt
 		return item, nil
 	}
 
-	// Calculate hashes - wrap reader to provide io.Reader interface
-	if _, err := r.Seek(0, io.SeekStart); err != nil {
-		return nil, fmt.Errorf("failed to seek: %w", err)
-	}
-
-	hashes, err := calculateHashes(&readerAtWrapper{r: r})
+	// Calculate hashes
+	hashes, err := calculateHashes(r, size)
 	if err != nil {
 		return nil, fmt.Errorf("failed to calculate hashes: %w", err)
 	}
@@ -205,54 +189,40 @@ func identifyReader(r util.RandomAccessReader, size int64, name string, opts Opt
 	return item, nil
 }
 
-// readerAtWrapper wraps a ReaderAt+Seeker to implement io.Reader.
-type readerAtWrapper struct {
-	r   io.ReaderAt
-	pos int64
-}
-
-func (w *readerAtWrapper) Read(p []byte) (n int, err error) {
-	n, err = w.r.ReadAt(p, w.pos)
-	w.pos += int64(n)
-	return n, err
-}
-
-// identifyGame tries to identify the format and game from a reader.
-// Returns the detected format and game info (nil if not identifiable).
-func identifyGame(r util.RandomAccessReader, size int64, name string) (Format, GameInfo) {
-	// Get candidate formats by extension
-	entries := formatsByExtension(name)
-	if len(entries) == 0 {
-		return FormatUnknown, nil
+// identifyGame tries to identify the game from a reader.
+// Returns the game info (nil if not identifiable).
+func identifyGame(r util.RandomAccessReader, size int64, name string) core.GameInfo {
+	// Get candidate parsers by extension
+	parsers := identifyByExtension(name)
+	if len(parsers) == 0 {
+		return nil
 	}
 
-	// Try each candidate's identifier
-	for _, entry := range entries {
+	// Try each parser
+	for _, parser := range parsers {
 		// Reset reader position
 		if _, err := r.Seek(0, io.SeekStart); err != nil {
 			continue
 		}
 
-		// If no identify function, just verify format using magic bytes
-		if entry.Identify == nil {
-			if verifyFormat(r, size, entry.Format) {
-				return entry.Format, nil
-			}
-			continue
+		// Try to identify using the parser
+		game, err := parser(r, size)
+		if err == nil && game != nil {
+			return game
 		}
-
-		// Try to identify using the entry's function
-		game, err := entry.Identify(r, size)
-		if err == nil {
-			return entry.Format, game
-		}
-		// If identification fails, try next candidate
 	}
 
-	return FormatUnknown, nil
+	return nil
 }
 
 // isZIP checks if a file is a ZIP archive by checking magic bytes.
 func isZIP(r io.ReaderAt, size int64) bool {
-	return checkMagic(r, size, zipOffset, zipMagic)
+	if size < int64(len(zipMagic)) {
+		return false
+	}
+	buf := make([]byte, len(zipMagic))
+	if _, err := r.ReadAt(buf, 0); err != nil {
+		return false
+	}
+	return bytes.Equal(buf, zipMagic)
 }

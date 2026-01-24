@@ -3,43 +3,6 @@ package identify
 
 import "github.com/sargunv/rom-tools/lib/core"
 
-// GameInfo is implemented by all platform-specific ROM info structs.
-// It provides common identification fields while allowing type assertion
-// for platform-specific details.
-type GameInfo interface {
-	GamePlatform() core.Platform
-	GameTitle() string  // May be empty if format doesn't have title
-	GameSerial() string // May be empty if format doesn't have serial
-}
-
-// Format represents a ROM file format.
-type Format string
-
-// Format constants for ROM identification.
-const (
-	FormatUnknown Format = "unknown"
-	FormatCHD     Format = "chd"
-	FormatXISO    Format = "xiso"
-	FormatXBE     Format = "xbe"
-	FormatISO9660 Format = "iso9660"
-	FormatZIP     Format = "zip"
-	FormatGBA     Format = "gba"
-	FormatZ64     Format = "z64"
-	FormatV64     Format = "v64"
-	FormatN64     Format = "n64"
-	FormatGB      Format = "gb"
-	FormatMD      Format = "md"
-	FormatSMD     Format = "smd"
-	FormatNDS     Format = "nds"
-	FormatNES     Format = "nes"
-	FormatSNES    Format = "snes"
-	FormatGCM     Format = "gcm"
-	FormatRVZ     Format = "rvz"
-	FormatSMS     Format = "sms"
-	FormatPKG     Format = "pkg"
-	Format3DS     Format = "3ds"
-)
-
 // HashType identifies a specific hash (combines algorithm and source).
 type HashType string
 
@@ -57,11 +20,10 @@ type Hashes map[HashType]string
 
 // Item represents one identifiable unit (a file or entry within a container).
 type Item struct {
-	Name   string   `json:"name"`             // filename (basename for single files, relative path in containers)
-	Size   int64    `json:"size"`             // file size in bytes
-	Format Format   `json:"format,omitempty"` // detected format (gba, chd, etc.)
-	Hashes Hashes   `json:"hashes,omitempty"` // hash values by type
-	Game   GameInfo `json:"game,omitempty"`   // identified game info (platform-specific struct)
+	Name   string        `json:"name"`             // filename (basename for single files, relative path in containers)
+	Size   int64         `json:"size"`             // file size in bytes
+	Hashes Hashes        `json:"hashes,omitempty"` // hash values by type
+	Game   core.GameInfo `json:"game,omitempty"`   // identified game info (platform-specific struct)
 }
 
 // Result is the result of identifying a path.

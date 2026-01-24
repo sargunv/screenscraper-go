@@ -133,9 +133,6 @@ func outputText(result *romident.Result) {
 		for _, item := range items {
 			fmt.Printf("  %s\n", item.Name)
 			fmt.Printf("    Size: %s\n", formatSize(item.Size))
-			if item.Format != "" && item.Format != romident.FormatUnknown {
-				fmt.Printf("    Format: %s\n", item.Format)
-			}
 
 			if len(item.Hashes) > 0 {
 				fmt.Println("    Hashes:")
