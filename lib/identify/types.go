@@ -46,6 +46,7 @@ const (
 	FormatRVZ     Format = "rvz"
 	FormatSMS     Format = "sms"
 	FormatPKG     Format = "pkg"
+	Format3DS     Format = "3ds"
 )
 
 // HashAlgorithm identifies a hash algorithm.

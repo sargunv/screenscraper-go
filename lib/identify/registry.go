@@ -10,6 +10,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/roms/gb"
 	"github.com/sargunv/rom-tools/lib/roms/gba"
 	"github.com/sargunv/rom-tools/lib/roms/megadrive"
+	"github.com/sargunv/rom-tools/lib/roms/n3ds"
 	"github.com/sargunv/rom-tools/lib/roms/n64"
 	"github.com/sargunv/rom-tools/lib/roms/nds"
 	"github.com/sargunv/rom-tools/lib/roms/nes"
@@ -45,6 +46,7 @@ func wrapParser[T GameInfo](fn func(io.ReaderAt, int64) (T, error)) func(io.Read
 var registry = []formatEntry{
 	{FormatGBA, []string{".gba"}, wrapParser(gba.ParseGBA)},
 	{FormatNDS, []string{".nds", ".dsi", ".ids"}, wrapParser(nds.ParseNDS)},
+	{Format3DS, []string{".3ds", ".cci"}, wrapParser(n3ds.ParseN3DS)},
 	{FormatNES, []string{".nes"}, wrapParser(nes.ParseNES)},
 	{FormatSNES, []string{".sfc", ".smc"}, wrapParser(snes.ParseSNES)},
 	{FormatGB, []string{".gb", ".gbc"}, wrapParser(gb.ParseGB)},
