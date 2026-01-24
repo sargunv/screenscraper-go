@@ -3,6 +3,7 @@ package identify
 import (
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -94,16 +95,10 @@ func identifyContainer(path string, c util.FileContainer, opts Options) (*Result
 }
 
 // identifyContainerEntry identifies a single entry within a container.
-// If the entry has pre-computed hashes, those are used (never calculated).
 func identifyContainerEntry(c util.FileContainer, entry util.FileEntry, opts Options) (*Item, error) {
 	item := &Item{
 		Name: entry.Name,
 		Size: entry.Size,
-	}
-
-	// Use pre-computed hashes from container metadata if available
-	if entry.Hashes != nil {
-		item.Hashes = entry.Hashes
 	}
 
 	// Open and identify the file
@@ -117,18 +112,25 @@ func identifyContainerEntry(c util.FileContainer, entry util.FileEntry, opts Opt
 	game, embeddedHashes := identifyGame(reader, size, entry.Name)
 	item.Game = game
 
-	// If no pre-computed hashes, use embedded or calculate them
-	if entry.Hashes == nil {
-		if embeddedHashes != nil {
-			item.Hashes = embeddedHashes
-		} else if opts.MaxHashSize < 0 || size <= opts.MaxHashSize {
-			// Calculate hashes if within size limit
-			hashes, err := calculateHashes(reader, size)
-			if err != nil {
-				return nil, fmt.Errorf("failed to calculate hashes: %w", err)
-			}
-			item.Hashes = hashes
+	// Build hashes: merge container metadata with embedded hashes
+	// For example, a CHD in a ZIP gets both zip-crc32 and chd-*-sha1
+	if entry.Hashes != nil {
+		item.Hashes = maps.Clone(entry.Hashes)
+	}
+	if embeddedHashes != nil {
+		if item.Hashes == nil {
+			item.Hashes = make(core.Hashes)
 		}
+		maps.Copy(item.Hashes, embeddedHashes)
+	}
+
+	// Calculate hashes if none available and within size limit
+	if item.Hashes == nil && (opts.MaxHashSize < 0 || size <= opts.MaxHashSize) {
+		hashes, err := calculateHashes(reader, size)
+		if err != nil {
+			return nil, fmt.Errorf("failed to calculate hashes: %w", err)
+		}
+		item.Hashes = hashes
 	}
 
 	return item, nil
