@@ -8,6 +8,7 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/core"
 )
 
 // ZIPArchive represents an open ZIP archive and implements Container.
@@ -68,9 +69,11 @@ func Open(path string) (*ZIPArchive, error) {
 		}
 
 		entries = append(entries, util.FileEntry{
-			Name:  f.Name,
-			Size:  int64(f.UncompressedSize64),
-			CRC32: f.CRC32, // Pre-computed CRC32 from ZIP metadata
+			Name: f.Name,
+			Size: int64(f.UncompressedSize64),
+			Hashes: core.Hashes{
+				core.HashZipCRC32: fmt.Sprintf("%08x", f.CRC32),
+			},
 		})
 	}
 

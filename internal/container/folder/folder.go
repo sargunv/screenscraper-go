@@ -29,9 +29,9 @@ func NewFolderContainer(path string) (*FolderContainer, error) {
 				return err
 			}
 			entries = append(entries, util.FileEntry{
-				Name:  rel,
-				Size:  info.Size(),
-				CRC32: 0, // Folders don't have pre-computed CRC32
+				Name:   rel,
+				Size:   info.Size(),
+				Hashes: nil, // Folders don't have pre-computed hashes
 			})
 		}
 		return nil

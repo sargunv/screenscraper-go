@@ -3,20 +3,20 @@ package identify
 
 import "github.com/sargunv/rom-tools/lib/core"
 
-// HashType identifies a specific hash (combines algorithm and source).
-type HashType string
+// Re-export hash types from core for convenience.
+type HashType = core.HashType
 
 const (
-	HashSHA1                HashType = "sha1"
-	HashMD5                 HashType = "md5"
-	HashCRC32               HashType = "crc32"
-	HashZipCRC32            HashType = "zip-crc32"
-	HashCHDUncompressedSHA1 HashType = "chd-uncompressed-sha1"
-	HashCHDCompressedSHA1   HashType = "chd-compressed-sha1"
+	HashSHA1                = core.HashSHA1
+	HashMD5                 = core.HashMD5
+	HashCRC32               = core.HashCRC32
+	HashZipCRC32            = core.HashZipCRC32
+	HashCHDUncompressedSHA1 = core.HashCHDUncompressedSHA1
+	HashCHDCompressedSHA1   = core.HashCHDCompressedSHA1
 )
 
-// Hashes maps hash type to hex-encoded value.
-type Hashes map[HashType]string
+// Re-export Hashes from core for convenience.
+type Hashes = core.Hashes
 
 // Item represents one identifiable unit (a file or entry within a container).
 type Item struct {

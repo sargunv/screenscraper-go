@@ -27,6 +27,7 @@ func TestIdentifyZIPWithDecompression(t *testing.T) {
 		t.Errorf("Expected item name 'AGB_Rogue.gba', got '%s'", item.Name)
 	}
 
+	// Game should be identified when DecompressArchives=true
 	if item.Game == nil {
 		t.Fatal("Expected game identification, got nil")
 	}
@@ -39,9 +40,14 @@ func TestIdentifyZIPWithDecompression(t *testing.T) {
 		t.Errorf("Expected title 'ROGUE', got '%s'", item.Game.GameTitle())
 	}
 
-	// Should have standard hashes
-	if len(item.Hashes) != 3 {
-		t.Fatalf("Expected 3 hashes, got %d", len(item.Hashes))
+	// Should use ZIP metadata hash (never calculate hashes for containers with metadata)
+	if len(item.Hashes) != 1 {
+		t.Fatalf("Expected 1 hash (zip-crc32 from metadata), got %d", len(item.Hashes))
+	}
+
+	_, ok := item.Hashes[HashZipCRC32]
+	if !ok {
+		t.Error("Expected zip-crc32 hash from ZIP metadata")
 	}
 }
 

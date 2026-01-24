@@ -78,25 +78,16 @@ func identifyContainer(path string, c util.FileContainer, opts Options) (*Result
 		return nil, fmt.Errorf("container is empty")
 	}
 
-	// Skip decompression for compressed containers if disabled
-	if c.Compressed() && !opts.DecompressArchives {
-		return identifyContainerFast(path, entries)
-	}
+	// Determine if we should decompress for identification
+	shouldIdentify := !c.Compressed() || opts.DecompressArchives
 
 	items := make([]Item, 0, len(entries))
 
 	for _, entry := range entries {
-		reader, size, err := c.OpenFileAt(entry.Name)
-		if err != nil {
-			return nil, fmt.Errorf("failed to open %s: %w", entry.Name, err)
-		}
-
-		item, err := identifyReader(reader, size, entry.Name, opts)
-		reader.Close()
+		item, err := identifyContainerEntry(c, entry, shouldIdentify, opts)
 		if err != nil {
 			return nil, fmt.Errorf("failed to identify %s: %w", entry.Name, err)
 		}
-
 		items = append(items, *item)
 	}
 
@@ -106,28 +97,54 @@ func identifyContainer(path string, c util.FileContainer, opts Options) (*Result
 	}, nil
 }
 
-// identifyContainerFast returns items using only container metadata (no decompression).
-func identifyContainerFast(path string, entries []util.FileEntry) (*Result, error) {
-	items := make([]Item, 0, len(entries))
-
-	for _, entry := range entries {
-		hashes := make(Hashes)
-		if entry.CRC32 != 0 {
-			hashes[HashZipCRC32] = fmt.Sprintf("%08x", entry.CRC32)
-		}
-
-		items = append(items, Item{
-			Name:   entry.Name,
-			Size:   entry.Size,
-			Hashes: hashes,
-			Game:   nil, // No identification without decompression
-		})
+// identifyContainerEntry identifies a single entry within a container.
+// If the entry has pre-computed hashes, those are used (never calculated).
+// If shouldIdentify is true, the file is opened to identify the game.
+func identifyContainerEntry(c util.FileContainer, entry util.FileEntry, shouldIdentify bool, opts Options) (*Item, error) {
+	item := &Item{
+		Name: entry.Name,
+		Size: entry.Size,
 	}
 
-	return &Result{
-		Path:  path,
-		Items: items,
-	}, nil
+	// Use pre-computed hashes from container metadata if available
+	if entry.Hashes != nil {
+		item.Hashes = entry.Hashes
+	}
+
+	// Skip identification if not requested (compressed container with DecompressArchives=false)
+	if !shouldIdentify {
+		return item, nil
+	}
+
+	// Open and identify the file
+	reader, size, err := c.OpenFileAt(entry.Name)
+	if err != nil {
+		return nil, err
+	}
+	defer reader.Close()
+
+	// Identify the game
+	item.Game = identifyGame(reader, size, entry.Name)
+
+	// If no pre-computed hashes, calculate them (respecting MaxHashSize)
+	if entry.Hashes == nil {
+		// Handle CHD: extract hashes from the parsed info
+		if chdInfo, ok := item.Game.(*chd.Info); ok {
+			item.Hashes = Hashes{
+				HashCHDUncompressedSHA1: chdInfo.RawSHA1,
+				HashCHDCompressedSHA1:   chdInfo.SHA1,
+			}
+		} else if opts.MaxHashSize < 0 || size <= opts.MaxHashSize {
+			// Calculate hashes if within size limit
+			hashes, err := calculateHashes(reader, size)
+			if err != nil {
+				return nil, fmt.Errorf("failed to calculate hashes: %w", err)
+			}
+			item.Hashes = hashes
+		}
+	}
+
+	return item, nil
 }
 
 // identifyReader identifies a single file from a reader.

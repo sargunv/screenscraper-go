@@ -2,13 +2,15 @@ package util
 
 import (
 	"io"
+
+	"github.com/sargunv/rom-tools/lib/core"
 )
 
 // FileEntry represents a file within a container.
 type FileEntry struct {
-	Name  string // Relative path within container
-	Size  int64  // Uncompressed size
-	CRC32 uint32 // Pre-computed CRC32 (0 if not available, e.g., for folders)
+	Name   string      // Relative path within container
+	Size   int64       // Uncompressed size
+	Hashes core.Hashes // Pre-computed hashes from container metadata (may be nil)
 }
 
 // FileContainer represents a container format (ZIP, folder, etc.) that can enumerate

@@ -3,6 +3,8 @@ package zip
 import (
 	"io"
 	"testing"
+
+	"github.com/sargunv/rom-tools/lib/core"
 )
 
 func TestZIPArchive(t *testing.T) {
@@ -28,9 +30,16 @@ func TestZIPArchive(t *testing.T) {
 		t.Errorf("Expected size 32768, got %d", entry.Size)
 	}
 
-	// ZIP should have pre-computed CRC32
-	if entry.CRC32 != 0x775ae755 {
-		t.Errorf("Expected CRC32 0x775ae755, got 0x%08x", entry.CRC32)
+	// ZIP should have pre-computed hashes
+	if entry.Hashes == nil {
+		t.Fatal("Expected hashes map, got nil")
+	}
+	crc32, ok := entry.Hashes[core.HashZipCRC32]
+	if !ok {
+		t.Fatal("Expected zip-crc32 hash")
+	}
+	if crc32 != "775ae755" {
+		t.Errorf("Expected zip-crc32 '775ae755', got '%s'", crc32)
 	}
 }
 

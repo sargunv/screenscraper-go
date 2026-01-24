@@ -27,9 +27,9 @@ func TestFolderContainer(t *testing.T) {
 		t.Errorf("Expected size 290768, got %d", entry.Size)
 	}
 
-	// CRC32 should be 0 for folders (not pre-computed)
-	if entry.CRC32 != 0 {
-		t.Errorf("Expected CRC32 0 for folder entry, got %d", entry.CRC32)
+	// Hashes should be nil for folders (not pre-computed)
+	if entry.Hashes != nil {
+		t.Errorf("Expected nil hashes for folder entry, got %v", entry.Hashes)
 	}
 }
 
