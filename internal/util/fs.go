@@ -24,6 +24,10 @@ type FileContainer interface {
 	// Returns the reader and the file size.
 	OpenFileAt(name string) (RandomAccessReader, int64, error)
 
+	// Compressed returns true if the container requires decompression to access contents.
+	// This is used to decide whether to skip decompression in fast mode.
+	Compressed() bool
+
 	// Close releases resources associated with the container.
 	Close() error
 }

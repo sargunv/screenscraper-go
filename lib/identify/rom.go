@@ -78,6 +78,11 @@ func identifyContainer(path string, c util.FileContainer, opts Options) (*Result
 		return nil, fmt.Errorf("container is empty")
 	}
 
+	// Skip decompression for compressed containers if disabled
+	if c.Compressed() && !opts.DecompressArchives {
+		return identifyContainerFast(path, entries)
+	}
+
 	items := make([]Item, 0, len(entries))
 
 	for _, entry := range entries {
@@ -93,6 +98,30 @@ func identifyContainer(path string, c util.FileContainer, opts Options) (*Result
 		}
 
 		items = append(items, *item)
+	}
+
+	return &Result{
+		Path:  path,
+		Items: items,
+	}, nil
+}
+
+// identifyContainerFast returns items using only container metadata (no decompression).
+func identifyContainerFast(path string, entries []util.FileEntry) (*Result, error) {
+	items := make([]Item, 0, len(entries))
+
+	for _, entry := range entries {
+		hashes := make(Hashes)
+		if entry.CRC32 != 0 {
+			hashes[HashZipCRC32] = fmt.Sprintf("%08x", entry.CRC32)
+		}
+
+		items = append(items, Item{
+			Name:   entry.Name,
+			Size:   entry.Size,
+			Hashes: hashes,
+			Game:   nil, // No identification without decompression
+		})
 	}
 
 	return &Result{
@@ -122,8 +151,8 @@ func identifyReader(r util.RandomAccessReader, size int64, name string, opts Opt
 		return item, nil
 	}
 
-	// Fast mode: skip hashes for large files
-	if opts.HashMode == HashModeFast && size >= fastModeSmallFileThreshold {
+	// Skip hashes for files exceeding MaxHashSize (-1 = no limit)
+	if opts.MaxHashSize >= 0 && size > opts.MaxHashSize {
 		return item, nil
 	}
 

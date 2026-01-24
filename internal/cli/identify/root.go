@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	jsonOutput bool
-	fastMode   bool
-	slowMode   bool
+	jsonOutput         bool
+	maxHashSize        int64
+	decompressArchives bool
 )
 
 var Cmd = &cobra.Command{
@@ -25,7 +25,7 @@ var Cmd = &cobra.Command{
 	Long: `Extract hashes and game identification data from ROM files.
 
 Supports:
-- Platform specific ROMs: identifies game information from the ROM header, depending on the format. Supported ROM formats:
+- Platform specific ROMs: identifies game information from the ROM header. Supported formats:
   - Famicom: .nes
   - Super Famicom: .sfc, .smc
   - Nintendo 64: .z64, .v64, .n64
@@ -42,27 +42,29 @@ Supports:
   - Sony PlayStation 2: .iso, .bin
   - Sony PlayStation Portable: .iso
   - Microsoft Xbox: .iso, .xbe
-- .chd discs: extracts SHA1 hashes from header (fast, no decompression)
-- .zip archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
-- all files: calculates SHA1, MD5, CRC32 (unless in fast mode).
-- all folders: identifies files within.`,
+- .chd discs: extracts SHA1 hashes from header (no decompression needed)
+- .zip archives: by default, decompresses to identify contents and calculate hashes.
+  Use --decompress-archives=false to use only ZIP metadata (CRC32).
+- All files: calculates SHA1, MD5, CRC32 for files under --max-hash-size.
+- All folders: identifies files within.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runIdentify,
 }
 
 func init() {
+	defaults := romident.DefaultOptions()
+
 	Cmd.Flags().BoolVarP(&jsonOutput, "json", "j", false, "Output results as JSON Lines (one JSON object per line)")
-	Cmd.Flags().BoolVar(&fastMode, "fast", false, "Skip hash calculation for large loose files, but calculates for small loose files (<65MiB).")
-	Cmd.Flags().BoolVar(&slowMode, "slow", false, "Calculate full hashes and identify games inside archives (requires decompression).")
-	Cmd.MarkFlagsMutuallyExclusive("fast", "slow")
+	Cmd.Flags().Int64Var(&maxHashSize, "max-hash-size", defaults.MaxHashSize,
+		"Max file size in bytes for hash calculation (-1 = no limit)")
+	Cmd.Flags().BoolVar(&decompressArchives, "decompress-archives", defaults.DecompressArchives,
+		"Decompress archives to identify contents and calculate hashes")
 }
 
 func runIdentify(cmd *cobra.Command, args []string) error {
-	opts := romident.Options{HashMode: romident.HashModeDefault}
-	if fastMode {
-		opts.HashMode = romident.HashModeFast
-	} else if slowMode {
-		opts.HashMode = romident.HashModeSlow
+	opts := romident.Options{
+		MaxHashSize:        maxHashSize,
+		DecompressArchives: decompressArchives,
 	}
 
 	first := true

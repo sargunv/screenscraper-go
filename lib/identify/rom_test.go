@@ -6,10 +6,13 @@ import (
 	"github.com/sargunv/rom-tools/lib/core"
 )
 
-func TestIdentifyZIPSlowMode(t *testing.T) {
+func TestIdentifyZIPWithDecompression(t *testing.T) {
 	romPath := "testdata/AGB_Rogue.gba.zip"
 
-	result, err := Identify(romPath, Options{HashMode: HashModeSlow})
+	opts := DefaultOptions()
+	opts.DecompressArchives = true
+
+	result, err := Identify(romPath, opts)
 	if err != nil {
 		t.Fatalf("Identify() error = %v", err)
 	}
@@ -35,12 +38,50 @@ func TestIdentifyZIPSlowMode(t *testing.T) {
 	if item.Game.GameTitle() != "ROGUE" {
 		t.Errorf("Expected title 'ROGUE', got '%s'", item.Game.GameTitle())
 	}
+
+	// Should have standard hashes
+	if len(item.Hashes) != 3 {
+		t.Fatalf("Expected 3 hashes, got %d", len(item.Hashes))
+	}
+}
+
+func TestIdentifyZIPWithoutDecompression(t *testing.T) {
+	romPath := "testdata/AGB_Rogue.gba.zip"
+
+	opts := DefaultOptions()
+	opts.DecompressArchives = false
+
+	result, err := Identify(romPath, opts)
+	if err != nil {
+		t.Fatalf("Identify() error = %v", err)
+	}
+
+	if len(result.Items) != 1 {
+		t.Fatalf("Expected 1 item, got %d", len(result.Items))
+	}
+
+	item := result.Items[0]
+
+	// Should only have ZIP CRC32 from metadata
+	if len(item.Hashes) != 1 {
+		t.Fatalf("Expected 1 hash (zip-crc32), got %d", len(item.Hashes))
+	}
+
+	_, ok := item.Hashes[HashZipCRC32]
+	if !ok {
+		t.Error("Expected zip-crc32 hash")
+	}
+
+	// No game identification without decompression
+	if item.Game != nil {
+		t.Error("Expected no game identification without decompression")
+	}
 }
 
 func TestIdentifyFolder(t *testing.T) {
 	romPath := "testdata/xromwell"
 
-	result, err := Identify(romPath, Options{})
+	result, err := Identify(romPath, DefaultOptions())
 	if err != nil {
 		t.Fatalf("Identify() error = %v", err)
 	}
@@ -64,10 +105,10 @@ func TestIdentifyFolder(t *testing.T) {
 	}
 }
 
-func TestIdentifyLooseFile_Hashing(t *testing.T) {
+func TestIdentifyLooseFile(t *testing.T) {
 	romPath := "testdata/gbtictac.gb"
 
-	result, err := Identify(romPath, Options{HashMode: HashModeDefault})
+	result, err := Identify(romPath, DefaultOptions())
 	if err != nil {
 		t.Fatalf("Identify() error = %v", err)
 	}
@@ -114,10 +155,16 @@ func TestIdentifyLooseFile_Hashing(t *testing.T) {
 	}
 }
 
-func TestIdentifyZIPDefaultMode(t *testing.T) {
-	romPath := "testdata/AGB_Rogue.gba.zip"
+func TestIdentifyLooseFileSkipsHashForLargeFiles(t *testing.T) {
+	romPath := "testdata/gbtictac.gb"
 
-	result, err := Identify(romPath, Options{HashMode: HashModeDefault})
+	// Set max hash size to 0 bytes, which should skip hashing
+	opts := Options{
+		MaxHashSize:        0,
+		DecompressArchives: true,
+	}
+
+	result, err := Identify(romPath, opts)
 	if err != nil {
 		t.Fatalf("Identify() error = %v", err)
 	}
@@ -127,21 +174,40 @@ func TestIdentifyZIPDefaultMode(t *testing.T) {
 	}
 
 	item := result.Items[0]
-	if item.Name != "AGB_Rogue.gba" {
-		t.Errorf("Expected item name 'AGB_Rogue.gba', got '%s'", item.Name)
+
+	// Should have no hashes since file (32KB) exceeds MaxHashSize (0)
+	if len(item.Hashes) != 0 {
+		t.Errorf("Expected 0 hashes with MaxHashSize=0, got %d", len(item.Hashes))
 	}
 
-	// ZIP contents are fully identified like any other container
+	// Game identification should still work
 	if item.Game == nil {
-		t.Fatal("Expected game identification, got nil")
+		t.Fatal("Expected game identification even with MaxHashSize=0")
+	}
+}
+
+func TestIdentifyLooseFileNoLimitHashes(t *testing.T) {
+	romPath := "testdata/gbtictac.gb"
+
+	// Set max hash size to -1 (no limit)
+	opts := Options{
+		MaxHashSize:        -1,
+		DecompressArchives: true,
 	}
 
-	if item.Game.GamePlatform() != core.PlatformGBA {
-		t.Errorf("Expected platform %s, got %s", core.PlatformGBA, item.Game.GamePlatform())
+	result, err := Identify(romPath, opts)
+	if err != nil {
+		t.Fatalf("Identify() error = %v", err)
 	}
 
-	// Should have standard hashes
+	if len(result.Items) != 1 {
+		t.Fatalf("Expected 1 item, got %d", len(result.Items))
+	}
+
+	item := result.Items[0]
+
+	// Should have all 3 hashes with no limit
 	if len(item.Hashes) != 3 {
-		t.Fatalf("Expected 3 hashes, got %d", len(item.Hashes))
+		t.Errorf("Expected 3 hashes with MaxHashSize=-1, got %d", len(item.Hashes))
 	}
 }

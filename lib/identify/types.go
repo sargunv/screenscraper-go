@@ -32,31 +32,25 @@ type Result struct {
 	Items []Item `json:"items"` // identified items (1 for single file, N for containers)
 }
 
-// HashMode controls how hashes are calculated.
-type HashMode int
-
-const (
-	// HashModeDefault uses fast methods where available (CHD header, ZIP metadata),
-	// calculates full hashes for loose files.
-	HashModeDefault HashMode = iota
-
-	// HashModeFast skips hash calculation for large files, but still calculates
-	// hashes for small files (below fastModeSmallFileThreshold).
-	HashModeFast
-
-	// HashModeSlow calculates full hashes even when fast methods are available
-	// (e.g., decompresses ZIP files to calculate SHA1/MD5).
-	HashModeSlow
-)
-
-const (
-	// fastModeSmallFileThreshold is the size threshold below which fast mode
-	// will still calculate hashes. Files at or above this size skip hash calculation.
-	// 65 MiB covers most cartridge ROMs (GBA, SNES, NES, etc.) but skips large disc images.
-	fastModeSmallFileThreshold = 65 * 1024 * 1024 // 65 MiB
-)
-
 // Options controls ROM identification behavior.
 type Options struct {
-	HashMode HashMode
+	// MaxHashSize is the maximum file size (in bytes) for which hashes will be calculated.
+	// Files larger than this skip hash calculation entirely.
+	// Use -1 for no limit (always calculate hashes).
+	// Default is 64 MiB.
+	MaxHashSize int64
+
+	// DecompressArchives controls whether compressed archives (e.g., ZIP) are
+	// decompressed to calculate hashes and identify games inside.
+	// If false, only archive metadata (pre-computed CRC32, file sizes) is used.
+	// Default is true.
+	DecompressArchives bool
+}
+
+// DefaultOptions returns Options with sensible defaults.
+func DefaultOptions() Options {
+	return Options{
+		MaxHashSize:        64 * 1024 * 1024, // 64 MiB
+		DecompressArchives: true,
+	}
 }
