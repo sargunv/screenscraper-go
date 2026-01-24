@@ -42,7 +42,7 @@ rom-tools identify <file>... [flags]
 ```
   -h, --help                help for identify
   -j, --json                Output results as JSON Lines (one JSON object per line)
-      --max-hash-size int   Max file size in bytes for hash calculation (-1 = no limit) (default 67108864)
+      --max-hash-size int   Max file size in bytes for hash calculation (-1 = no limit) (default -1)
 ```
 
 ### SEE ALSO
