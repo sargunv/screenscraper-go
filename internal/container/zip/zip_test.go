@@ -3,13 +3,14 @@ package zip
 import (
 	"io"
 	"testing"
+
+	"github.com/sargunv/rom-tools/lib/core"
 )
 
 func TestZIPArchive(t *testing.T) {
 	zipPath := "testdata/gbtictac.gb.zip"
 
-	handler := NewZIPHandler()
-	archive, err := handler.Open(zipPath)
+	archive, err := Open(zipPath)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
@@ -29,23 +30,29 @@ func TestZIPArchive(t *testing.T) {
 		t.Errorf("Expected size 32768, got %d", entry.Size)
 	}
 
-	// ZIP should have pre-computed CRC32
-	if entry.CRC32 != 0x775ae755 {
-		t.Errorf("Expected CRC32 0x775ae755, got 0x%08x", entry.CRC32)
+	// ZIP should have pre-computed hashes
+	if entry.Hashes == nil {
+		t.Fatal("Expected hashes map, got nil")
+	}
+	crc32, ok := entry.Hashes[core.HashZipCRC32]
+	if !ok {
+		t.Fatal("Expected zip-crc32 hash")
+	}
+	if crc32 != "775ae755" {
+		t.Errorf("Expected zip-crc32 '775ae755', got '%s'", crc32)
 	}
 }
 
 func TestZIPArchiveOpenFileAt(t *testing.T) {
 	zipPath := "testdata/xromwell.xiso.iso.zip"
 
-	handler := NewZIPHandler()
-	archive, err := handler.Open(zipPath)
+	archive, err := Open(zipPath)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
 	defer archive.Close()
 
-	reader, err := archive.OpenFileAt("xbox.xiso.iso")
+	reader, _, err := archive.OpenFileAt("xbox.xiso.iso")
 	if err != nil {
 		t.Fatalf("OpenFileAt() error = %v", err)
 	}
@@ -65,14 +72,5 @@ func TestZIPArchiveOpenFileAt(t *testing.T) {
 	expectedMagic := "MICROSOFT*XBOX*MEDIA"
 	if string(xisoMagic[:20]) != expectedMagic {
 		t.Errorf("Expected XISO magic '%s', got '%s'", expectedMagic, string(xisoMagic[:20]))
-	}
-
-	// Verify Seek works
-	pos, err := reader.Seek(0, io.SeekStart)
-	if err != nil {
-		t.Fatalf("Seek() error = %v", err)
-	}
-	if pos != 0 {
-		t.Errorf("Expected position 0, got %d", pos)
 	}
 }

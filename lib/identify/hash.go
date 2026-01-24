@@ -5,13 +5,14 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"hash"
 	"hash/crc32"
 	"io"
+
+	"github.com/sargunv/rom-tools/lib/core"
 )
 
-// calculateHashes computes SHA1, MD5, and CRC32 hashes from a reader in a single pass.
-func calculateHashes(r io.Reader) ([]Hash, error) {
+// calculateHashes computes SHA1, MD5, and CRC32 hashes from a ReaderAt in a single pass.
+func calculateHashes(r io.ReaderAt, size int64) (core.Hashes, error) {
 	sha1Hash := sha1.New()
 	md5Hash := md5.New()
 	crc32Hash := crc32.NewIEEE()
@@ -19,50 +20,15 @@ func calculateHashes(r io.Reader) ([]Hash, error) {
 	// MultiWriter writes to all hashes simultaneously
 	multiWriter := io.MultiWriter(sha1Hash, md5Hash, crc32Hash)
 
-	if _, err := io.Copy(multiWriter, r); err != nil {
+	// Use SectionReader to read from offset 0 to size
+	sectionReader := io.NewSectionReader(r, 0, size)
+	if _, err := io.Copy(multiWriter, sectionReader); err != nil {
 		return nil, fmt.Errorf("failed to read data for hashing: %w", err)
 	}
 
-	return []Hash{
-		{Algorithm: HashSHA1, Value: hex.EncodeToString(sha1Hash.Sum(nil)), Source: HashSourceCalculated},
-		{Algorithm: HashMD5, Value: hex.EncodeToString(md5Hash.Sum(nil)), Source: HashSourceCalculated},
-		{Algorithm: HashCRC32, Value: fmt.Sprintf("%08x", crc32Hash.Sum32()), Source: HashSourceCalculated},
+	return core.Hashes{
+		core.HashSHA1:  hex.EncodeToString(sha1Hash.Sum(nil)),
+		core.HashMD5:   hex.EncodeToString(md5Hash.Sum(nil)),
+		core.HashCRC32: fmt.Sprintf("%08x", crc32Hash.Sum32()),
 	}, nil
-}
-
-// calculateSingleHash computes a single hash from a reader.
-func calculateSingleHash(r io.Reader, algorithm HashAlgorithm) (Hash, error) {
-	var h hash.Hash
-	switch algorithm {
-	case HashSHA1:
-		h = sha1.New()
-	case HashMD5:
-		h = md5.New()
-	case HashCRC32:
-		h = crc32.NewIEEE()
-	default:
-		return Hash{}, fmt.Errorf("unsupported hash algorithm: %s", algorithm)
-	}
-
-	if _, err := io.Copy(h, r); err != nil {
-		return Hash{}, fmt.Errorf("failed to read data for hashing: %w", err)
-	}
-
-	var value string
-	if algorithm == HashCRC32 {
-		value = fmt.Sprintf("%08x", h.(hash.Hash32).Sum32())
-	} else {
-		value = hex.EncodeToString(h.Sum(nil))
-	}
-
-	return Hash{Algorithm: algorithm, Value: value, Source: HashSourceCalculated}, nil
-}
-
-// newHash creates a Hash with the given parameters.
-func newHash(algorithm HashAlgorithm, value string, source HashSource) Hash {
-	return Hash{
-		Algorithm: algorithm,
-		Value:     value,
-		Source:    source,
-	}
 }

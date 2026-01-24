@@ -1,6 +1,7 @@
 package identify
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -8,15 +9,15 @@ import (
 	"slices"
 
 	"github.com/sargunv/rom-tools/internal/format"
+	"github.com/sargunv/rom-tools/lib/core"
 	romident "github.com/sargunv/rom-tools/lib/identify"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	jsonOutput bool
-	fastMode   bool
-	slowMode   bool
+	jsonOutput  bool
+	maxHashSize int64
 )
 
 var Cmd = &cobra.Command{
@@ -25,67 +26,63 @@ var Cmd = &cobra.Command{
 	Long: `Extract hashes and game identification data from ROM files.
 
 Supports:
-- Platform specific ROMs: identifies game information from the ROM header, depending on the format. Supported ROM formats:
-  - Famicom: .nes
-  - Super Famicom: .sfc, .smc
+- Platform specific ROMs: identifies game information from the ROM header. Supported formats:
+  - Famicom (NES): .nes
+  - Super Famicom (SNES): .sfc, .smc
   - Nintendo 64: .z64, .v64, .n64
   - Nintendo GameCube / Wii: .gcm, .iso, .rvz, .wia
   - Nintendo Game Boy / Color: .gb, .gbc
   - Nintendo Game Boy Advance: .gba
   - Nintendo DS: .nds, .dsi, .ids
-  - Sega Master System: .sms
-  - Sega Mega Drive / Genesis: .md, .gen, .smd
-  - Sega Saturn: .bin
-  - Sega Dreamcast: .bin
-  - Sega Game Gear: .gg
-  - Sony PlayStation 1: .bin
-  - Sony PlayStation 2: .iso, .bin
-  - Sony PlayStation Portable: .iso
-  - Microsoft Xbox: .iso, .xbe
-- .chd discs: extracts SHA1 hashes from header (fast, no decompression)
-- .zip archives: extracts CRC32 from metadata (fast, no decompression). If in slow mode, also identifies files within the ZIP.
-- all files: calculates SHA1, MD5, CRC32 (unless in fast mode).
-- all folders: identifies files within.`,
+  - Nintendo 3DS: .3ds, .cci
+  - Sega Master System / Game Gear: .sms, .gg
+  - Sega Mega Drive (Genesis): .md, .gen, .smd, .32x
+  - Sega CD: .bin, .chd
+  - Sega Saturn: .bin, .chd
+  - Sega Dreamcast: .bin, .chd
+  - Sony PlayStation 1: .bin, .chd
+  - Sony PlayStation 2: .iso, .bin, .chd
+  - Sony PlayStation 3: .pkg
+  - Sony PlayStation Portable: .iso, .chd
+  - Sony PlayStation Vita: .pkg
+  - Microsoft Xbox: .iso, .chd, .xbe
+- .chd discs: extracts SHA1 hashes from header (no decompression needed)
+- .zip archives: extracts CRC32 hashes from metadata (no decompression needed)
+- All files: calculates SHA1, MD5, CRC32 for uncompressed files under --max-hash-size
+- All folders: identifies files within`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runIdentify,
 }
 
 func init() {
+	defaults := romident.DefaultOptions()
+
 	Cmd.Flags().BoolVarP(&jsonOutput, "json", "j", false, "Output results as JSON Lines (one JSON object per line)")
-	Cmd.Flags().BoolVar(&fastMode, "fast", false, "Skip hash calculation for large loose files, but calculates for small loose files (<65MiB).")
-	Cmd.Flags().BoolVar(&slowMode, "slow", false, "Calculate full hashes and identify games inside archives (requires decompression).")
-	Cmd.MarkFlagsMutuallyExclusive("fast", "slow")
+	Cmd.Flags().Int64Var(&maxHashSize, "max-hash-size", defaults.MaxHashSize,
+		"Max file size in bytes for hash calculation (-1 = no limit)")
 }
 
 func runIdentify(cmd *cobra.Command, args []string) error {
-	opts := romident.Options{HashMode: romident.HashModeDefault}
-	if fastMode {
-		opts.HashMode = romident.HashModeFast
-	} else if slowMode {
-		opts.HashMode = romident.HashModeSlow
+	opts := romident.Options{
+		MaxHashSize: maxHashSize,
 	}
 
 	first := true
 
 	for _, path := range args {
-		rom, err := romident.IdentifyROM(path, opts)
+		result, err := romident.Identify(path, opts)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: failed to identify %s: %v\n", path, err)
+			continue
+		}
 
 		if jsonOutput {
-			if err != nil {
-				// For JSON output, include errors in the output
-				outputJSONLine(&romident.ROM{Path: path}, err)
-			} else {
-				outputJSONLine(rom, nil)
-			}
+			outputJSONLine(result)
 		} else {
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error: failed to identify %s: %v\n", path, err)
-				continue
-			}
 			if !first {
 				fmt.Println()
 			}
-			outputTextSingle(rom)
+			outputText(result)
 			first = false
 		}
 	}
@@ -93,76 +90,70 @@ func runIdentify(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// JSONResult wraps a ROM result with an optional error for JSON output.
-type JSONResult struct {
-	*romident.ROM
-	Error string `json:"error,omitempty"`
-}
-
-func outputJSONLine(rom *romident.ROM, err error) {
-	result := JSONResult{ROM: rom}
+func outputJSONLine(result *romident.Result) {
+	output, err := json.Marshal(result)
 	if err != nil {
-		result.Error = err.Error()
-	}
-
-	output, marshalErr := json.Marshal(result)
-	if marshalErr != nil {
-		fmt.Fprintf(os.Stderr, "Error: failed to marshal JSON: %v\n", marshalErr)
+		fmt.Fprintf(os.Stderr, "Error: failed to marshal JSON: %v\n", err)
 		return
 	}
 	fmt.Println(string(output))
 }
 
-func outputTextSingle(rom *romident.ROM) {
-	// Header
-	baseName := filepath.Base(rom.Path)
-	fmt.Println(format.HeaderStyle.Render(fmt.Sprintf("ROM (%s): %s", rom.Type, baseName)))
+func outputText(result *romident.Result) {
+	baseName := filepath.Base(result.Path)
 
-	// Files (sorted by path for consistent output)
-	if len(rom.Files) > 0 {
-		fmt.Println(format.HeaderStyle.Render("Files:"))
-
-		// Sort file paths
-		paths := make([]string, 0, len(rom.Files))
-		for path := range rom.Files {
-			paths = append(paths, path)
-		}
-		slices.Sort(paths)
-
-		for _, path := range paths {
-			f := rom.Files[path]
-			prefix := "  "
-			if f.IsPrimary {
-				prefix = "* "
-			}
-
-			fmt.Printf("%s%s\n", prefix, path)
-			fmt.Printf("    Size: %s\n", formatSize(f.Size))
-			if f.Format != romident.FormatUnknown {
-				fmt.Printf("    Format: %s\n", f.Format)
-			}
-
-			if len(f.Hashes) > 0 {
-				fmt.Println("    Hashes:")
-				for _, h := range f.Hashes {
-					fmt.Printf("      %s: %s (%s)\n",
-						format.LabelStyle.Render(string(h.Algorithm)),
-						h.Value,
-						h.Source)
-				}
-			}
-		}
+	// Determine type label
+	typeLabel := "file"
+	if len(result.Items) > 1 {
+		typeLabel = "container"
 	}
 
-	// Identification
-	if rom.Info != nil {
-		fmt.Println(format.HeaderStyle.Render("Identification:"))
-		fmt.Printf("  Platform: %s\n", rom.Info.GamePlatform())
-		if rom.Info.GameTitle() != "" {
-			fmt.Printf("  Title: %s\n", rom.Info.GameTitle())
-		}
-		if rom.Info.GameSerial() != "" {
-			fmt.Printf("  Serial: %s\n", rom.Info.GameSerial())
+	fmt.Println(format.HeaderStyle.Render(fmt.Sprintf("ROM (%s): %s", typeLabel, baseName)))
+
+	// Items (sorted by name for consistent output)
+	if len(result.Items) > 0 {
+		fmt.Println(format.HeaderStyle.Render("Items:"))
+
+		// Sort by name
+		items := make([]romident.Item, len(result.Items))
+		copy(items, result.Items)
+		slices.SortFunc(items, func(a, b romident.Item) int {
+			return cmp.Compare(a.Name, b.Name)
+		})
+
+		for _, item := range items {
+			fmt.Printf("  %s\n", item.Name)
+			fmt.Printf("    Size: %s\n", formatSize(item.Size))
+
+			if len(item.Hashes) > 0 {
+				fmt.Println("    Hashes:")
+				// Sort hash types for consistent output
+				hashTypes := make([]core.HashType, 0, len(item.Hashes))
+				for ht := range item.Hashes {
+					hashTypes = append(hashTypes, ht)
+				}
+				slices.SortFunc(hashTypes, func(a, b core.HashType) int {
+					return cmp.Compare(a, b)
+				})
+				for _, ht := range hashTypes {
+					fmt.Printf("      %s: %s\n",
+						format.LabelStyle.Render(string(ht)),
+						item.Hashes[ht])
+				}
+			}
+
+			if item.Game != nil {
+				fmt.Println("    Game:")
+				if item.Game.GamePlatform() != "" {
+					fmt.Printf("      Platform: %s\n", item.Game.GamePlatform())
+				}
+				if item.Game.GameTitle() != "" {
+					fmt.Printf("      Title: %s\n", item.Game.GameTitle())
+				}
+				if item.Game.GameSerial() != "" {
+					fmt.Printf("      Serial: %s\n", item.Game.GameSerial())
+				}
+			}
 		}
 	}
 }

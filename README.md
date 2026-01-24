@@ -36,7 +36,7 @@ See the [CLI documentation](./docs/rom-tools.md) for complete usage information.
 
 ### General utilities
 
-- 🔴 [./lib/identify](./lib/identify/): Utility to identify the title, serial, and other info of a ROM.
+- 🟡 [./lib/identify](./lib/identify/): Utility to identify the title, serial, and other info of a ROM.
 - 🟢 [./lib/datfile](./lib/datfile): Implementation of the Logiqx DAT XML format with No-Intro extensions.
 - 🟡 [./lib/chd](./lib/chd): Implementation of the CHD (Compressed Hunks of Data) disc image format.
 - 🟡 [./lib/iso9660](./lib/iso9660): ISO 9660 filesystem image parsing for optical disk platforms.
@@ -51,7 +51,7 @@ See the [CLI documentation](./docs/rom-tools.md) for complete usage information.
 - 🟢 [./lib/roms/nintendo/gb](./lib/roms/nintendo/gb): Game Boy and Game Boy Color ROM header parsing.
 - 🟢 [./lib/roms/nintendo/gba](./lib/roms/nintendo/gba): Game Boy Advance ROM header parsing.
 - 🟢 [./lib/roms/nintendo/nds](./lib/roms/nintendo/nds): Nintendo DS ROM header parsing.
-- 🔴 [./lib/roms/nintendo/n3ds](./lib/roms/nintendo/n3ds): Nintendo 3DS CCI/NCSD ROM parsing with New 3DS detection.
+- 🟢 [./lib/roms/nintendo/n3ds](./lib/roms/nintendo/n3ds): Nintendo 3DS CCI/NCSD ROM parsing with New 3DS detection.
 - Wii U: [TODO](https://github.com/sargunv/rom-tools/issues/25)
 
 ### Sega formats

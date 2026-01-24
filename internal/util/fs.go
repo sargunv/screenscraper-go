@@ -2,13 +2,15 @@ package util
 
 import (
 	"io"
+
+	"github.com/sargunv/rom-tools/lib/core"
 )
 
 // FileEntry represents a file within a container.
 type FileEntry struct {
-	Name  string // Relative path within container
-	Size  int64  // Uncompressed size
-	CRC32 uint32 // Pre-computed CRC32 (0 if not available, e.g., for folders)
+	Name   string      // Relative path within container
+	Size   int64       // Uncompressed size
+	Hashes core.Hashes // Pre-computed hashes from container metadata (may be nil)
 }
 
 // FileContainer represents a container format (ZIP, folder, etc.) that can enumerate
@@ -21,18 +23,16 @@ type FileContainer interface {
 	OpenFile(name string) (io.ReadCloser, error)
 
 	// OpenFileAt opens a file with random access support (for format detection/identification).
-	// Only available in slow mode for containers that require decompression (e.g., ZIP).
-	OpenFileAt(name string) (RandomAccessReader, error)
+	// Returns the reader and the file size.
+	OpenFileAt(name string) (RandomAccessReader, int64, error)
 
 	// Close releases resources associated with the container.
 	Close() error
 }
 
-// RandomAccessReader combines io.ReaderAt, io.Seeker, and io.Closer with Size().
+// RandomAccessReader combines io.ReaderAt and io.Closer.
 // This is needed for format detection and identification which require random access.
 type RandomAccessReader interface {
 	io.ReaderAt
-	io.Seeker
 	io.Closer
-	Size() int64
 }

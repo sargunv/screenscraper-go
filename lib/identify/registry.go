@@ -3,9 +3,9 @@ package identify
 import (
 	"io"
 	"path/filepath"
-	"slices"
 	"strings"
 
+	"github.com/sargunv/rom-tools/lib/core"
 	"github.com/sargunv/rom-tools/lib/roms/nintendo/gb"
 	"github.com/sargunv/rom-tools/lib/roms/nintendo/gba"
 	"github.com/sargunv/rom-tools/lib/roms/nintendo/gcm"
@@ -22,66 +22,57 @@ import (
 	"github.com/sargunv/rom-tools/lib/roms/xbox/xiso"
 )
 
-// formatEntry associates a format with its extensions and identification function.
-// TODO: Format should be returned by parsers via GameInfo (like Platform) rather than
-// being defined here. This would allow removing the Format field from the registry.
-type formatEntry struct {
-	Format     Format
-	Extensions []string
-	Identify   func(r io.ReaderAt, size int64) (GameInfo, error)
-}
+// identifyFunc attempts to identify content from a reader.
+// Returns game info, optional embedded hashes (for formats like CHD), and error.
+type identifyFunc func(r io.ReaderAt, size int64) (core.GameInfo, core.Hashes, error)
 
-// wrapParser converts a typed parser function to the generic GameInfo signature.
+// wrapParser converts a typed parser function to the generic signature.
 // This is needed because Go function types are invariant - a function returning
 // *GBAInfo is not assignable to a function returning GameInfo even though
 // *GBAInfo implements GameInfo.
-func wrapParser[T GameInfo](fn func(io.ReaderAt, int64) (T, error)) func(io.ReaderAt, int64) (GameInfo, error) {
-	return func(r io.ReaderAt, size int64) (GameInfo, error) {
-		return fn(r, size)
+func wrapParser[T core.GameInfo](fn func(io.ReaderAt, int64) (T, error)) identifyFunc {
+	return func(r io.ReaderAt, size int64) (core.GameInfo, core.Hashes, error) {
+		info, err := fn(r, size)
+		return info, nil, err
 	}
 }
 
-// registry contains all registered format entries.
-// Entries are ordered by specificity - more specific extensions first.
-// For ambiguous extensions like .iso, multiple formats are registered and
-// the detection logic tries each candidate in order.
-var registry = []formatEntry{
-	{FormatGBA, []string{".gba"}, wrapParser(gba.ParseGBA)},
-	{FormatNDS, []string{".nds", ".dsi", ".ids"}, wrapParser(nds.ParseNDS)},
-	{Format3DS, []string{".3ds", ".cci"}, wrapParser(n3ds.ParseN3DS)},
-	{FormatNES, []string{".nes"}, wrapParser(nes.ParseNES)},
-	{FormatSNES, []string{".sfc", ".smc"}, wrapParser(sfc.ParseSNES)},
-	{FormatGB, []string{".gb", ".gbc"}, wrapParser(gb.ParseGB)},
-	{FormatZ64, []string{".z64"}, wrapParser(n64.ParseN64)},
-	{FormatV64, []string{".v64"}, wrapParser(n64.ParseN64)},
-	{FormatN64, []string{".n64"}, wrapParser(n64.ParseN64)},
-	{FormatMD, []string{".32x", ".md", ".gen"}, wrapParser(md.Parse)},
-	{FormatSMD, []string{".smd"}, wrapParser(md.Parse)},
-	{FormatSMS, []string{".sms", ".gg"}, wrapParser(sms.ParseSMS)},
-	{FormatXISO, []string{".xiso", ".iso"}, wrapParser(xiso.ParseXISO)},
-	{FormatXBE, []string{".xbe"}, wrapParser(xbe.ParseXBE)},
-	{FormatGCM, []string{".gcm", ".iso"}, wrapParser(gcm.ParseGCM)},
-	{FormatRVZ, []string{".rvz", ".wia"}, wrapParser(rvz.ParseRVZ)},
-	{FormatCHD, []string{".chd"}, identifyCHD},
-	{FormatZIP, []string{".zip"}, nil},
-	{FormatISO9660, []string{".iso", ".bin"}, identifyISO9660},
-	{FormatPKG, []string{".pkg"}, wrapParser(pkg.ParsePKG)},
+// registry maps file extensions to ordered list of parsers to try.
+// Parsers are tried in order until one succeeds.
+var registry = map[string][]identifyFunc{
+	".gba":  {wrapParser(gba.ParseGBA)},
+	".gb":   {wrapParser(gb.ParseGB)},
+	".gbc":  {wrapParser(gb.ParseGB)},
+	".nds":  {wrapParser(nds.ParseNDS)},
+	".dsi":  {wrapParser(nds.ParseNDS)},
+	".ids":  {wrapParser(nds.ParseNDS)},
+	".3ds":  {wrapParser(n3ds.ParseN3DS)},
+	".cci":  {wrapParser(n3ds.ParseN3DS)},
+	".nes":  {wrapParser(nes.ParseNES)},
+	".sfc":  {wrapParser(sfc.ParseSNES)},
+	".smc":  {wrapParser(sfc.ParseSNES)},
+	".z64":  {wrapParser(n64.ParseN64)},
+	".v64":  {wrapParser(n64.ParseN64)},
+	".n64":  {wrapParser(n64.ParseN64)},
+	".md":   {wrapParser(md.Parse)},
+	".gen":  {wrapParser(md.Parse)},
+	".32x":  {wrapParser(md.Parse)},
+	".smd":  {wrapParser(md.Parse)},
+	".sms":  {wrapParser(sms.ParseSMS)},
+	".gg":   {wrapParser(sms.ParseSMS)},
+	".xbe":  {wrapParser(xbe.ParseXBE)},
+	".pkg":  {wrapParser(pkg.ParsePKG)},
+	".chd":  {identifyCHD},
+	".rvz":  {wrapParser(rvz.ParseRVZ)},
+	".wia":  {wrapParser(rvz.ParseRVZ)},
+	".gcm":  {wrapParser(gcm.ParseGCM)},
+	".xiso": {wrapParser(xiso.ParseXISO)},
+	".iso":  {wrapParser(xiso.ParseXISO), wrapParser(gcm.ParseGCM), identifyISO9660},
+	".bin":  {identifyISO9660, wrapParser(md.Parse)},
 }
 
-// formatsByExtension returns all format entries that match the given filename extension.
-// Returns entries in order of preference (more specific formats first).
-func formatsByExtension(filename string) []formatEntry {
+// identifyByExtension returns the list of parsers to try for a given filename.
+func identifyByExtension(filename string) []identifyFunc {
 	ext := strings.ToLower(filepath.Ext(filename))
-	if ext == "" {
-		return nil
-	}
-
-	// Find all matching entries
-	var entries []formatEntry
-	for _, entry := range registry {
-		if slices.Contains(entry.Extensions, ext) {
-			entries = append(entries, entry)
-		}
-	}
-	return entries
+	return registry[ext]
 }

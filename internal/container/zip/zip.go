@@ -8,15 +8,8 @@ import (
 	"io"
 
 	"github.com/sargunv/rom-tools/internal/util"
+	"github.com/sargunv/rom-tools/lib/core"
 )
-
-// ZIPHandler handles ZIP archive files.
-type ZIPHandler struct{}
-
-// NewZIPHandler creates a new ZIP handler.
-func NewZIPHandler() *ZIPHandler {
-	return &ZIPHandler{}
-}
 
 // ZIPArchive represents an open ZIP archive and implements Container.
 type ZIPArchive struct {
@@ -44,25 +37,20 @@ func (z *ZIPArchive) OpenFile(name string) (io.ReadCloser, error) {
 	return nil, fmt.Errorf("file not found in ZIP: %s", name)
 }
 
-// ZIPEntryReader wraps EntryReader to implement util.RandomAccessReader.
-type ZIPEntryReader struct {
-	*EntryReader
-}
-
 // OpenFileAt opens a file within the ZIP archive with random access support.
 // Returns a RandomAccessReader that implements io.ReaderAt by buffering decompressed data.
 // This is useful for format detection and header parsing without decompressing the entire file.
-func (z *ZIPArchive) OpenFileAt(name string) (util.RandomAccessReader, error) {
+func (z *ZIPArchive) OpenFileAt(name string) (util.RandomAccessReader, int64, error) {
 	for _, f := range z.reader.File {
 		if f.Name == name {
-			return &ZIPEntryReader{NewEntryReader(f)}, nil
+			return NewEntryReader(f), int64(f.UncompressedSize64), nil
 		}
 	}
-	return nil, fmt.Errorf("file not found in ZIP: %s", name)
+	return nil, 0, fmt.Errorf("file not found in ZIP: %s", name)
 }
 
 // Open opens a ZIP archive and returns metadata for all files.
-func (h *ZIPHandler) Open(path string) (*ZIPArchive, error) {
+func Open(path string) (*ZIPArchive, error) {
 	r, err := zip.OpenReader(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open ZIP: %w", err)
@@ -76,9 +64,11 @@ func (h *ZIPHandler) Open(path string) (*ZIPArchive, error) {
 		}
 
 		entries = append(entries, util.FileEntry{
-			Name:  f.Name,
-			Size:  int64(f.UncompressedSize64),
-			CRC32: f.CRC32, // Pre-computed CRC32 from ZIP metadata
+			Name: f.Name,
+			Size: int64(f.UncompressedSize64),
+			Hashes: core.Hashes{
+				core.HashZipCRC32: fmt.Sprintf("%08x", f.CRC32),
+			},
 		})
 	}
 
