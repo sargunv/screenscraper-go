@@ -1,1 +1,99 @@
-See @README.md and @CONTRIBUTING.md
+# AGENTS.md
+
+Guidelines for AI coding agents working in this repository.
+
+## Project Overview
+
+Go CLI application for parsing and managing video game ROM files. Provides libraries for reading ROM headers across Nintendo, Sega, Sony, and Xbox platforms, plus CLI tools for metadata scraping.
+
+**Module:** `github.com/sargunv/rom-tools`
+
+## Build Commands
+
+```bash
+# Setup (installs Go, hk hooks, pkl)
+mise setup
+
+# Build all packages
+mise build
+
+# Run the CLI
+mise x -- go run ./cmd/rom-tools [args...]
+
+# Regenerate CLI docs and OpenAPI client
+mise generate
+```
+
+## Test Commands
+
+```bash
+# Run all tests
+mise test
+
+# Run a single test by name
+mise x -- go test -run TestParseGB_GB ./lib/roms/nintendo/gb/
+mise x -- go test -v -run TestParseGB ./lib/roms/nintendo/gb/  # verbose, pattern match
+
+# Run tests in a specific package
+mise x -- go test ./lib/chd/...
+mise x -- go test ./internal/scraper/...
+
+# Run tests with coverage
+mise x -- go test -cover ./...
+```
+
+## Lint and Format Commands
+
+```bash
+# Run all linters (go-fmt, go-vet, prettier, gomod-tidy)
+mise check
+
+# Run all fixers (auto-format)
+mise fix
+
+# Full CI pipeline (generate, build, test, fix, check)
+mise ci
+```
+
+## Project Structure
+
+```
+cmd/                    # CLI entrypoints
+  rom-tools/            # Main CLI (cobra)
+  gen-docs/             # Documentation generator
+lib/                    # Public packages (library code)
+  core/                 # Shared types (Platform, GameInfo interface)
+  chd/                  # CHD disc image format
+  datfile/              # Logiqx DAT XML format
+  esde/                 # ES-DE gamelist.xml format
+  identify/             # ROM identification utilities
+  iso9660/              # ISO 9660 filesystem parsing
+  roms/                 # ROM format parsers by platform
+    nintendo/           # nes, sfc, n64, gcm, rvz, gb, gba, nds, n3ds
+    sega/               # sms, md, saturn, dreamcast
+    playstation/        # cnf, sfo, pkg
+    xbox/               # xbe, xiso
+  screenscraper/        # ScreenScraper API client (generated)
+internal/               # Private packages
+  cli/                  # CLI commands
+  cache/                # Caching utilities
+  container/            # ZIP and folder handling
+  scraper/              # Scraping logic
+  util/                 # String utilities
+  region/               # Region detection
+  format/               # Output formatting
+docs/                   # Generated CLI documentation
+```
+
+## Environment Variables
+
+For ScreenScraper API (see `.env.example`):
+
+```
+SCREENSCRAPER_DEV_USER=
+SCREENSCRAPER_DEV_PASSWORD=
+SCREENSCRAPER_ID=
+SCREENSCRAPER_PASSWORD=
+```
+
+Mise will load `.env` automatically.
