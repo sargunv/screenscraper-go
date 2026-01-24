@@ -46,7 +46,7 @@ See the [CLI documentation](./docs/rom-tools.md) for complete usage information.
 - 🟢 [./lib/roms/nes](./lib/roms/nes): NES ROM parsing for iNES and NES 2.0 formats.
 - 🟢 [./lib/roms/snes](./lib/roms/snes): Super Nintendo ROM header parsing with LoROM/HiROM detection.
 - 🟢 [./lib/roms/n64](./lib/roms/n64): Nintendo 64 ROM parsing with support for Z64, V64, and N64 byte orders.
-- 🟡 [./lib/roms/gamecube](./lib/roms/gamecube): GameCube and Wii disc header parsing, including RVZ support.
+- 🟢 [./lib/roms/gamecube](./lib/roms/gamecube): GameCube and Wii disc header parsing, including RVZ support.
 - 🟢 [./lib/roms/gb](./lib/roms/gb): Game Boy and Game Boy Color ROM header parsing.
 - 🟢 [./lib/roms/gba](./lib/roms/gba): Game Boy Advance ROM header parsing.
 - 🔴 [./lib/roms/nds](./lib/roms/nds): Nintendo DS ROM header parsing.
