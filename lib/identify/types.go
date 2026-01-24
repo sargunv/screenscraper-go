@@ -20,8 +20,11 @@ type Result struct {
 // Options controls ROM identification behavior.
 type Options struct {
 	// MaxHashSize is the maximum file size (in bytes) for which hashes will be calculated.
-	// Files larger than this skip hash calculation entirely.
-	// Use -1 for no limit (always calculate hashes).
+	// This only applies when hashes are not already available from:
+	//   - Container metadata (e.g., ZIP files provide zip-crc32)
+	//   - Embedded format hashes (e.g., CHD files provide chd-*-sha1)
+	// Files exceeding this limit will have no hashes unless provided by the above sources.
+	// Use -1 for no limit (always calculate when needed).
 	// Default is 64 MiB.
 	MaxHashSize int64
 }

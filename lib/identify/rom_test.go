@@ -73,6 +73,22 @@ func TestIdentifyFolder(t *testing.T) {
 	if item.Game.GamePlatform() != core.PlatformXbox {
 		t.Errorf("Expected platform %s, got %s", core.PlatformXbox, item.Game.GamePlatform())
 	}
+
+	// Folders don't have pre-computed metadata hashes like ZIP,
+	// so hashes should be calculated (SHA1, MD5, CRC32)
+	if len(item.Hashes) != 3 {
+		t.Fatalf("Expected 3 calculated hashes, got %d", len(item.Hashes))
+	}
+
+	if _, ok := item.Hashes[core.HashSHA1]; !ok {
+		t.Error("Expected SHA1 hash")
+	}
+	if _, ok := item.Hashes[core.HashMD5]; !ok {
+		t.Error("Expected MD5 hash")
+	}
+	if _, ok := item.Hashes[core.HashCRC32]; !ok {
+		t.Error("Expected CRC32 hash")
+	}
 }
 
 func TestIdentifyLooseFile(t *testing.T) {
