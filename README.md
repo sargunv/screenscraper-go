@@ -49,7 +49,7 @@ See the [CLI documentation](./docs/rom-tools.md) for complete usage information.
 - 🟢 [./lib/roms/gamecube](./lib/roms/gamecube): GameCube and Wii disc header parsing, including RVZ support.
 - 🟢 [./lib/roms/gb](./lib/roms/gb): Game Boy and Game Boy Color ROM header parsing.
 - 🟢 [./lib/roms/gba](./lib/roms/gba): Game Boy Advance ROM header parsing.
-- 🔴 [./lib/roms/nds](./lib/roms/nds): Nintendo DS ROM header parsing.
+- 🟢 [./lib/roms/nds](./lib/roms/nds): Nintendo DS ROM header parsing.
 - 3DS: [TODO](https://github.com/sargunv/rom-tools/issues/18)
 - Wii U: [TODO](https://github.com/sargunv/rom-tools/issues/25)
 
