@@ -21,18 +21,10 @@ var (
 	zipOffset = int64(0)
 )
 
-// detector can detect the format of a file.
-type detector struct{}
-
-// newDetector creates a new format detector.
-func newDetector() *detector {
-	return &detector{}
-}
-
 // candidatesByExtension returns possible formats based on file extension.
 // Returns nil for generic/unknown extensions (we don't do magic-only detection).
 // This delegates to the format registry for most lookups.
-func (d *detector) candidatesByExtension(filename string) []Format {
+func candidatesByExtension(filename string) []Format {
 	entries := formatsByExtension(filename)
 	if len(entries) == 0 {
 		return nil
@@ -48,7 +40,7 @@ func (d *detector) candidatesByExtension(filename string) []Format {
 // verifyFormat checks if a file matches a specific format.
 // For container/disc formats (CHD, ZIP, ISO9660), uses magic bytes.
 // For game formats, uses the format registry's identifier.
-func (d *detector) verifyFormat(r io.ReaderAt, size int64, format Format) bool {
+func verifyFormat(r io.ReaderAt, size int64, format Format) bool {
 	// Container/disc formats: use magic byte verification
 	switch format {
 	case FormatZIP:
@@ -82,14 +74,14 @@ func checkMagic(r io.ReaderAt, size int64, offset int64, magic []byte) bool {
 	return bytes.Equal(buf, magic)
 }
 
-// detect identifies the format using extension to narrow candidates, then verifies.
+// detectFormat identifies the format using extension to narrow candidates, then verifies.
 // Returns Unknown for generic extensions (like .bin) or if verification fails.
 // For game formats, this delegates to the format registry's identifiers.
-func (d *detector) detect(r interface {
+func detectFormat(r interface {
 	io.ReaderAt
 	io.Seeker
 }, size int64, filename string) (Format, error) {
-	candidates := d.candidatesByExtension(filename)
+	candidates := candidatesByExtension(filename)
 	if len(candidates) == 0 {
 		// Generic or unknown extension: no identification
 		return FormatUnknown, nil
@@ -97,7 +89,7 @@ func (d *detector) detect(r interface {
 
 	// Try each candidate and return the first that verifies
 	for _, candidate := range candidates {
-		if d.verifyFormat(r, size, candidate) {
+		if verifyFormat(r, size, candidate) {
 			return candidate, nil
 		}
 	}

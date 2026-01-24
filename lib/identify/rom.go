@@ -40,7 +40,6 @@ func identifyContainer(c util.FileContainer, containerType ROMType, containerPat
 	}
 
 	files := make(Files)
-	detector := newDetector()
 	var romIdent GameInfo
 
 	for _, entry := range entries {
@@ -50,7 +49,7 @@ func identifyContainer(c util.FileContainer, containerType ROMType, containerPat
 			return nil, fmt.Errorf("failed to open %s: %w", entry.Name, err)
 		}
 
-		romFile, fileIdent, err := identifySingleReader(reader, entry.Name, detector, opts)
+		romFile, fileIdent, err := identifySingleReader(reader, entry.Name, opts)
 		if err != nil {
 			reader.Close()
 			return nil, fmt.Errorf("failed to identify %s: %w", entry.Name, err)
@@ -110,8 +109,7 @@ func identifyFile(path string, size int64, opts Options) (*ROM, error) {
 	defer f.Close()
 
 	// Detect format
-	detector := newDetector()
-	detectedFormat, err := detector.detect(f, size, filepath.Base(path))
+	detectedFormat, err := detectFormat(f, size, filepath.Base(path))
 	if err != nil {
 		return nil, fmt.Errorf("failed to detect format: %w", err)
 	}
@@ -122,7 +120,7 @@ func identifyFile(path string, size int64, opts Options) (*ROM, error) {
 	}
 
 	// Single file
-	romFile, ident, err := identifySingleFile(path, size, detector, opts)
+	romFile, ident, err := identifySingleFile(path, size, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -160,12 +158,11 @@ func identifyZIP(path string, opts Options) (*ROM, error) {
 
 	// Fast/default mode: use ZIP metadata only (no decompression)
 	files := make(Files)
-	detector := newDetector()
 
 	for _, entry := range entries {
 		// Use extension-based format detection (no decompression)
 		// In fast mode, we can't verify with magic, so only trust unambiguous extensions
-		candidates := detector.candidatesByExtension(entry.Name)
+		candidates := candidatesByExtension(entry.Name)
 		detectedFormat := FormatUnknown
 		if len(candidates) == 1 {
 			detectedFormat = candidates[0]
@@ -195,7 +192,7 @@ func identifyZIP(path string, opts Options) (*ROM, error) {
 
 // identifySingleReader identifies a file from a RandomAccessReader (works for any container).
 // Returns the ROMFile, game identification (if any), and an error.
-func identifySingleReader(r util.RandomAccessReader, name string, detector *detector, opts Options) (*ROMFile, GameInfo, error) {
+func identifySingleReader(r util.RandomAccessReader, name string, opts Options) (*ROMFile, GameInfo, error) {
 	size := r.Size()
 
 	// Detect format and identify game using registry
@@ -259,10 +256,9 @@ func identifyGameFromRegistry(r util.RandomAccessReader, size int64, name string
 			continue
 		}
 
-		// If no identify function, just verify format using detector
+		// If no identify function, just verify format using magic bytes
 		if entry.Identify == nil {
-			detector := newDetector()
-			if detector.verifyFormat(r, size, entry.Format) {
+			if verifyFormat(r, size, entry.Format) {
 				return entry.Format, nil
 			}
 			continue
@@ -279,7 +275,7 @@ func identifyGameFromRegistry(r util.RandomAccessReader, size int64, name string
 	return FormatUnknown, nil
 }
 
-func identifySingleFile(path string, size int64, detector *detector, opts Options) (*ROMFile, GameInfo, error) {
+func identifySingleFile(path string, size int64, opts Options) (*ROMFile, GameInfo, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to open file: %w", err)
@@ -292,7 +288,7 @@ func identifySingleFile(path string, size int64, detector *detector, opts Option
 	}
 
 	fileReader := &containerFileReader{file: f, size: info.Size()}
-	return identifySingleReader(fileReader, filepath.Base(path), detector, opts)
+	return identifySingleReader(fileReader, filepath.Base(path), opts)
 }
 
 // containerFileReader wraps *os.File to implement RandomAccessReader.
