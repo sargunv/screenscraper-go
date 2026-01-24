@@ -59,48 +59,24 @@ func (f *FolderContainer) OpenFile(name string) (io.ReadCloser, error) {
 }
 
 // OpenFileAt opens a file within the folder with random access support.
-func (f *FolderContainer) OpenFileAt(name string) (util.RandomAccessReader, error) {
+// Returns the reader and the file size.
+func (f *FolderContainer) OpenFileAt(name string) (util.RandomAccessReader, int64, error) {
 	fullPath := filepath.Join(f.path, name)
 	file, err := os.Open(fullPath)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	info, err := file.Stat()
 	if err != nil {
 		file.Close()
-		return nil, err
+		return nil, 0, err
 	}
 
-	return &fileReaderAt{
-		file: file,
-		size: info.Size(),
-	}, nil
+	return file, info.Size(), nil
 }
 
 // Close releases resources (no-op for folders).
 func (f *FolderContainer) Close() error {
 	return nil
-}
-
-// fileReaderAt wraps *os.File to implement RandomAccessReader.
-type fileReaderAt struct {
-	file *os.File
-	size int64
-}
-
-func (f *fileReaderAt) ReadAt(p []byte, off int64) (n int, err error) {
-	return f.file.ReadAt(p, off)
-}
-
-func (f *fileReaderAt) Seek(offset int64, whence int) (int64, error) {
-	return f.file.Seek(offset, whence)
-}
-
-func (f *fileReaderAt) Size() int64 {
-	return f.size
-}
-
-func (f *fileReaderAt) Close() error {
-	return f.file.Close()
 }

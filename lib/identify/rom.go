@@ -44,12 +44,12 @@ func identifyContainer(c util.FileContainer, containerType ROMType, containerPat
 
 	for _, entry := range entries {
 		// Open file for identification
-		reader, err := c.OpenFileAt(entry.Name)
+		reader, size, err := c.OpenFileAt(entry.Name)
 		if err != nil {
 			return nil, fmt.Errorf("failed to open %s: %w", entry.Name, err)
 		}
 
-		romFile, fileIdent, err := identifySingleReader(reader, entry.Name, opts)
+		romFile, fileIdent, err := identifySingleReader(reader, size, entry.Name, opts)
 		if err != nil {
 			reader.Close()
 			return nil, fmt.Errorf("failed to identify %s: %w", entry.Name, err)
@@ -192,8 +192,7 @@ func identifyZIP(path string, opts Options) (*ROM, error) {
 
 // identifySingleReader identifies a file from a RandomAccessReader (works for any container).
 // Returns the ROMFile, game identification (if any), and an error.
-func identifySingleReader(r util.RandomAccessReader, name string, opts Options) (*ROMFile, GameInfo, error) {
-	size := r.Size()
+func identifySingleReader(r util.RandomAccessReader, size int64, name string, opts Options) (*ROMFile, GameInfo, error) {
 
 	// Detect format and identify game using registry
 	detectedFormat, ident := identifyGameFromRegistry(r, size, name)
@@ -282,35 +281,7 @@ func identifySingleFile(path string, size int64, opts Options) (*ROMFile, GameIn
 	}
 	defer f.Close()
 
-	info, err := f.Stat()
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to stat file: %w", err)
-	}
-
-	fileReader := &containerFileReader{file: f, size: info.Size()}
-	return identifySingleReader(fileReader, filepath.Base(path), opts)
-}
-
-// containerFileReader wraps *os.File to implement RandomAccessReader.
-type containerFileReader struct {
-	file *os.File
-	size int64
-}
-
-func (f *containerFileReader) ReadAt(p []byte, off int64) (n int, err error) {
-	return f.file.ReadAt(p, off)
-}
-
-func (f *containerFileReader) Seek(offset int64, whence int) (int64, error) {
-	return f.file.Seek(offset, whence)
-}
-
-func (f *containerFileReader) Size() int64 {
-	return f.size
-}
-
-func (f *containerFileReader) Close() error {
-	return f.file.Close()
+	return identifySingleReader(f, size, filepath.Base(path), opts)
 }
 
 // readerAtWrapper wraps RandomAccessReader to implement io.Reader.

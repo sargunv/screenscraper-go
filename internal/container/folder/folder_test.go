@@ -43,15 +43,15 @@ func TestFolderContainerOpenFileAt(t *testing.T) {
 	}
 	defer container.Close()
 
-	reader, err := container.OpenFileAt("default.xbe")
+	reader, size, err := container.OpenFileAt("default.xbe")
 	if err != nil {
 		t.Fatalf("OpenFileAt() error = %v", err)
 	}
 	defer reader.Close()
 
-	// Verify Size()
-	if reader.Size() != 290768 {
-		t.Errorf("Expected size 290768, got %d", reader.Size())
+	// Verify size
+	if size != 290768 {
+		t.Errorf("Expected size 290768, got %d", size)
 	}
 
 	// Verify we can read the XBE magic bytes

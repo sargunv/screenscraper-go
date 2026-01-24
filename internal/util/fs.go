@@ -21,18 +21,17 @@ type FileContainer interface {
 	OpenFile(name string) (io.ReadCloser, error)
 
 	// OpenFileAt opens a file with random access support (for format detection/identification).
-	// Only available in slow mode for containers that require decompression (e.g., ZIP).
-	OpenFileAt(name string) (RandomAccessReader, error)
+	// Returns the reader and the file size.
+	OpenFileAt(name string) (RandomAccessReader, int64, error)
 
 	// Close releases resources associated with the container.
 	Close() error
 }
 
-// RandomAccessReader combines io.ReaderAt, io.Seeker, and io.Closer with Size().
+// RandomAccessReader combines io.ReaderAt, io.Seeker, and io.Closer.
 // This is needed for format detection and identification which require random access.
 type RandomAccessReader interface {
 	io.ReaderAt
 	io.Seeker
 	io.Closer
-	Size() int64
 }

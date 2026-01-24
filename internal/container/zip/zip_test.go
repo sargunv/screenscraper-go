@@ -45,7 +45,7 @@ func TestZIPArchiveOpenFileAt(t *testing.T) {
 	}
 	defer archive.Close()
 
-	reader, err := archive.OpenFileAt("xbox.xiso.iso")
+	reader, _, err := archive.OpenFileAt("xbox.xiso.iso")
 	if err != nil {
 		t.Fatalf("OpenFileAt() error = %v", err)
 	}
