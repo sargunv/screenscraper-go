@@ -52,7 +52,7 @@ func TestParse(t *testing.T) {
 	if info.DeviceInfo != "CD-1/1" {
 		t.Errorf("DeviceInfo = %q, want %q", info.DeviceInfo, "CD-1/1")
 	}
-	expectedArea := AreaJapan | AreaNorthAmerica | AreaEurope
+	expectedArea := AreaJapanNTSC | AreaAmericasNTSC | AreaPAL
 	if info.Area != expectedArea {
 		t.Errorf("Area = %d, want %d (JUE)", info.Area, expectedArea)
 	}
@@ -101,15 +101,14 @@ func TestParse_AllAreas(t *testing.T) {
 	// Test all area codes
 	data := make([]byte, 256)
 	copy(data[0:16], "SEGA SEGASATURN ")
-	copy(data[0x40:], "JTUBKAEL        ") // All areas
+	copy(data[0x40:], "JTUE            ") // All areas
 
 	info, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
 		t.Fatalf("Parse failed: %v", err)
 	}
 
-	expectedArea := AreaJapan | AreaAsiaNTSC | AreaNorthAmerica | AreaBrazil |
-		AreaKorea | AreaAsiaPAL | AreaEurope | AreaLatinAmerica
+	expectedArea := AreaJapanNTSC | AreaAsiaNTSC | AreaAmericasNTSC | AreaPAL
 	if info.Area != expectedArea {
 		t.Errorf("Area = %d, want %d (all areas)", info.Area, expectedArea)
 	}

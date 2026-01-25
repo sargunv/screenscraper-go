@@ -66,7 +66,7 @@ func isValidTitleByte(b byte) bool {
 // the header uses the new format with 11-byte title + manufacturer code + CGB flag.
 func isOldHeaderFormat(header []byte) bool {
 	titleStart := gbTitleOffset - gbHeaderStart
-	for i := 0; i < gbTitleMaxLen; i++ {
+	for i := range gbTitleMaxLen {
 		if !isValidTitleByte(header[titleStart+i]) {
 			return false
 		}

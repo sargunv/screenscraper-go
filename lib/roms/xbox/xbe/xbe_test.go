@@ -96,7 +96,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestParse_Synthetic(t *testing.T) {
-	rom := makeTestXBE("Test Game", 0x4D530001, RegionNA, 1, 2)
+	rom := makeTestXBE("Test Game", 0x4D530001, RegionNorthAmerica, 1, 2)
 
 	info, err := Parse(rom, int64(len(rom)))
 	if err != nil {
@@ -118,8 +118,8 @@ func TestParse_Synthetic(t *testing.T) {
 	if info.GameNumber != 1 {
 		t.Errorf("GameNumber = %d, want 1", info.GameNumber)
 	}
-	if info.RegionFlags != RegionNA {
-		t.Errorf("RegionFlags = %v, want %v", info.RegionFlags, RegionNA)
+	if info.RegionFlags != RegionNorthAmerica {
+		t.Errorf("RegionFlags = %v, want %v", info.RegionFlags, RegionNorthAmerica)
 	}
 	if info.DiscNumber != 1 {
 		t.Errorf("DiscNumber = %d, want 1", info.DiscNumber)

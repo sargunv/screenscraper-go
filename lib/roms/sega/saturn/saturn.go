@@ -14,6 +14,8 @@ import (
 // Saturn discs store metadata in the ISO 9660 system area (sectors 0-15).
 // The System ID structure is at the start of sector 0.
 //
+// Specification: https://antime.kapsi.fi/sega/files/ST-040-R4-051795.pdf
+//
 // System ID structure (first 256 bytes):
 //   - 0x00: Hardware ID (16 bytes) - "SEGA SEGASATURN "
 //   - 0x10: Maker ID (16 bytes) - e.g., "SEGA ENTERPRISES" or "SEGA TP T-xxx"
@@ -21,7 +23,7 @@ import (
 //   - 0x2A: Version (6 bytes) - e.g., "V1.000"
 //   - 0x30: Release Date (8 bytes) - YYYYMMDD format
 //   - 0x38: Device Info (8 bytes) - e.g., "CD-1/1"
-//   - 0x40: Area Symbols (16 bytes) - Region codes (J, T, U, B, K, A, E, L)
+//   - 0x40: Area Symbols (16 bytes) - e.g., "JTUE"
 //   - 0x50: Peripherals (16 bytes) - Controller compatibility codes
 //   - 0x60: Title (112 bytes) - Game title (space-padded)
 
@@ -30,14 +32,10 @@ import (
 type Area uint8
 
 const (
-	AreaJapan        Area = 1 << 0 // J - Japan
-	AreaAsiaNTSC     Area = 1 << 1 // T - Asia NTSC (Taiwan, Philippines)
-	AreaNorthAmerica Area = 1 << 2 // U - North America NTSC (USA, Canada)
-	AreaBrazil       Area = 1 << 3 // B - Brazil
-	AreaKorea        Area = 1 << 4 // K - Korea
-	AreaAsiaPAL      Area = 1 << 5 // A - Asia PAL
-	AreaEurope       Area = 1 << 6 // E - Europe PAL
-	AreaLatinAmerica Area = 1 << 7 // L - Latin America
+	AreaJapanNTSC    Area = 1 << 0 // J - NTSC Japan
+	AreaAsiaNTSC     Area = 1 << 1 // T - NTSC Asia (Taiwan, Philippines, Korea)
+	AreaAmericasNTSC Area = 1 << 2 // U - NTSC North/South America
+	AreaPAL          Area = 1 << 3 // E - PAL (Rest of the world)
 )
 
 const (
@@ -142,21 +140,13 @@ func parseAreaSymbols(data []byte) Area {
 	for _, b := range data {
 		switch b {
 		case 'J':
-			area |= AreaJapan
+			area |= AreaJapanNTSC
 		case 'T':
 			area |= AreaAsiaNTSC
 		case 'U':
-			area |= AreaNorthAmerica
-		case 'B':
-			area |= AreaBrazil
-		case 'K':
-			area |= AreaKorea
-		case 'A':
-			area |= AreaAsiaPAL
+			area |= AreaAmericasNTSC
 		case 'E':
-			area |= AreaEurope
-		case 'L':
-			area |= AreaLatinAmerica
+			area |= AreaPAL
 		}
 	}
 	return area

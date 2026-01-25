@@ -14,6 +14,8 @@ import (
 // Dreamcast discs store metadata in the ISO 9660 system area (sectors 0-15).
 // The IP.BIN header is at the start of sector 0.
 //
+// Specification: https://mc.pp.se/dc/ip0000.bin.html
+//
 // IP.BIN header structure (first 256 bytes):
 //   - 0x00: Hardware ID (16 bytes) - "SEGA SEGAKATANA " (Dreamcast codename)
 //   - 0x10: Maker ID (16 bytes) - e.g., "SEGA ENTERPRISES"
@@ -32,9 +34,9 @@ import (
 type Area uint8
 
 const (
-	AreaJapan        Area = 1 << 0 // J - Japan
-	AreaNorthAmerica Area = 1 << 1 // U - North America NTSC (USA, Canada)
-	AreaEurope       Area = 1 << 2 // E - Europe PAL
+	AreaJapan  Area = 1 << 0 // J - Japan/East Asia (Taiwan, Philippines)
+	AreaUSA    Area = 1 << 1 // U - USA/Canada
+	AreaEurope Area = 1 << 2 // E - Europe
 )
 
 const (
@@ -142,7 +144,7 @@ func parseDreamcastBytes(data []byte) (*Info, error) {
 }
 
 // parseAreaSymbols extracts area codes from the area symbols field.
-// Dreamcast uses ASCII characters: J (Japan), U (North America), E (Europe).
+// Dreamcast uses ASCII characters: J (Japan/East Asia), U (USA/Canada), E (Europe).
 func parseAreaSymbols(data []byte) Area {
 	var area Area
 	for _, b := range data {
@@ -150,7 +152,7 @@ func parseAreaSymbols(data []byte) Area {
 		case 'J':
 			area |= AreaJapan
 		case 'U':
-			area |= AreaNorthAmerica
+			area |= AreaUSA
 		case 'E':
 			area |= AreaEurope
 		}

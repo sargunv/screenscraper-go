@@ -1,7 +1,6 @@
 .env
 .claude
 .cursor
-bin/
 
 # Binaries
 *.exe

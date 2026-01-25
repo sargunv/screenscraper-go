@@ -59,10 +59,10 @@ const (
 type Region uint32
 
 const (
-	RegionNA    Region = 0x00000001 // North America (US + Canada)
-	RegionJapan Region = 0x00000002 // Japan
-	RegionEUAU  Region = 0x00000004 // Europe and Australia combined
-	RegionDebug Region = 0x80000000 // Debug/development region
+	RegionNorthAmerica  Region = 0x00000001
+	RegionJapan         Region = 0x00000002
+	RegionRestOfWorld   Region = 0x00000004
+	RegionManufacturing Region = 0x80000000
 )
 
 // MediaType represents Xbox allowed media type flags.

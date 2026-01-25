@@ -87,3 +87,20 @@ func TestParse_InvalidDate(t *testing.T) {
 		t.Errorf("ReleaseDate = %v, want zero time for invalid date", info.ReleaseDate)
 	}
 }
+
+func TestParse_AllAreas(t *testing.T) {
+	// Test all area codes
+	data := make([]byte, 256)
+	copy(data[0:16], "SEGA SEGAKATANA ")
+	copy(data[0x30:], "JUE     ") // All areas
+
+	info, err := Parse(bytes.NewReader(data), int64(len(data)))
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+
+	expectedArea := AreaJapan | AreaUSA | AreaEurope
+	if info.Area != expectedArea {
+		t.Errorf("Area = %d, want %d (all areas)", info.Area, expectedArea)
+	}
+}

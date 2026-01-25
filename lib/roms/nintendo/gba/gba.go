@@ -66,10 +66,10 @@ const (
 	GameTypeRumble       GameType = 'V' // Rumble only (Drill Dozer)
 )
 
-// Destination represents the target region from the fourth byte of the game code.
+// Destination represents the target region/language from the fourth byte of the game code.
 type Destination byte
 
-// Destination values indicate the target region for the game.
+// Destination values indicate the target region/language for the game.
 const (
 	DestinationJapan   Destination = 'J'
 	DestinationUSA     Destination = 'E'
