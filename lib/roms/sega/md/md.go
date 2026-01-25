@@ -170,7 +170,7 @@ func (i *Info) GameRegions() []core.Region {
 		regions = append(regions, core.RegionJapan)
 	}
 	if i.Region&RegionOverseas60Hz != 0 {
-		regions = append(regions, core.RegionAmerica)
+		regions = append(regions, core.RegionAmericas)
 	}
 	if i.Region&RegionOverseas50Hz != 0 {
 		regions = append(regions, core.RegionEurope, core.RegionAsia)

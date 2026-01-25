@@ -187,7 +187,7 @@ func (i *Info) GameRegions() []core.Region {
 	case DestinationAll:
 		return []core.Region{core.RegionWorld}
 	case DestinationGatewayNTSC:
-		return []core.Region{core.RegionAmerica}
+		return []core.Region{core.RegionAmericas}
 	case DestinationGatewayPAL:
 		return []core.Region{core.RegionEurope, core.RegionAsia}
 	default:

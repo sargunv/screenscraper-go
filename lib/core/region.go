@@ -9,60 +9,60 @@ const (
 	RegionUnknown Region = ""
 
 	// Top level regions (parent is World, or no parent for World itself)
-	RegionWorld      Region = "wor"
-	RegionEurope     Region = "eu"
-	RegionAsia       Region = "asi"
-	RegionAmerica    Region = "ame" // American Continent (North + South)
-	RegionOceania    Region = "oce"
-	RegionMiddleEast Region = "mor"
-	RegionAfrica     Region = "afr"
+	RegionWorld      Region = "World"
+	RegionEurope     Region = "Europe"
+	RegionAsia       Region = "Asia"
+	RegionAmericas   Region = "Americas"
+	RegionOceania    Region = "Oceania"
+	RegionMiddleEast Region = "Middle East"
+	RegionAfrica     Region = "Africa"
 
 	// Europe children
-	RegionGermany     Region = "de"
-	RegionFrance      Region = "fr"
-	RegionUK          Region = "uk"
-	RegionSpain       Region = "sp"
-	RegionItaly       Region = "it"
-	RegionNetherlands Region = "nl"
-	RegionSweden      Region = "se"
-	RegionDenmark     Region = "dk"
-	RegionFinland     Region = "fi"
-	RegionNorway      Region = "no"
-	RegionPortugal    Region = "pt"
-	RegionPoland      Region = "pl"
-	RegionCzech       Region = "cz"
-	RegionHungary     Region = "hu"
-	RegionSlovakia    Region = "sk"
-	RegionBulgaria    Region = "bg"
-	RegionGreece      Region = "gr"
-	RegionRussia      Region = "ru"
+	RegionGermany     Region = "Germany"
+	RegionFrance      Region = "France"
+	RegionUK          Region = "UK"
+	RegionSpain       Region = "Spain"
+	RegionItaly       Region = "Italy"
+	RegionNetherlands Region = "Netherlands"
+	RegionSweden      Region = "Sweden"
+	RegionDenmark     Region = "Denmark"
+	RegionFinland     Region = "Finland"
+	RegionNorway      Region = "Norway"
+	RegionPortugal    Region = "Portugal"
+	RegionPoland      Region = "Poland"
+	RegionCzechia     Region = "Czechia"
+	RegionHungary     Region = "Hungary"
+	RegionSlovakia    Region = "Slovakia"
+	RegionBulgaria    Region = "Bulgaria"
+	RegionGreece      Region = "Greece"
+	RegionRussia      Region = "Russia"
 
 	// Asia children
-	RegionJapan  Region = "jp"
-	RegionChina  Region = "cn"
-	RegionKorea  Region = "kr"
-	RegionTaiwan Region = "tw"
+	RegionJapan  Region = "Japan"
+	RegionChina  Region = "China"
+	RegionKorea  Region = "Korea"
+	RegionTaiwan Region = "Taiwan"
 
 	// America children
-	RegionUSA    Region = "us"
-	RegionCanada Region = "ca"
-	RegionBrazil Region = "br"
-	RegionMexico Region = "mex"
-	RegionChile  Region = "cl"
-	RegionPeru   Region = "pe"
+	RegionUSA    Region = "USA"
+	RegionCanada Region = "Canada"
+	RegionBrazil Region = "Brazil"
+	RegionMexico Region = "Mexico"
+	RegionChile  Region = "Chile"
+	RegionPeru   Region = "Peru"
 
 	// Oceania children
-	RegionAustralia  Region = "au"
-	RegionNewZealand Region = "nz"
+	RegionAustralia  Region = "Australia"
+	RegionNewZealand Region = "New Zealand"
 
 	// Middle East children
-	RegionIsrael Region = "il"
-	RegionTurkey Region = "tr"
-	RegionKuwait Region = "kw"
-	RegionUAE    Region = "ae"
+	RegionIsrael Region = "Israel"
+	RegionTurkey Region = "Turkey"
+	RegionKuwait Region = "Kuwait"
+	RegionUAE    Region = "UAE"
 
 	// Africa children
-	RegionSouthAfrica Region = "za"
+	RegionSouthAfrica Region = "South Africa"
 )
 
 // regionParents maps each region to its parent in the hierarchy.
@@ -70,7 +70,7 @@ var regionParents = map[Region]Region{
 	// Continental regions -> World
 	RegionEurope:     RegionWorld,
 	RegionAsia:       RegionWorld,
-	RegionAmerica:    RegionWorld,
+	RegionAmericas:   RegionWorld,
 	RegionOceania:    RegionWorld,
 	RegionMiddleEast: RegionWorld,
 	RegionAfrica:     RegionWorld,
@@ -88,7 +88,7 @@ var regionParents = map[Region]Region{
 	RegionNorway:      RegionEurope,
 	RegionPortugal:    RegionEurope,
 	RegionPoland:      RegionEurope,
-	RegionCzech:       RegionEurope,
+	RegionCzechia:     RegionEurope,
 	RegionHungary:     RegionEurope,
 	RegionSlovakia:    RegionEurope,
 	RegionBulgaria:    RegionEurope,
@@ -102,12 +102,12 @@ var regionParents = map[Region]Region{
 	RegionTaiwan: RegionAsia,
 
 	// America children
-	RegionUSA:    RegionAmerica,
-	RegionCanada: RegionAmerica,
-	RegionBrazil: RegionAmerica,
-	RegionMexico: RegionAmerica,
-	RegionChile:  RegionAmerica,
-	RegionPeru:   RegionAmerica,
+	RegionUSA:    RegionAmericas,
+	RegionCanada: RegionAmericas,
+	RegionBrazil: RegionAmericas,
+	RegionMexico: RegionAmericas,
+	RegionChile:  RegionAmericas,
+	RegionPeru:   RegionAmericas,
 
 	// Oceania children
 	RegionAustralia:  RegionOceania,
@@ -135,7 +135,7 @@ func (r Region) Parent() Region {
 
 // Ancestors returns the chain of ancestors from this region up to World.
 // For example, RegionGermany.Ancestors() returns [RegionEurope, RegionWorld].
-// Returns nil for RegionWorld, RegionUnknown, or top-level regions.
+// Returns nil for RegionWorld and RegionUnknown.
 func (r Region) Ancestors() []Region {
 	var ancestors []Region
 	for p := r.Parent(); p != RegionUnknown; p = p.Parent() {

@@ -100,7 +100,7 @@ func (i *Info) GameRegions() []core.Region {
 		regions = append(regions, core.RegionAsia)
 	}
 	if i.Area&AreaAmericasNTSC != 0 {
-		regions = append(regions, core.RegionAmerica)
+		regions = append(regions, core.RegionAmericas)
 	}
 	if i.Area&AreaPAL != 0 {
 		regions = append(regions, core.RegionEurope)

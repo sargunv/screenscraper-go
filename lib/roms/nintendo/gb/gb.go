@@ -173,6 +173,7 @@ func (i *Info) GameTitle() string { return i.Title }
 // GameSerial implements core.GameInfo. GB ROMs don't have serial numbers.
 func (i *Info) GameSerial() string { return "" }
 
+// GameRegions implements core.GameInfo.
 func (i *Info) GameRegions() []core.Region {
 	switch i.Destination {
 	case DestinationJapan:

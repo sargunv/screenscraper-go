@@ -102,6 +102,7 @@ type Info struct {
 	HeaderChecksum byte `json:"header_checksum"`
 }
 
+// GameRegions implements core.GameInfo.
 func (i *Info) GameRegions() []core.Region {
 	switch i.Destination {
 	case DestinationJapan:
@@ -112,6 +113,8 @@ func (i *Info) GameRegions() []core.Region {
 		return []core.Region{core.RegionUSA}
 	case DestinationFrance:
 		return []core.Region{core.RegionFrance}
+	case DestinationSpain:
+		return []core.Region{core.RegionSpain}
 	case DestinationGermany:
 		return []core.Region{core.RegionGermany}
 	case DestinationItaly:

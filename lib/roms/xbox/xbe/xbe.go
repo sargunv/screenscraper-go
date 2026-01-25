@@ -125,7 +125,7 @@ func (i *Info) GameSerial() string {
 func (i *Info) GameRegions() []core.Region {
 	var regions []core.Region
 	if i.RegionFlags&RegionNorthAmerica != 0 {
-		regions = append(regions, core.RegionAmerica)
+		regions = append(regions, core.RegionAmericas)
 	}
 	if i.RegionFlags&RegionJapan != 0 {
 		regions = append(regions, core.RegionJapan)
