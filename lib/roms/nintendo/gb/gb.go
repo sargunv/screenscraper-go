@@ -173,6 +173,18 @@ func (i *Info) GameTitle() string { return i.Title }
 // GameSerial implements core.GameInfo. GB ROMs don't have serial numbers.
 func (i *Info) GameSerial() string { return "" }
 
+// GameRegions implements core.GameInfo.
+func (i *Info) GameRegions() []core.Region {
+	switch i.Destination {
+	case DestinationJapan:
+		return []core.Region{core.RegionJapan}
+	case DestinationOverseas:
+		return []core.Region{core.RegionWorld}
+	default:
+		return []core.Region{}
+	}
+}
+
 // Parse extracts game information from a GB/GBC ROM file.
 func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < gbHeaderStart+gbHeaderSize {
