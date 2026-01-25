@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestParseSNES(t *testing.T) {
+func TestParse(t *testing.T) {
 	romPath := "testdata/col15.sfc"
 
 	file, err := os.Open(romPath)
@@ -20,9 +20,9 @@ func TestParseSNES(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseSNES(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseSNES() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// Verify the file was parsed without error
@@ -31,7 +31,7 @@ func TestParseSNES(t *testing.T) {
 	}
 }
 
-func TestParseSNES_Fields(t *testing.T) {
+func TestParse_Fields(t *testing.T) {
 	romPath := "testdata/col15.sfc"
 
 	file, err := os.Open(romPath)
@@ -45,9 +45,9 @@ func TestParseSNES_Fields(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseSNES(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseSNES() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// col15.sfc has title "32,768 color demo" and copier header
@@ -65,7 +65,7 @@ func TestParseSNES_Fields(t *testing.T) {
 }
 
 // makeSyntheticSNES creates a synthetic SNES ROM with a valid LoROM header.
-func makeSyntheticSNES(title string, mapMode SNESMapMode, destination SNESDestination, cartType SNESCartridgeType) []byte {
+func makeSyntheticSNES(title string, mapMode MapMode, destination Destination, cartType CartridgeType) []byte {
 	// Create a LoROM-sized ROM (32KB minimum)
 	rom := make([]byte, snesLoROMOffset+snesHeaderSize)
 
@@ -112,50 +112,50 @@ func makeSyntheticSNES(title string, mapMode SNESMapMode, destination SNESDestin
 	return rom
 }
 
-func TestParseSNES_Synthetic(t *testing.T) {
+func TestParse_Synthetic(t *testing.T) {
 	tests := []struct {
 		name            string
 		title           string
-		mapMode         SNESMapMode
-		destination     SNESDestination
-		cartType        SNESCartridgeType
+		mapMode         MapMode
+		destination     Destination
+		cartType        CartridgeType
 		wantTitle       string
-		wantMapMode     SNESMapMode
-		wantDestination SNESDestination
-		wantCartType    SNESCartridgeType
+		wantMapMode     MapMode
+		wantDestination Destination
+		wantCartType    CartridgeType
 	}{
 		{
 			name:            "LoROM Japan",
 			title:           "TEST GAME",
-			mapMode:         SNESMapModeLoROM,
-			destination:     SNESDestinationJapan,
-			cartType:        SNESCartridgeROMOnly,
+			mapMode:         MapModeLoROM,
+			destination:     DestinationJapan,
+			cartType:        CartridgeROMOnly,
 			wantTitle:       "TEST GAME",
-			wantMapMode:     SNESMapModeLoROM,
-			wantDestination: SNESDestinationJapan,
-			wantCartType:    SNESCartridgeROMOnly,
+			wantMapMode:     MapModeLoROM,
+			wantDestination: DestinationJapan,
+			wantCartType:    CartridgeROMOnly,
 		},
 		{
 			name:            "HiROM USA with battery",
 			title:           "BATTERY SAVE",
-			mapMode:         SNESMapModeHiROM,
-			destination:     SNESDestinationUSA,
-			cartType:        SNESCartridgeROMRAMBattery,
+			mapMode:         MapModeHiROM,
+			destination:     DestinationUSA,
+			cartType:        CartridgeROMRAMBattery,
 			wantTitle:       "BATTERY SAVE",
-			wantMapMode:     SNESMapModeHiROM,
-			wantDestination: SNESDestinationUSA,
-			wantCartType:    SNESCartridgeROMRAMBattery,
+			wantMapMode:     MapModeHiROM,
+			wantDestination: DestinationUSA,
+			wantCartType:    CartridgeROMRAMBattery,
 		},
 		{
 			name:            "FastROM Europe",
 			title:           "FAST GAME EU",
-			mapMode:         SNESMapModeFastROMLoROM,
-			destination:     SNESDestinationEurope,
-			cartType:        SNESCartridgeROMRAM,
+			mapMode:         MapModeFastROMLoROM,
+			destination:     DestinationEurope,
+			cartType:        CartridgeROMRAM,
 			wantTitle:       "FAST GAME EU",
-			wantMapMode:     SNESMapModeFastROMLoROM,
-			wantDestination: SNESDestinationEurope,
-			wantCartType:    SNESCartridgeROMRAM,
+			wantMapMode:     MapModeFastROMLoROM,
+			wantDestination: DestinationEurope,
+			wantCartType:    CartridgeROMRAM,
 		},
 	}
 
@@ -164,9 +164,9 @@ func TestParseSNES_Synthetic(t *testing.T) {
 			rom := makeSyntheticSNES(tc.title, tc.mapMode, tc.destination, tc.cartType)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseSNES(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseSNES() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.Title != tc.wantTitle {
@@ -188,7 +188,7 @@ func TestParseSNES_Synthetic(t *testing.T) {
 	}
 }
 
-func TestParseSNES_InvalidHeader(t *testing.T) {
+func TestParse_InvalidHeader(t *testing.T) {
 	// Create a ROM with invalid checksum
 	rom := make([]byte, snesLoROMOffset+snesHeaderSize)
 	header := rom[snesLoROMOffset:]
@@ -197,7 +197,7 @@ func TestParseSNES_InvalidHeader(t *testing.T) {
 	copy(header[snesTitleOffset:], []byte("INVALID GAME"))
 
 	// Valid map mode
-	header[snesMapModeOffset] = byte(SNESMapModeLoROM)
+	header[snesMapModeOffset] = byte(MapModeLoROM)
 
 	// Invalid checksum pair (doesn't sum to 0xFFFF)
 	header[snesChecksumCOffset] = 0x00
@@ -206,19 +206,19 @@ func TestParseSNES_InvalidHeader(t *testing.T) {
 	header[snesChecksumOffset+1] = 0x00
 
 	reader := bytes.NewReader(rom)
-	_, err := ParseSNES(reader, int64(len(rom)))
+	_, err := Parse(reader, int64(len(rom)))
 	if err == nil {
-		t.Error("ParseSNES() expected error for invalid checksum, got nil")
+		t.Error("Parse() expected error for invalid checksum, got nil")
 	}
 }
 
-func TestParseSNES_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	// File too small for any header location
 	data := make([]byte, 100)
 	reader := bytes.NewReader(data)
 
-	_, err := ParseSNES(reader, int64(len(data)))
+	_, err := Parse(reader, int64(len(data)))
 	if err == nil {
-		t.Error("ParseSNES() expected error for too small file, got nil")
+		t.Error("Parse() expected error for too small file, got nil")
 	}
 }

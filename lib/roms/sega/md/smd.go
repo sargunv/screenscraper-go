@@ -107,7 +107,7 @@ func deinterleaveSMD(data []byte) []byte {
 
 // parseSMD extracts game information from an SMD (Super Magic Drive) ROM file.
 // SMD files have a 512-byte header and interleaved data that needs de-interleaving.
-func parseSMD(r io.ReaderAt, size int64) (*MDInfo, error) {
+func parseSMD(r io.ReaderAt, size int64) (*Info, error) {
 	if size < smdHeaderSize+smdBlockSize {
 		return nil, fmt.Errorf("file too small for SMD format: %d bytes", size)
 	}

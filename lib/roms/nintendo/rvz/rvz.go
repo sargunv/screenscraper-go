@@ -86,10 +86,10 @@ const (
 	DiscTypeWii      DiscType = 2
 )
 
-// RVZInfo contains metadata extracted from an RVZ/WIA file header.
-type RVZInfo struct {
+// Info contains metadata extracted from an RVZ/WIA file header.
+type Info struct {
 	// GCM contains the game identification info parsed from the disc header.
-	GCM *gcm.GCMInfo `json:"gcm,omitempty"`
+	GCM *gcm.Info `json:"gcm,omitempty"`
 	// Version is the WIA format version.
 	Version uint32 `json:"version"`
 	// CompatibleVersion is the minimum compatible version.
@@ -112,17 +112,17 @@ type RVZInfo struct {
 	FileHeadHash string `json:"file_head_hash,omitempty"`
 }
 
-// GamePlatform implements identify.GameInfo by delegating to GCM.
-func (i *RVZInfo) GamePlatform() core.Platform { return i.GCM.GamePlatform() }
+// GamePlatform implements core.GameInfo by delegating to GCM.
+func (i *Info) GamePlatform() core.Platform { return i.GCM.GamePlatform() }
 
-// GameTitle implements identify.GameInfo by delegating to GCM.
-func (i *RVZInfo) GameTitle() string { return i.GCM.GameTitle() }
+// GameTitle implements core.GameInfo by delegating to GCM.
+func (i *Info) GameTitle() string { return i.GCM.GameTitle() }
 
-// GameSerial implements identify.GameInfo by delegating to GCM.
-func (i *RVZInfo) GameSerial() string { return i.GCM.GameSerial() }
+// GameSerial implements core.GameInfo by delegating to GCM.
+func (i *Info) GameSerial() string { return i.GCM.GameSerial() }
 
-// ParseRVZ reads and parses an RVZ/WIA file header.
-func ParseRVZ(r io.ReaderAt, size int64) (*RVZInfo, error) {
+// Parse reads and parses an RVZ/WIA file header.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < totalHeaderSize {
 		return nil, fmt.Errorf("file too small for RVZ header: need %d bytes, got %d", totalHeaderSize, size)
 	}
@@ -157,12 +157,12 @@ func ParseRVZ(r io.ReaderAt, size int64) (*RVZInfo, error) {
 	copy(dhead, header[discStructBase+dheadOffset:])
 
 	// Parse the embedded GCM header
-	gcmInfo, err := gcm.ParseGCM(bytes.NewReader(dhead), int64(len(dhead)))
+	gcmInfo, err := gcm.Parse(bytes.NewReader(dhead), int64(len(dhead)))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse disc header from RVZ: %w", err)
 	}
 
-	return &RVZInfo{
+	return &Info{
 		GCM:               gcmInfo,
 		Version:           version,
 		CompatibleVersion: compatVer,

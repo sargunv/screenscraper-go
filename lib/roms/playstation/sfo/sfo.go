@@ -39,8 +39,8 @@ const (
 // String values are returned as string, integers as uint32.
 type sfoData map[string]any
 
-// SFOInfo contains metadata extracted from an SFO file with platform detection.
-type SFOInfo struct {
+// Info contains metadata extracted from an SFO file with platform detection.
+type Info struct {
 	// DiscID is the game identifier (e.g., "ULUS10041", "BLUS30001").
 	DiscID string `json:"disc_id,omitempty"`
 	// Title is the game title from the SFO.
@@ -90,14 +90,14 @@ type SFOInfo struct {
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *SFOInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo.
-func (i *SFOInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo. Returns disc ID with hyphen normalization.
-func (i *SFOInfo) GameSerial() string {
+// GameSerial implements core.GameInfo. Returns disc ID with hyphen normalization.
+func (i *Info) GameSerial() string {
 	// Normalize disc ID: add hyphen after 4-char prefix if not present
 	normalizedID := i.DiscID
 	if !strings.Contains(normalizedID, "-") && len(normalizedID) > 4 {
@@ -107,7 +107,7 @@ func (i *SFOInfo) GameSerial() string {
 }
 
 // Parse reads an SFO file and returns high-level game information.
-func Parse(r io.ReaderAt, size int64) (*SFOInfo, error) {
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	data, err := parsesfoData(r, size)
 	if err != nil {
 		return nil, err
@@ -130,7 +130,7 @@ func Parse(r io.ReaderAt, size int64) (*SFOInfo, error) {
 		systemVer = getString(data, "PS3_SYSTEM_VER")
 	}
 
-	return &SFOInfo{
+	return &Info{
 		platform:      platform,
 		DiscID:        discID,
 		Title:         getString(data, "TITLE"),

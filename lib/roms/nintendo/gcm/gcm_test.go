@@ -52,7 +52,7 @@ func TestParseGCM_GameCube(t *testing.T) {
 	header := makeSyntheticGCM(SystemCodeGameCube, "MK", RegionNorthAmerica, "Test GameCube Game", false)
 	reader := bytes.NewReader(header)
 
-	info, err := ParseGCM(reader, int64(len(header)))
+	info, err := Parse(reader, int64(len(header)))
 	if err != nil {
 		t.Fatalf("ParseGCM() error = %v", err)
 	}
@@ -81,7 +81,7 @@ func TestParseGCM_Wii(t *testing.T) {
 	header := makeSyntheticGCM(SystemCodeWii, "SM", RegionJapan, "Test Wii Game", true)
 	reader := bytes.NewReader(header)
 
-	info, err := ParseGCM(reader, int64(len(header)))
+	info, err := Parse(reader, int64(len(header)))
 	if err != nil {
 		t.Fatalf("ParseGCM() error = %v", err)
 	}
@@ -105,7 +105,7 @@ func TestParseGCM_InvalidMagic(t *testing.T) {
 	// No magic words set - both are zero
 	reader := bytes.NewReader(header)
 
-	_, err := ParseGCM(reader, int64(len(header)))
+	_, err := Parse(reader, int64(len(header)))
 	if err == nil {
 		t.Error("ParseGCM() expected error for invalid magic, got nil")
 	}
@@ -115,7 +115,7 @@ func TestParseGCM_TooSmall(t *testing.T) {
 	header := make([]byte, 32) // Less than discHeaderSize (0x60 = 96)
 	reader := bytes.NewReader(header)
 
-	_, err := ParseGCM(reader, int64(len(header)))
+	_, err := Parse(reader, int64(len(header)))
 	if err == nil {
 		t.Error("ParseGCM() expected error for too small file, got nil")
 	}
@@ -157,7 +157,7 @@ func TestGCMInfo_GameSerial(t *testing.T) {
 			header := makeSyntheticGCM(tc.systemCode, tc.gameCode, tc.region, "Test", tc.systemCode == SystemCodeWii || tc.systemCode == SystemCodeWiiNew)
 			reader := bytes.NewReader(header)
 
-			info, err := ParseGCM(reader, int64(len(header)))
+			info, err := Parse(reader, int64(len(header)))
 			if err != nil {
 				t.Fatalf("ParseGCM() error = %v", err)
 			}

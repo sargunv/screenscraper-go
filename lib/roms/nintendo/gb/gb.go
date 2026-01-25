@@ -131,8 +131,8 @@ const (
 	DestinationOverseas Destination = 0x01 // Non-Japanese markets
 )
 
-// GBInfo contains metadata extracted from a GB/GBC ROM file.
-type GBInfo struct {
+// Info contains metadata extracted from a GB/GBC ROM file.
+type Info struct {
 	// Title is the game title (11-16 chars, null-padded). For CGB games, this is
 	// truncated to 11 chars when a manufacturer code is present.
 	Title string `json:"title,omitempty"`
@@ -164,17 +164,17 @@ type GBInfo struct {
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *GBInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo.
-func (i *GBInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo. GB ROMs don't have serial numbers.
-func (i *GBInfo) GameSerial() string { return "" }
+// GameSerial implements core.GameInfo. GB ROMs don't have serial numbers.
+func (i *Info) GameSerial() string { return "" }
 
-// ParseGB extracts game information from a GB/GBC ROM file.
-func ParseGB(r io.ReaderAt, size int64) (*GBInfo, error) {
+// Parse extracts game information from a GB/GBC ROM file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < gbHeaderStart+gbHeaderSize {
 		return nil, fmt.Errorf("file too small for GB header: %d bytes", size)
 	}
@@ -250,7 +250,7 @@ func ParseGB(r io.ReaderAt, size int64) (*GBInfo, error) {
 	// Extract version
 	version := int(header[gbVersionOffset-gbHeaderStart])
 
-	return &GBInfo{
+	return &Info{
 		Title:            title,
 		ManufacturerCode: manufacturerCode,
 		CGBFlag:          cgbFlag,

@@ -54,68 +54,68 @@ const (
 	n64VersionOffset     = 0x3F // 1 byte
 )
 
-// N64ByteOrder represents the byte ordering of an N64 ROM.
+// ByteOrder represents the byte ordering of an N64 ROM.
 // N64 ROMs are distributed in three byte orderings, identifiable by where 0x80 appears
 // in the first 4 bytes. All commercial N64 ROMs begin with 0x80371240 in native format.
-type N64ByteOrder string
+type ByteOrder string
 
 const (
-	// N64BigEndian (.z64) is the native N64 format with no byte reordering.
+	// ByteOrderBigEndian (.z64) is the native N64 format with no byte reordering.
 	// Bytes appear as: [0x80, 0x37, 0x12, 0x40] - 0x80 at position 0.
-	N64BigEndian N64ByteOrder = "z64"
-	// N64ByteSwapped (.v64) has each pair of bytes swapped (16-bit byte swap).
+	ByteOrderBigEndian ByteOrder = "z64"
+	// ByteOrderByteSwapped (.v64) has each pair of bytes swapped (16-bit byte swap).
 	// Bytes appear as: [0x37, 0x80, 0x40, 0x12] - 0x80 at position 1.
 	// Conversion: swap adjacent bytes (AB CD -> BA DC).
-	N64ByteSwapped N64ByteOrder = "v64"
-	// N64LittleEndian (.n64) has each 32-bit word byte-reversed.
+	ByteOrderByteSwapped ByteOrder = "v64"
+	// ByteOrderLittleEndian (.n64) has each 32-bit word byte-reversed.
 	// Bytes appear as: [0x40, 0x12, 0x37, 0x80] - 0x80 at position 3.
 	// Conversion: reverse each 4-byte group (ABCD -> DCBA).
-	N64LittleEndian N64ByteOrder = "n64"
-	// N64Unknown indicates the byte order could not be detected.
-	N64Unknown N64ByteOrder = "unknown"
+	ByteOrderLittleEndian ByteOrder = "n64"
+	// ByteOrderUnknown indicates the byte order could not be detected.
+	ByteOrderUnknown ByteOrder = "unknown"
 )
 
-// N64CategoryCode represents the media type from the first byte of the game code.
-type N64CategoryCode byte
+// CategoryCode represents the media type from the first byte of the game code.
+type CategoryCode byte
 
-// N64CategoryCode values per n64brew wiki.
+// CategoryCode values per n64brew wiki.
 const (
-	N64CategoryGamePak      N64CategoryCode = 'N' // Standard cartridge
-	N64Category64DD         N64CategoryCode = 'D' // 64DD Disk
-	N64CategoryExpandable   N64CategoryCode = 'C' // Expandable: Game Pak Part
-	N64CategoryExpandableDD N64CategoryCode = 'E' // Expandable: 64DD Part
-	N64CategoryAleck64      N64CategoryCode = 'Z' // Aleck64 arcade
+	CategoryGamePak      CategoryCode = 'N' // Standard cartridge
+	Category64DD         CategoryCode = 'D' // 64DD Disk
+	CategoryExpandable   CategoryCode = 'C' // Expandable: Game Pak Part
+	CategoryExpandableDD CategoryCode = 'E' // Expandable: 64DD Part
+	CategoryAleck64      CategoryCode = 'Z' // Aleck64 arcade
 )
 
-// N64Destination represents the target region from the game code.
-type N64Destination byte
+// Destination represents the target region from the game code.
+type Destination byte
 
-// N64Destination values per n64brew wiki.
+// Destination values per n64brew wiki.
 const (
-	N64DestinationAll          N64Destination = 'A'
-	N64DestinationBrazil       N64Destination = 'B'
-	N64DestinationChina        N64Destination = 'C'
-	N64DestinationGermany      N64Destination = 'D'
-	N64DestinationNorthAmerica N64Destination = 'E'
-	N64DestinationFrance       N64Destination = 'F'
-	N64DestinationGatewayNTSC  N64Destination = 'G'
-	N64DestinationNetherlands  N64Destination = 'H'
-	N64DestinationItaly        N64Destination = 'I'
-	N64DestinationJapan        N64Destination = 'J'
-	N64DestinationKorea        N64Destination = 'K'
-	N64DestinationGatewayPAL   N64Destination = 'L'
-	N64DestinationCanada       N64Destination = 'N'
-	N64DestinationEurope       N64Destination = 'P'
-	N64DestinationSpain        N64Destination = 'S'
-	N64DestinationAustralia    N64Destination = 'U'
-	N64DestinationScandinavia  N64Destination = 'W'
-	N64DestinationEuropeX      N64Destination = 'X'
-	N64DestinationEuropeY      N64Destination = 'Y'
-	N64DestinationEuropeZ      N64Destination = 'Z'
+	DestinationAll          Destination = 'A'
+	DestinationBrazil       Destination = 'B'
+	DestinationChina        Destination = 'C'
+	DestinationGermany      Destination = 'D'
+	DestinationNorthAmerica Destination = 'E'
+	DestinationFrance       Destination = 'F'
+	DestinationGatewayNTSC  Destination = 'G'
+	DestinationNetherlands  Destination = 'H'
+	DestinationItaly        Destination = 'I'
+	DestinationJapan        Destination = 'J'
+	DestinationKorea        Destination = 'K'
+	DestinationGatewayPAL   Destination = 'L'
+	DestinationCanada       Destination = 'N'
+	DestinationEurope       Destination = 'P'
+	DestinationSpain        Destination = 'S'
+	DestinationAustralia    Destination = 'U'
+	DestinationScandinavia  Destination = 'W'
+	DestinationEuropeX      Destination = 'X'
+	DestinationEuropeY      Destination = 'Y'
+	DestinationEuropeZ      Destination = 'Z'
 )
 
-// N64Info contains metadata extracted from an N64 ROM file.
-type N64Info struct {
+// Info contains metadata extracted from an N64 ROM file.
+type Info struct {
 	// PIBSDConfig is the PI BSD DOM1 configuration flags (0x01-0x03, 24-bit).
 	// Controls ROM access timing for the Parallel Interface.
 	PIBSDConfig uint32 `json:"pi_bsd_config"`
@@ -133,28 +133,28 @@ type N64Info struct {
 	// GameCode is the full 4-character game code (0x3B-0x3E).
 	GameCode string `json:"game_code,omitempty"`
 	// CategoryCode is the media type: N=GamePak, D=64DD, C=Expandable, etc.
-	CategoryCode N64CategoryCode `json:"category_code"`
+	CategoryCode CategoryCode `json:"category_code"`
 	// UniqueCode is the 2-char unique game identifier.
 	UniqueCode string `json:"unique_code,omitempty"`
 	// Destination is the target region: J=Japan, E=USA, P=Europe, etc.
-	Destination N64Destination `json:"destination"`
+	Destination Destination `json:"destination"`
 	// Version is the ROM version number (0x3F).
 	Version int `json:"version"`
 	// ByteOrder is the detected byte ordering of the ROM.
-	ByteOrder N64ByteOrder `json:"byte_order"`
+	ByteOrder ByteOrder `json:"byte_order"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *N64Info) GamePlatform() core.Platform { return core.PlatformN64 }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformN64 }
 
-// GameTitle implements identify.GameInfo.
-func (i *N64Info) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo.
-func (i *N64Info) GameSerial() string { return i.GameCode }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.GameCode }
 
-// ParseN64 extracts game information from an N64 ROM file, auto-detecting byte order.
-func ParseN64(r io.ReaderAt, size int64) (*N64Info, error) {
+// Parse extracts game information from an N64 ROM file, auto-detecting byte order.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < N64HeaderSize {
 		return nil, fmt.Errorf("file too small for N64 header: %d bytes", size)
 	}
@@ -166,7 +166,7 @@ func ParseN64(r io.ReaderAt, size int64) (*N64Info, error) {
 	}
 
 	byteOrder := detectByteOrder(first4)
-	if byteOrder == N64Unknown {
+	if byteOrder == ByteOrderUnknown {
 		return nil, fmt.Errorf("not a valid N64 ROM: could not detect byte order")
 	}
 
@@ -178,9 +178,9 @@ func ParseN64(r io.ReaderAt, size int64) (*N64Info, error) {
 
 	// Convert to big-endian if needed
 	switch byteOrder {
-	case N64ByteSwapped:
+	case ByteOrderByteSwapped:
 		swapBytes16(header)
-	case N64LittleEndian:
+	case ByteOrderLittleEndian:
 		swapBytes32(header)
 	}
 
@@ -188,7 +188,7 @@ func ParseN64(r io.ReaderAt, size int64) (*N64Info, error) {
 }
 
 // parseN64Header parses an N64 header from big-endian (z64) format bytes.
-func parseN64Header(header []byte, byteOrder N64ByteOrder) (*N64Info, error) {
+func parseN64Header(header []byte, byteOrder ByteOrder) (*Info, error) {
 	// Extract PI BSD DOM1 config (24-bit at 0x01-0x03, stored in low 3 bytes)
 	piBSDConfig := uint32(header[n64PIBSDConfigOffset])<<16 |
 		uint32(header[n64PIBSDConfigOffset+1])<<8 |
@@ -213,19 +213,19 @@ func parseN64Header(header []byte, byteOrder N64ByteOrder) (*N64Info, error) {
 	gameCode := util.ExtractASCII(header[n64GameCodeOffset : n64GameCodeOffset+n64GameCodeLen])
 
 	// Parse game code components
-	var categoryCode N64CategoryCode
+	var categoryCode CategoryCode
 	var uniqueCode string
-	var destination N64Destination
+	var destination Destination
 	if len(gameCode) >= 4 {
-		categoryCode = N64CategoryCode(gameCode[0])
+		categoryCode = CategoryCode(gameCode[0])
 		uniqueCode = gameCode[1:3]
-		destination = N64Destination(gameCode[3])
+		destination = Destination(gameCode[3])
 	}
 
 	// Extract ROM version (1 byte at 0x3F)
 	version := int(header[n64VersionOffset])
 
-	return &N64Info{
+	return &Info{
 		PIBSDConfig:     piBSDConfig,
 		ClockRate:       clockRate,
 		BootAddress:     bootAddress,
@@ -242,16 +242,16 @@ func parseN64Header(header []byte, byteOrder N64ByteOrder) (*N64Info, error) {
 }
 
 // detectByteOrder determines the byte ordering by finding where 0x80 is located.
-func detectByteOrder(first4 []byte) N64ByteOrder {
+func detectByteOrder(first4 []byte) ByteOrder {
 	switch {
 	case first4[0] == n64ReservedByte:
-		return N64BigEndian
+		return ByteOrderBigEndian
 	case first4[1] == n64ReservedByte:
-		return N64ByteSwapped
+		return ByteOrderByteSwapped
 	case first4[3] == n64ReservedByte:
-		return N64LittleEndian
+		return ByteOrderLittleEndian
 	default:
-		return N64Unknown
+		return ByteOrderUnknown
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestParseNES_INES_BombSweeper(t *testing.T) {
+func TestParse_INES_BombSweeper(t *testing.T) {
 	romPath := "testdata/BombSweeper.nes"
 
 	file, err := os.Open(romPath)
@@ -20,9 +20,9 @@ func TestParseNES_INES_BombSweeper(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseNES(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseNES() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// BombSweeper.nes: iNES 1.0, PRG=1 (16KB), CHR=1 (8KB), Mapper=0, NROM
@@ -36,14 +36,14 @@ func TestParseNES_INES_BombSweeper(t *testing.T) {
 	if info.Mapper != 0 {
 		t.Errorf("Mapper = %d, want 0", info.Mapper)
 	}
-	if info.Mirroring != NESMirroringHorizontal {
-		t.Errorf("Mirroring = %d, want %d (Horizontal)", info.Mirroring, NESMirroringHorizontal)
+	if info.Mirroring != MirroringHorizontal {
+		t.Errorf("Mirroring = %d, want %d (Horizontal)", info.Mirroring, MirroringHorizontal)
 	}
-	if info.ConsoleType != NESConsoleNES {
-		t.Errorf("ConsoleType = %d, want %d (NES)", info.ConsoleType, NESConsoleNES)
+	if info.ConsoleType != ConsoleNES {
+		t.Errorf("ConsoleType = %d, want %d (NES)", info.ConsoleType, ConsoleNES)
 	}
-	if info.TimingMode != NESTimingNTSC {
-		t.Errorf("TimingMode = %d, want %d (NTSC)", info.TimingMode, NESTimingNTSC)
+	if info.TimingMode != TimingNTSC {
+		t.Errorf("TimingMode = %d, want %d (NTSC)", info.TimingMode, TimingNTSC)
 	}
 	if info.HasBattery {
 		t.Errorf("HasBattery = true, want false")
@@ -66,7 +66,7 @@ func TestParseNES_INES_BombSweeper(t *testing.T) {
 	}
 }
 
-func TestParseNES_NES20_SEROM(t *testing.T) {
+func TestParse_NES20_SEROM(t *testing.T) {
 	romPath := "testdata/serom.nes"
 
 	file, err := os.Open(romPath)
@@ -80,9 +80,9 @@ func TestParseNES_NES20_SEROM(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseNES(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseNES() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// serom.nes: NES 2.0
@@ -109,14 +109,14 @@ func TestParseNES_NES20_SEROM(t *testing.T) {
 	if info.Submapper != 5 {
 		t.Errorf("Submapper = %d, want 5", info.Submapper)
 	}
-	if info.Mirroring != NESMirroringHorizontal {
-		t.Errorf("Mirroring = %d, want %d (Horizontal)", info.Mirroring, NESMirroringHorizontal)
+	if info.Mirroring != MirroringHorizontal {
+		t.Errorf("Mirroring = %d, want %d (Horizontal)", info.Mirroring, MirroringHorizontal)
 	}
-	if info.ConsoleType != NESConsoleNES {
-		t.Errorf("ConsoleType = %d, want %d (NES)", info.ConsoleType, NESConsoleNES)
+	if info.ConsoleType != ConsoleNES {
+		t.Errorf("ConsoleType = %d, want %d (NES)", info.ConsoleType, ConsoleNES)
 	}
-	if info.TimingMode != NESTimingNTSC {
-		t.Errorf("TimingMode = %d, want %d (NTSC)", info.TimingMode, NESTimingNTSC)
+	if info.TimingMode != TimingNTSC {
+		t.Errorf("TimingMode = %d, want %d (NTSC)", info.TimingMode, TimingNTSC)
 	}
 	if info.HasBattery {
 		t.Errorf("HasBattery = true, want false")
@@ -149,15 +149,15 @@ func makeSyntheticNES(header []byte) []byte {
 	return header
 }
 
-func TestParseNES_Synthetic_INES(t *testing.T) {
+func TestParse_Synthetic_INES(t *testing.T) {
 	tests := []struct {
 		name        string
 		header      []byte
 		wantPRGSize int
 		wantCHRSize int
 		wantMapper  int
-		wantMirror  NESMirroring
-		wantTiming  NESTimingMode
+		wantMirror  Mirroring
+		wantTiming  TimingMode
 		wantNES20   bool
 	}{
 		{
@@ -173,8 +173,8 @@ func TestParseNES_Synthetic_INES(t *testing.T) {
 			wantPRGSize: 32 * 1024,
 			wantCHRSize: 8 * 1024,
 			wantMapper:  0,
-			wantMirror:  NESMirroringHorizontal,
-			wantTiming:  NESTimingNTSC,
+			wantMirror:  MirroringHorizontal,
+			wantTiming:  TimingNTSC,
 			wantNES20:   false,
 		},
 		{
@@ -191,8 +191,8 @@ func TestParseNES_Synthetic_INES(t *testing.T) {
 			wantPRGSize: 128 * 1024,
 			wantCHRSize: 32 * 1024,
 			wantMapper:  1,
-			wantMirror:  NESMirroringVertical,
-			wantTiming:  NESTimingNTSC,
+			wantMirror:  MirroringVertical,
+			wantTiming:  TimingNTSC,
 			wantNES20:   false,
 		},
 		{
@@ -208,8 +208,8 @@ func TestParseNES_Synthetic_INES(t *testing.T) {
 			wantPRGSize: 16 * 1024,
 			wantCHRSize: 8 * 1024,
 			wantMapper:  0,
-			wantMirror:  NESMirroringHorizontal,
-			wantTiming:  NESTimingPAL,
+			wantMirror:  MirroringHorizontal,
+			wantTiming:  TimingPAL,
 			wantNES20:   false,
 		},
 		{
@@ -224,8 +224,8 @@ func TestParseNES_Synthetic_INES(t *testing.T) {
 			wantPRGSize: 256 * 1024,
 			wantCHRSize: 128 * 1024,
 			wantMapper:  4,
-			wantMirror:  NESMirroringHorizontal,
-			wantTiming:  NESTimingNTSC,
+			wantMirror:  MirroringHorizontal,
+			wantTiming:  TimingNTSC,
 			wantNES20:   false,
 		},
 	}
@@ -235,9 +235,9 @@ func TestParseNES_Synthetic_INES(t *testing.T) {
 			rom := makeSyntheticNES(tc.header)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseNES(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseNES() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.PRGROMSize != tc.wantPRGSize {
@@ -262,7 +262,7 @@ func TestParseNES_Synthetic_INES(t *testing.T) {
 	}
 }
 
-func TestParseNES_Synthetic_NES20(t *testing.T) {
+func TestParse_Synthetic_NES20(t *testing.T) {
 	tests := []struct {
 		name           string
 		header         []byte
@@ -274,11 +274,11 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 		wantPRGNVRAM   int
 		wantCHRRAM     int
 		wantCHRNVRAM   int
-		wantTiming     NESTimingMode
-		wantConsole    NESConsoleType
-		wantVsPPU      NESVsPPUType
-		wantVsHardware NESVsHardwareType
-		wantExtConsole NESExtendedConsoleType
+		wantTiming     TimingMode
+		wantConsole    ConsoleType
+		wantVsPPU      VsPPUType
+		wantVsHardware VsHardwareType
+		wantExtConsole ExtendedConsoleType
 		wantMiscROMs   int
 		wantExpansion  byte
 	}{
@@ -302,7 +302,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			wantCHRSize:   16 * 1024,
 			wantMapper:    0,
 			wantSubmapper: 0,
-			wantTiming:    NESTimingNTSC,
+			wantTiming:    TimingNTSC,
 		},
 		{
 			name: "NES 2.0 with submapper",
@@ -318,7 +318,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			wantCHRSize:   8 * 1024,
 			wantMapper:    1,
 			wantSubmapper: 5,
-			wantTiming:    NESTimingNTSC,
+			wantTiming:    TimingNTSC,
 		},
 		{
 			name: "NES 2.0 extended mapper",
@@ -334,7 +334,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			wantCHRSize:   8 * 1024,
 			wantMapper:    256,
 			wantSubmapper: 0,
-			wantTiming:    NESTimingNTSC,
+			wantTiming:    TimingNTSC,
 		},
 		{
 			name: "NES 2.0 all timing modes - Multi",
@@ -347,7 +347,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			},
 			wantPRGSize: 16 * 1024,
 			wantCHRSize: 8 * 1024,
-			wantTiming:  NESTimingMulti,
+			wantTiming:  TimingMulti,
 		},
 		{
 			name: "NES 2.0 all timing modes - Dendy",
@@ -360,7 +360,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			},
 			wantPRGSize: 16 * 1024,
 			wantCHRSize: 8 * 1024,
-			wantTiming:  NESTimingDendy,
+			wantTiming:  TimingDendy,
 		},
 		{
 			name: "NES 2.0 RAM sizes",
@@ -379,7 +379,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			wantPRGNVRAM: 64 << 7, // 8KB
 			wantCHRRAM:   64 << 7, // 8KB
 			wantCHRNVRAM: 64 << 8, // 16KB
-			wantTiming:   NESTimingNTSC,
+			wantTiming:   TimingNTSC,
 		},
 		{
 			name: "NES 2.0 Vs. System",
@@ -393,10 +393,10 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			},
 			wantPRGSize:    16 * 1024,
 			wantCHRSize:    8 * 1024,
-			wantConsole:    NESConsoleVsSystem,
-			wantVsPPU:      NESVsPPURP2C04_0002,
-			wantVsHardware: NESVsHardwareDualsystemNormal,
-			wantTiming:     NESTimingNTSC,
+			wantConsole:    ConsoleVsSystem,
+			wantVsPPU:      VsPPURP2C04_0002,
+			wantVsHardware: VsHardwareDualsystemNormal,
+			wantTiming:     TimingNTSC,
 		},
 		{
 			name: "NES 2.0 Extended Console",
@@ -410,9 +410,9 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			},
 			wantPRGSize:    16 * 1024,
 			wantCHRSize:    8 * 1024,
-			wantConsole:    NESConsoleExtended,
-			wantExtConsole: NESExtendedVT01,
-			wantTiming:     NESTimingNTSC,
+			wantConsole:    ConsoleExtended,
+			wantExtConsole: ExtendedVT01,
+			wantTiming:     TimingNTSC,
 		},
 		{
 			name: "NES 2.0 Misc ROMs and Expansion",
@@ -427,7 +427,7 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			wantCHRSize:   8 * 1024,
 			wantMiscROMs:  2,
 			wantExpansion: 0x15,
-			wantTiming:    NESTimingNTSC,
+			wantTiming:    TimingNTSC,
 		},
 	}
 
@@ -436,9 +436,9 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 			rom := makeSyntheticNES(tc.header)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseNES(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseNES() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if !info.IsNES20 {
@@ -493,11 +493,11 @@ func TestParseNES_Synthetic_NES20(t *testing.T) {
 	}
 }
 
-func TestParseNES_Flags(t *testing.T) {
+func TestParse_Flags(t *testing.T) {
 	tests := []struct {
 		name        string
 		flags6      byte
-		wantMirror  NESMirroring
+		wantMirror  Mirroring
 		wantBattery bool
 		wantTrainer bool
 		wantFour    bool
@@ -505,7 +505,7 @@ func TestParseNES_Flags(t *testing.T) {
 		{
 			name:        "all flags off",
 			flags6:      0x00,
-			wantMirror:  NESMirroringHorizontal,
+			wantMirror:  MirroringHorizontal,
 			wantBattery: false,
 			wantTrainer: false,
 			wantFour:    false,
@@ -513,7 +513,7 @@ func TestParseNES_Flags(t *testing.T) {
 		{
 			name:        "vertical mirroring",
 			flags6:      0x01,
-			wantMirror:  NESMirroringVertical,
+			wantMirror:  MirroringVertical,
 			wantBattery: false,
 			wantTrainer: false,
 			wantFour:    false,
@@ -521,7 +521,7 @@ func TestParseNES_Flags(t *testing.T) {
 		{
 			name:        "battery present",
 			flags6:      0x02,
-			wantMirror:  NESMirroringHorizontal,
+			wantMirror:  MirroringHorizontal,
 			wantBattery: true,
 			wantTrainer: false,
 			wantFour:    false,
@@ -529,7 +529,7 @@ func TestParseNES_Flags(t *testing.T) {
 		{
 			name:        "trainer present",
 			flags6:      0x04,
-			wantMirror:  NESMirroringHorizontal,
+			wantMirror:  MirroringHorizontal,
 			wantBattery: false,
 			wantTrainer: true,
 			wantFour:    false,
@@ -537,7 +537,7 @@ func TestParseNES_Flags(t *testing.T) {
 		{
 			name:        "four-screen VRAM",
 			flags6:      0x08,
-			wantMirror:  NESMirroringHorizontal,
+			wantMirror:  MirroringHorizontal,
 			wantBattery: false,
 			wantTrainer: false,
 			wantFour:    true,
@@ -545,7 +545,7 @@ func TestParseNES_Flags(t *testing.T) {
 		{
 			name:        "all flags on",
 			flags6:      0x0F,
-			wantMirror:  NESMirroringVertical,
+			wantMirror:  MirroringVertical,
 			wantBattery: true,
 			wantTrainer: true,
 			wantFour:    true,
@@ -563,9 +563,9 @@ func TestParseNES_Flags(t *testing.T) {
 			}
 			reader := bytes.NewReader(header)
 
-			info, err := ParseNES(reader, int64(len(header)))
+			info, err := Parse(reader, int64(len(header)))
 			if err != nil {
-				t.Fatalf("ParseNES() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.Mirroring != tc.wantMirror {
@@ -584,17 +584,17 @@ func TestParseNES_Flags(t *testing.T) {
 	}
 }
 
-func TestParseNES_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	data := []byte{0x4E, 0x45, 0x53, 0x1A, 0x01}
 	reader := bytes.NewReader(data)
 
-	_, err := ParseNES(reader, int64(len(data)))
+	_, err := Parse(reader, int64(len(data)))
 	if err == nil {
-		t.Error("ParseNES() expected error for too small file, got nil")
+		t.Error("Parse() expected error for too small file, got nil")
 	}
 }
 
-func TestParseNES_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	header := make([]byte, nesHeaderSize)
 	header[0] = 'X'
 	header[1] = 'E'
@@ -602,9 +602,9 @@ func TestParseNES_InvalidMagic(t *testing.T) {
 	header[3] = 0x1A
 	reader := bytes.NewReader(header)
 
-	_, err := ParseNES(reader, int64(len(header)))
+	_, err := Parse(reader, int64(len(header)))
 	if err == nil {
-		t.Error("ParseNES() expected error for invalid magic, got nil")
+		t.Error("Parse() expected error for invalid magic, got nil")
 	}
 }
 

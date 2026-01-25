@@ -74,58 +74,58 @@ const (
 	snesCopierHeaderSize = 512
 )
 
-// SNESMapMode indicates the memory mapping mode.
-type SNESMapMode byte
+// MapMode indicates the memory mapping mode.
+type MapMode byte
 
-// SNESMapMode values per sneslab wiki.
+// MapMode values per sneslab wiki.
 const (
-	SNESMapModeLoROM          SNESMapMode = 0x20 // 2.68MHz LoROM
-	SNESMapModeHiROM          SNESMapMode = 0x21 // 2.68MHz HiROM
-	SNESMapModeSA1            SNESMapMode = 0x23 // SA-1
-	SNESMapModeExHiROM        SNESMapMode = 0x25 // 2.68MHz ExHiROM
-	SNESMapModeFastROMLoROM   SNESMapMode = 0x30 // 3.58MHz LoROM
-	SNESMapModeFastROMHiROM   SNESMapMode = 0x31 // 3.58MHz HiROM
-	SNESMapModeFastROMExHiROM SNESMapMode = 0x35 // 3.58MHz ExHiROM
-	SNESMapModeSPC7110        SNESMapMode = 0x3A // SPC7110 variant (Tengai Makyou Zero)
+	MapModeLoROM          MapMode = 0x20 // 2.68MHz LoROM
+	MapModeHiROM          MapMode = 0x21 // 2.68MHz HiROM
+	MapModeSA1            MapMode = 0x23 // SA-1
+	MapModeExHiROM        MapMode = 0x25 // 2.68MHz ExHiROM
+	MapModeFastROMLoROM   MapMode = 0x30 // 3.58MHz LoROM
+	MapModeFastROMHiROM   MapMode = 0x31 // 3.58MHz HiROM
+	MapModeFastROMExHiROM MapMode = 0x35 // 3.58MHz ExHiROM
+	MapModeSPC7110        MapMode = 0x3A // SPC7110 variant (Tengai Makyou Zero)
 )
 
-// SNESDestination indicates the destination/region code.
-type SNESDestination byte
+// Destination indicates the destination/region code.
+type Destination byte
 
-// SNESDestination values per SNES Development Manual.
+// Destination values per SNES Development Manual.
 const (
-	SNESDestinationJapan       SNESDestination = 0x00
-	SNESDestinationUSA         SNESDestination = 0x01
-	SNESDestinationEurope      SNESDestination = 0x02
-	SNESDestinationScandinavia SNESDestination = 0x03
-	SNESDestinationFrench      SNESDestination = 0x06
-	SNESDestinationDutch       SNESDestination = 0x07
-	SNESDestinationSpanish     SNESDestination = 0x08
-	SNESDestinationGerman      SNESDestination = 0x09
-	SNESDestinationItalian     SNESDestination = 0x0A
-	SNESDestinationChinese     SNESDestination = 0x0B
-	SNESDestinationKorean      SNESDestination = 0x0D
-	SNESDestinationCommon      SNESDestination = 0x0E
-	SNESDestinationCanada      SNESDestination = 0x0F
-	SNESDestinationBrazil      SNESDestination = 0x10
-	SNESDestinationAustralia   SNESDestination = 0x11
+	DestinationJapan       Destination = 0x00
+	DestinationUSA         Destination = 0x01
+	DestinationEurope      Destination = 0x02
+	DestinationScandinavia Destination = 0x03
+	DestinationFrench      Destination = 0x06
+	DestinationDutch       Destination = 0x07
+	DestinationSpanish     Destination = 0x08
+	DestinationGerman      Destination = 0x09
+	DestinationItalian     Destination = 0x0A
+	DestinationChinese     Destination = 0x0B
+	DestinationKorean      Destination = 0x0D
+	DestinationCommon      Destination = 0x0E
+	DestinationCanada      Destination = 0x0F
+	DestinationBrazil      Destination = 0x10
+	DestinationAustralia   Destination = 0x11
 )
 
-// SNESCartridgeType indicates the cartridge chipset type.
-type SNESCartridgeType byte
+// CartridgeType indicates the cartridge chipset type.
+type CartridgeType byte
 
-// SNESCartridgeType common values.
+// CartridgeType common values.
 const (
-	SNESCartridgeROMOnly       SNESCartridgeType = 0x00
-	SNESCartridgeROMRAM        SNESCartridgeType = 0x01
-	SNESCartridgeROMRAMBattery SNESCartridgeType = 0x02
-	SNESCartridgeSA1           SNESCartridgeType = 0x33
-	SNESCartridgeSA1RAM        SNESCartridgeType = 0x34
-	SNESCartridgeSA1RAMBattery SNESCartridgeType = 0x35
+	CartridgeROMOnly       CartridgeType = 0x00
+	CartridgeROMRAM        CartridgeType = 0x01
+	CartridgeROMRAMBattery CartridgeType = 0x02
+	CartridgeSA1           CartridgeType = 0x33
+	CartridgeSA1RAM        CartridgeType = 0x34
+	CartridgeSA1RAMBattery CartridgeType = 0x35
 )
 
-// SNESInfo contains metadata extracted from a SNES ROM file.
-type SNESInfo struct {
+// Info contains metadata extracted from a SNES ROM file.
+type Info struct {
 	// Extended header (FFB0-FFBF) - may not be present in older ROMs
 	// MakerCode is the 2-char maker code (FFB0), present when MakerCodeOld is 0x33.
 	MakerCode string `json:"maker_code,omitempty"`
@@ -142,15 +142,15 @@ type SNESInfo struct {
 	// Title is the game title (21 chars max, space-padded).
 	Title string `json:"title,omitempty"`
 	// MapMode is the memory mapping mode (FFD5).
-	MapMode SNESMapMode `json:"map_mode"`
+	MapMode MapMode `json:"map_mode"`
 	// CartridgeType is the chipset info (FFD6).
-	CartridgeType SNESCartridgeType `json:"cartridge_type"`
+	CartridgeType CartridgeType `json:"cartridge_type"`
 	// ROMSize is the ROM size in bytes (FFD7).
 	ROMSize int `json:"rom_size"`
 	// RAMSize is the RAM/SRAM size in bytes (FFD8).
 	RAMSize int `json:"ram_size"`
 	// Destination is the region code (FFD9).
-	Destination SNESDestination `json:"destination"`
+	Destination Destination `json:"destination"`
 	// MakerCodeOld is the old maker code (FFDA) - 0x33 means use MakerCode.
 	MakerCodeOld byte `json:"maker_code_old"`
 	// MaskROMVersion is the ROM version number (FFDB).
@@ -163,17 +163,17 @@ type SNESInfo struct {
 	HasCopierHeader bool `json:"has_copier_header"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *SNESInfo) GamePlatform() core.Platform { return core.PlatformSNES }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformSNES }
 
-// GameTitle implements identify.GameInfo.
-func (i *SNESInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo. SNES ROMs don't have a standard serial.
-func (i *SNESInfo) GameSerial() string { return "" }
+// GameSerial implements core.GameInfo. SNES ROMs don't have a standard serial.
+func (i *Info) GameSerial() string { return "" }
 
-// ParseSNES extracts information from a SNES ROM file.
-func ParseSNES(r io.ReaderAt, size int64) (*SNESInfo, error) {
+// Parse extracts information from a SNES ROM file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	// Determine if there's a copier header (file size % 1024 == 512)
 	hasCopierHeader := (size % 1024) == snesCopierHeaderSize
 	copierOffset := int64(0)
@@ -201,7 +201,7 @@ func ParseSNES(r io.ReaderAt, size int64) (*SNESInfo, error) {
 	return nil, fmt.Errorf("could not find valid SNES header")
 }
 
-func parseSNESHeader(r io.ReaderAt, offset int64, fileSize int64, hasCopierHeader bool) (*SNESInfo, error) {
+func parseSNESHeader(r io.ReaderAt, offset int64, fileSize int64, hasCopierHeader bool) (*Info, error) {
 	header := make([]byte, snesHeaderSize)
 	if _, err := r.ReadAt(header, offset); err != nil {
 		return nil, fmt.Errorf("failed to read SNES header: %w", err)
@@ -214,10 +214,10 @@ func parseSNESHeader(r io.ReaderAt, offset int64, fileSize int64, hasCopierHeade
 	title := util.ExtractJISX0201(titleBytes)
 
 	// Map mode
-	mapMode := SNESMapMode(header[snesMapModeOffset])
+	mapMode := MapMode(header[snesMapModeOffset])
 
 	// Cartridge type
-	cartType := SNESCartridgeType(header[snesCartTypeOffset])
+	cartType := CartridgeType(header[snesCartTypeOffset])
 
 	// ROM size: 1 << (header value) kilobytes
 	romSizeExp := header[snesROMSizeOffset]
@@ -234,7 +234,7 @@ func parseSNESHeader(r io.ReaderAt, offset int64, fileSize int64, hasCopierHeade
 	}
 
 	// Destination code
-	destination := SNESDestination(header[snesDestCodeOffset])
+	destination := Destination(header[snesDestCodeOffset])
 
 	// Old maker code
 	makerCodeOld := header[snesMakerOldOffset]
@@ -271,7 +271,7 @@ func parseSNESHeader(r io.ReaderAt, offset int64, fileSize int64, hasCopierHeade
 		}
 	}
 
-	return &SNESInfo{
+	return &Info{
 		// Extended header
 		MakerCode:        makerCode,
 		GameCode:         gameCode,
@@ -294,7 +294,7 @@ func parseSNESHeader(r io.ReaderAt, offset int64, fileSize int64, hasCopierHeade
 }
 
 // isValidSNESHeader checks if the header looks valid using multiple heuristics.
-func isValidSNESHeader(info *SNESInfo, fileSize int64) bool {
+func isValidSNESHeader(info *Info, fileSize int64) bool {
 	// 1. Checksum validation: checksum + complement should equal 0xFFFF
 	//    This is the strongest signal (1 in 65,536 chance of random data passing)
 	if info.Checksum+info.ComplementCheck != 0xFFFF {
@@ -333,7 +333,7 @@ func isValidSNESHeader(info *SNESInfo, fileSize int64) bool {
 
 // isKnownHeaderBug checks if the ROM matches a known game with a header manufacturing defect.
 // These are original cartridge bugs, not ROM corruption.
-func isKnownHeaderBug(info *SNESInfo) bool {
+func isKnownHeaderBug(info *Info) bool {
 	// Contra III: The Alien Wars (USA)
 	// The title "CONTRA3 THE ALIEN WARS" is 22 chars but the header only has 21 bytes,
 	// causing the 'S' (0x53) to overflow into the map mode byte at 0x7FD5.

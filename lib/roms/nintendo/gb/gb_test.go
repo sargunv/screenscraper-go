@@ -21,7 +21,7 @@ func TestParseGB_GB(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseGB(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
 		t.Fatalf("ParseGB() error = %v", err)
 	}
@@ -106,7 +106,7 @@ func TestParseGB_GBC(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseGB(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
 		t.Fatalf("ParseGB() error = %v", err)
 	}
@@ -167,7 +167,7 @@ func TestParseGB_FileTooSmall(t *testing.T) {
 	// Create a file that's too small for a GB header
 	data := make([]byte, 0x100) // Header starts at 0x100, so this is too small
 
-	_, err := ParseGB(&mockReaderAt{data: data}, int64(len(data)))
+	_, err := Parse(&mockReaderAt{data: data}, int64(len(data)))
 	if err == nil {
 		t.Error("Expected error for file too small, got nil")
 	}

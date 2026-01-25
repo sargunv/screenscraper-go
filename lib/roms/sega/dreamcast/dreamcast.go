@@ -63,8 +63,8 @@ const (
 	titleSize        = 128
 )
 
-// DreamcastInfo contains metadata extracted from a Dreamcast disc header.
-type DreamcastInfo struct {
+// Info contains metadata extracted from a Dreamcast disc header.
+type Info struct {
 	// Title is the game title (space-padded, up to 128 characters).
 	Title string `json:"title,omitempty"`
 	// ProductNumber is the product code (e.g., "MK-51058" or "T-xxxxx").
@@ -88,18 +88,18 @@ type DreamcastInfo struct {
 	SWMakerName string `json:"sw_maker_name,omitempty"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *DreamcastInfo) GamePlatform() core.Platform { return core.PlatformDreamcast }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformDreamcast }
 
-// GameTitle implements identify.GameInfo.
-func (i *DreamcastInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo.
-func (i *DreamcastInfo) GameSerial() string { return i.ProductNumber }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.ProductNumber }
 
-// ParseDreamcast parses Dreamcast metadata from a reader.
+// Parse parses Dreamcast metadata from a reader.
 // The reader should contain the ISO 9660 system area data.
-func ParseDreamcast(r io.ReaderAt, size int64) (*DreamcastInfo, error) {
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < headerSize {
 		return nil, fmt.Errorf("data too small for Dreamcast header: %d bytes", size)
 	}
@@ -112,7 +112,7 @@ func ParseDreamcast(r io.ReaderAt, size int64) (*DreamcastInfo, error) {
 	return parseDreamcastBytes(data)
 }
 
-func parseDreamcastBytes(data []byte) (*DreamcastInfo, error) {
+func parseDreamcastBytes(data []byte) (*Info, error) {
 	// Validate magic
 	if string(data[:len(magic)]) != magic {
 		return nil, fmt.Errorf("not a valid Dreamcast disc: invalid magic")
@@ -125,7 +125,7 @@ func parseDreamcastBytes(data []byte) (*DreamcastInfo, error) {
 	// Parse area codes
 	area := parseAreaSymbols(data[areaOffset : areaOffset+areaSize])
 
-	info := &DreamcastInfo{
+	info := &Info{
 		Title:         util.ExtractShiftJIS(data[titleOffset : titleOffset+titleSize]),
 		ProductNumber: util.ExtractASCII(data[productOffset : productOffset+productSize]),
 		MakerID:       util.ExtractASCII(data[makerOffset : makerOffset+makerSize]),

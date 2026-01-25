@@ -55,7 +55,7 @@ func makeSyntheticNCSD(productCode, makerCode string, titleID, mediaID uint64, i
 	return data
 }
 
-func TestParseN3DS_Standard3DS(t *testing.T) {
+func TestParse_Standard3DS(t *testing.T) {
 	productCode := "CTR-P-ALGE"
 	makerCode := "00"
 	titleID := uint64(0x0004000000123400)
@@ -64,9 +64,9 @@ func TestParseN3DS_Standard3DS(t *testing.T) {
 	data := makeSyntheticNCSD(productCode, makerCode, titleID, mediaID, false)
 	reader := bytes.NewReader(data)
 
-	info, err := ParseN3DS(reader, int64(len(data)))
+	info, err := Parse(reader, int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseN3DS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.GamePlatform() != core.Platform3DS {
@@ -90,15 +90,15 @@ func TestParseN3DS_Standard3DS(t *testing.T) {
 	if info.IsNew3DSExclusive {
 		t.Error("IsNew3DSExclusive = true, want false")
 	}
-	if info.Region != N3DSRegionUSA {
-		t.Errorf("Region = %c, want %c", info.Region, N3DSRegionUSA)
+	if info.Region != RegionUSA {
+		t.Errorf("Region = %c, want %c", info.Region, RegionUSA)
 	}
 	if info.PartitionCount != 1 {
 		t.Errorf("PartitionCount = %d, want 1", info.PartitionCount)
 	}
 }
 
-func TestParseN3DS_New3DSExclusive(t *testing.T) {
+func TestParse_New3DSExclusive(t *testing.T) {
 	productCode := "KTR-P-BNEJ" // New 3DS exclusive, Japan
 	makerCode := "01"
 	titleID := uint64(0x0004000000456700)
@@ -107,9 +107,9 @@ func TestParseN3DS_New3DSExclusive(t *testing.T) {
 	data := makeSyntheticNCSD(productCode, makerCode, titleID, mediaID, true)
 	reader := bytes.NewReader(data)
 
-	info, err := ParseN3DS(reader, int64(len(data)))
+	info, err := Parse(reader, int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseN3DS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.GamePlatform() != core.PlatformNew3DS {
@@ -118,24 +118,24 @@ func TestParseN3DS_New3DSExclusive(t *testing.T) {
 	if !info.IsNew3DSExclusive {
 		t.Error("IsNew3DSExclusive = false, want true")
 	}
-	if info.Region != N3DSRegionJapan {
-		t.Errorf("Region = %c, want %c", info.Region, N3DSRegionJapan)
+	if info.Region != RegionJapan {
+		t.Errorf("Region = %c, want %c", info.Region, RegionJapan)
 	}
 }
 
-func TestParseN3DS_Regions(t *testing.T) {
+func TestParse_Regions(t *testing.T) {
 	tests := []struct {
 		name        string
 		productCode string
-		wantRegion  N3DSRegion
+		wantRegion  Region
 	}{
-		{"Japan", "CTR-P-AAAJ", N3DSRegionJapan},
-		{"USA", "CTR-P-AAAE", N3DSRegionUSA},
-		{"Europe", "CTR-P-AAAP", N3DSRegionEurope},
-		{"Australia", "CTR-P-AAAU", N3DSRegionAustralia},
-		{"China", "CTR-P-AAAC", N3DSRegionChina},
-		{"Korea", "CTR-P-AAAK", N3DSRegionKorea},
-		{"Taiwan", "CTR-P-AAAT", N3DSRegionTaiwan},
+		{"Japan", "CTR-P-AAAJ", RegionJapan},
+		{"USA", "CTR-P-AAAE", RegionUSA},
+		{"Europe", "CTR-P-AAAP", RegionEurope},
+		{"Australia", "CTR-P-AAAU", RegionAustralia},
+		{"China", "CTR-P-AAAC", RegionChina},
+		{"Korea", "CTR-P-AAAK", RegionKorea},
+		{"Taiwan", "CTR-P-AAAT", RegionTaiwan},
 	}
 
 	for _, tc := range tests {
@@ -143,9 +143,9 @@ func TestParseN3DS_Regions(t *testing.T) {
 			data := makeSyntheticNCSD(tc.productCode, "00", 0, 0, false)
 			reader := bytes.NewReader(data)
 
-			info, err := ParseN3DS(reader, int64(len(data)))
+			info, err := Parse(reader, int64(len(data)))
 			if err != nil {
-				t.Fatalf("ParseN3DS() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.Region != tc.wantRegion {
@@ -155,17 +155,17 @@ func TestParseN3DS_Regions(t *testing.T) {
 	}
 }
 
-func TestParseN3DS_ContentTypes(t *testing.T) {
+func TestParse_ContentTypes(t *testing.T) {
 	tests := []struct {
 		name            string
 		contentTypeFlag byte
-		wantContentType N3DSContentType
+		wantContentType ContentType
 	}{
-		{"Application", 0x00, N3DSContentTypeApplication},
-		{"SystemUpdate", 0x01, N3DSContentTypeSystemUpdate},
-		{"Manual", 0x02, N3DSContentTypeManual},
-		{"DLPChild", 0x03, N3DSContentTypeDLPChild},
-		{"Trial", 0x04, N3DSContentTypeTrial},
+		{"Application", 0x00, ContentTypeApplication},
+		{"SystemUpdate", 0x01, ContentTypeSystemUpdate},
+		{"Manual", 0x02, ContentTypeManual},
+		{"DLPChild", 0x03, ContentTypeDLPChild},
+		{"Trial", 0x04, ContentTypeTrial},
 	}
 
 	for _, tc := range tests {
@@ -175,9 +175,9 @@ func TestParseN3DS_ContentTypes(t *testing.T) {
 			data[0x200+ncchFlagsOffset+5] = tc.contentTypeFlag
 			reader := bytes.NewReader(data)
 
-			info, err := ParseN3DS(reader, int64(len(data)))
+			info, err := Parse(reader, int64(len(data)))
 			if err != nil {
-				t.Fatalf("ParseN3DS() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.ContentType != tc.wantContentType {
@@ -187,14 +187,14 @@ func TestParseN3DS_ContentTypes(t *testing.T) {
 	}
 }
 
-func TestParseN3DS_Errors(t *testing.T) {
+func TestParse_Errors(t *testing.T) {
 	t.Run("file too small", func(t *testing.T) {
 		data := make([]byte, ncsdHeaderSize-1)
 		reader := bytes.NewReader(data)
 
-		_, err := ParseN3DS(reader, int64(len(data)))
+		_, err := Parse(reader, int64(len(data)))
 		if err == nil {
-			t.Error("ParseN3DS() expected error for file too small, got nil")
+			t.Error("Parse() expected error for file too small, got nil")
 		}
 	})
 
@@ -203,9 +203,9 @@ func TestParseN3DS_Errors(t *testing.T) {
 		copy(data[ncsdMagicOffset:], "XXXX") // Invalid magic
 		reader := bytes.NewReader(data)
 
-		_, err := ParseN3DS(reader, int64(len(data)))
+		_, err := Parse(reader, int64(len(data)))
 		if err == nil {
-			t.Error("ParseN3DS() expected error for invalid NCSD magic, got nil")
+			t.Error("Parse() expected error for invalid NCSD magic, got nil")
 		}
 	})
 
@@ -215,9 +215,9 @@ func TestParseN3DS_Errors(t *testing.T) {
 		// Partition table entries are all zero
 		reader := bytes.NewReader(data)
 
-		_, err := ParseN3DS(reader, int64(len(data)))
+		_, err := Parse(reader, int64(len(data)))
 		if err == nil {
-			t.Error("ParseN3DS() expected error for empty partition 0, got nil")
+			t.Error("Parse() expected error for empty partition 0, got nil")
 		}
 	})
 
@@ -229,9 +229,9 @@ func TestParseN3DS_Errors(t *testing.T) {
 		binary.LittleEndian.PutUint32(data[ncsdPartTableOffset+4:], 1) // size = 1 media unit
 		reader := bytes.NewReader(data)
 
-		_, err := ParseN3DS(reader, int64(len(data)))
+		_, err := Parse(reader, int64(len(data)))
 		if err == nil {
-			t.Error("ParseN3DS() expected error for partition beyond file, got nil")
+			t.Error("Parse() expected error for partition beyond file, got nil")
 		}
 	})
 
@@ -244,15 +244,15 @@ func TestParseN3DS_Errors(t *testing.T) {
 		copy(data[0x200+ncchMagicOffset:], "XXXX") // Invalid NCCH magic
 		reader := bytes.NewReader(data)
 
-		_, err := ParseN3DS(reader, int64(len(data)))
+		_, err := Parse(reader, int64(len(data)))
 		if err == nil {
-			t.Error("ParseN3DS() expected error for invalid NCCH magic, got nil")
+			t.Error("Parse() expected error for invalid NCCH magic, got nil")
 		}
 	})
 }
 
-func TestN3DSInfo_GameInfo(t *testing.T) {
-	info := &N3DSInfo{
+func TestInfo_GameInfo(t *testing.T) {
+	info := &Info{
 		ProductCode: "CTR-P-ALGE",
 		platform:    core.Platform3DS,
 	}
@@ -273,7 +273,7 @@ func TestN3DSInfo_GameInfo(t *testing.T) {
 	}
 }
 
-func TestParseN3DS_MultiplePartitions(t *testing.T) {
+func TestParse_MultiplePartitions(t *testing.T) {
 	// Create synthetic data with multiple partitions
 	data := make([]byte, 0x600) // 3 media units
 
@@ -294,9 +294,9 @@ func TestParseN3DS_MultiplePartitions(t *testing.T) {
 	copy(data[0x200+ncchProductCodeOffset:], "CTR-P-TEST")
 
 	reader := bytes.NewReader(data)
-	info, err := ParseN3DS(reader, int64(len(data)))
+	info, err := Parse(reader, int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseN3DS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.PartitionCount != 2 {
@@ -304,7 +304,7 @@ func TestParseN3DS_MultiplePartitions(t *testing.T) {
 	}
 }
 
-func TestParseN3DS_OutOfBoundsPartitionsExcluded(t *testing.T) {
+func TestParse_OutOfBoundsPartitionsExcluded(t *testing.T) {
 	// Create synthetic data where partition table has entries beyond file/image bounds
 	data := make([]byte, 0x600) // 3 media units
 
@@ -329,9 +329,9 @@ func TestParseN3DS_OutOfBoundsPartitionsExcluded(t *testing.T) {
 	copy(data[0x200+ncchProductCodeOffset:], "CTR-P-TEST")
 
 	reader := bytes.NewReader(data)
-	info, err := ParseN3DS(reader, int64(len(data)))
+	info, err := Parse(reader, int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseN3DS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// Only partition 0 should be counted as valid

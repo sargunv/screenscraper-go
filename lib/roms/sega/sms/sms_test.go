@@ -15,7 +15,7 @@ func (r readerAt) ReadAt(p []byte, off int64) (n int, err error) {
 }
 
 // makeTestROM creates a minimal SMS ROM with the given header fields
-func makeTestROM(region SMSRegion, romSize SMSROMSize, checksum uint16, productLow, productHigh, productVer byte) readerAt {
+func makeTestROM(region Region, romSize ROMSize, checksum uint16, productLow, productHigh, productVer byte) readerAt {
 	rom := make([]byte, smsMinROMSize)
 
 	// Write magic at header offset
@@ -38,22 +38,22 @@ func makeTestROM(region SMSRegion, romSize SMSROMSize, checksum uint16, productL
 	return rom
 }
 
-func TestParseSMS_MasterSystem(t *testing.T) {
-	rom := makeTestROM(SMSRegionExportSMS, SMSROMSize256KB, 0x1234, 0x76, 0x70, 0x00)
+func TestParse_MasterSystem(t *testing.T) {
+	rom := makeTestROM(RegionExportSMS, ROMSize256KB, 0x1234, 0x76, 0x70, 0x00)
 
-	info, err := ParseSMS(rom, int64(len(rom)))
+	info, err := Parse(rom, int64(len(rom)))
 	if err != nil {
-		t.Fatalf("ParseSMS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.GamePlatform() != core.PlatformMS {
 		t.Errorf("Platform = %v, want %v", info.GamePlatform(), core.PlatformMS)
 	}
-	if info.Region != SMSRegionExportSMS {
-		t.Errorf("Region = %v, want %v", info.Region, SMSRegionExportSMS)
+	if info.Region != RegionExportSMS {
+		t.Errorf("Region = %v, want %v", info.Region, RegionExportSMS)
 	}
-	if info.ROMSize != SMSROMSize256KB {
-		t.Errorf("ROMSize = %v, want %v", info.ROMSize, SMSROMSize256KB)
+	if info.ROMSize != ROMSize256KB {
+		t.Errorf("ROMSize = %v, want %v", info.ROMSize, ROMSize256KB)
 	}
 	if info.Checksum != 0x1234 {
 		t.Errorf("Checksum = 0x%04X, want 0x1234", info.Checksum)
@@ -63,19 +63,19 @@ func TestParseSMS_MasterSystem(t *testing.T) {
 	}
 }
 
-func TestParseSMS_GameGear(t *testing.T) {
-	rom := makeTestROM(SMSRegionIntlGG, SMSROMSize512KB, 0xABCD, 0x12, 0x34, 0x52)
+func TestParse_GameGear(t *testing.T) {
+	rom := makeTestROM(RegionIntlGG, ROMSize512KB, 0xABCD, 0x12, 0x34, 0x52)
 
-	info, err := ParseSMS(rom, int64(len(rom)))
+	info, err := Parse(rom, int64(len(rom)))
 	if err != nil {
-		t.Fatalf("ParseSMS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.GamePlatform() != core.PlatformGameGear {
 		t.Errorf("Platform = %v, want %v", info.GamePlatform(), core.PlatformGameGear)
 	}
-	if info.Region != SMSRegionIntlGG {
-		t.Errorf("Region = %v, want %v", info.Region, SMSRegionIntlGG)
+	if info.Region != RegionIntlGG {
+		t.Errorf("Region = %v, want %v", info.Region, RegionIntlGG)
 	}
 	if info.Version != 2 {
 		t.Errorf("Version = %d, want 2", info.Version)
@@ -85,34 +85,34 @@ func TestParseSMS_GameGear(t *testing.T) {
 	}
 }
 
-func TestParseSMS_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	rom := make([]byte, smsMinROMSize)
 	copy(rom[smsHeaderOffset:], []byte("NOTVALID"))
 
-	_, err := ParseSMS(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseSMS() expected error for invalid magic, got nil")
+		t.Error("Parse() expected error for invalid magic, got nil")
 	}
 }
 
-func TestParseSMS_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	rom := make([]byte, smsMinROMSize-1)
 
-	_, err := ParseSMS(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseSMS() expected error for small file, got nil")
+		t.Error("Parse() expected error for small file, got nil")
 	}
 }
 
-func TestParseSMS_ChecksumEndianness(t *testing.T) {
+func TestParse_ChecksumEndianness(t *testing.T) {
 	// Verify little-endian: byte at lower address is LSB
-	rom := makeTestROM(SMSRegionExportSMS, SMSROMSize256KB, 0, 0, 0, 0)
+	rom := makeTestROM(RegionExportSMS, ROMSize256KB, 0, 0, 0, 0)
 	rom[smsHeaderOffset+smsChecksumOffset] = 0x34   // LSB
 	rom[smsHeaderOffset+smsChecksumOffset+1] = 0x12 // MSB
 
-	info, err := ParseSMS(rom, int64(len(rom)))
+	info, err := Parse(rom, int64(len(rom)))
 	if err != nil {
-		t.Fatalf("ParseSMS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 	if info.Checksum != 0x1234 {
 		t.Errorf("Checksum = 0x%04X, want 0x1234 (little-endian)", info.Checksum)
@@ -121,15 +121,15 @@ func TestParseSMS_ChecksumEndianness(t *testing.T) {
 
 func TestDeterminePlatform(t *testing.T) {
 	tests := []struct {
-		region   SMSRegion
+		region   Region
 		expected core.Platform
 	}{
-		{SMSRegionJapanSMS, core.PlatformMS},
-		{SMSRegionExportSMS, core.PlatformMS},
-		{SMSRegionJapanGG, core.PlatformGameGear},
-		{SMSRegionExportGG, core.PlatformGameGear},
-		{SMSRegionIntlGG, core.PlatformGameGear},
-		{SMSRegion(0x0), core.PlatformMS}, // unknown defaults to SMS
+		{RegionJapanSMS, core.PlatformMS},
+		{RegionExportSMS, core.PlatformMS},
+		{RegionJapanGG, core.PlatformGameGear},
+		{RegionExportGG, core.PlatformGameGear},
+		{RegionIntlGG, core.PlatformGameGear},
+		{Region(0x0), core.PlatformMS}, // unknown defaults to SMS
 	}
 
 	for _, tt := range tests {

@@ -55,35 +55,35 @@ const (
 	xbeCertSize             = 0x1D0
 )
 
-// XboxRegion represents Xbox region flags.
-type XboxRegion uint32
+// Region represents Xbox region flags.
+type Region uint32
 
 const (
-	XboxRegionNA    XboxRegion = 0x00000001 // North America (US + Canada)
-	XboxRegionJapan XboxRegion = 0x00000002 // Japan
-	XboxRegionEUAU  XboxRegion = 0x00000004 // Europe and Australia combined
-	XboxRegionDebug XboxRegion = 0x80000000 // Debug/development region
+	RegionNA    Region = 0x00000001 // North America (US + Canada)
+	RegionJapan Region = 0x00000002 // Japan
+	RegionEUAU  Region = 0x00000004 // Europe and Australia combined
+	RegionDebug Region = 0x80000000 // Debug/development region
 )
 
-// XboxMediaType represents Xbox allowed media type flags.
-type XboxMediaType uint32
+// MediaType represents Xbox allowed media type flags.
+type MediaType uint32
 
 const (
-	XboxMediaHardDisk      XboxMediaType = 0x00000001
-	XboxMediaDVDX2         XboxMediaType = 0x00000002
-	XboxMediaDVDCD         XboxMediaType = 0x00000004
-	XboxMediaCD            XboxMediaType = 0x00000008
-	XboxMediaDVD5RO        XboxMediaType = 0x00000010
-	XboxMediaDVD9RO        XboxMediaType = 0x00000020
-	XboxMediaDVD5RW        XboxMediaType = 0x00000040
-	XboxMediaDVD9RW        XboxMediaType = 0x00000080
-	XboxMediaUSB           XboxMediaType = 0x00000100
-	XboxMediaMemoryUnit    XboxMediaType = 0x00000200
-	XboxMediaOnlineContent XboxMediaType = 0x00000400
+	MediaHardDisk      MediaType = 0x00000001
+	MediaDVDX2         MediaType = 0x00000002
+	MediaDVDCD         MediaType = 0x00000004
+	MediaCD            MediaType = 0x00000008
+	MediaDVD5RO        MediaType = 0x00000010
+	MediaDVD9RO        MediaType = 0x00000020
+	MediaDVD5RW        MediaType = 0x00000040
+	MediaDVD9RW        MediaType = 0x00000080
+	MediaUSB           MediaType = 0x00000100
+	MediaMemoryUnit    MediaType = 0x00000200
+	MediaOnlineContent MediaType = 0x00000400
 )
 
-// XBEInfo contains metadata extracted from an Xbox XBE file.
-type XBEInfo struct {
+// Info contains metadata extracted from an Xbox XBE file.
+type Info struct {
 	// TitleID is the numeric title ID.
 	TitleID uint32 `json:"title_id"`
 	// TitleIDHex is the title ID as an 8-character hex string.
@@ -99,9 +99,9 @@ type XBEInfo struct {
 	// AlternateTitleIDs contains alternate title IDs for region variants.
 	AlternateTitleIDs []uint32 `json:"alternate_title_ids,omitempty"`
 	// AllowedMediaTypes is a bitmask of allowed media types.
-	AllowedMediaTypes XboxMediaType `json:"allowed_media_types"`
-	// RegionFlags is the bitmask of XboxRegion values.
-	RegionFlags XboxRegion `json:"region_flags"`
+	AllowedMediaTypes MediaType `json:"allowed_media_types"`
+	// RegionFlags is the bitmask of Region values.
+	RegionFlags Region `json:"region_flags"`
 	// GameRatings contains game rating flags.
 	GameRatings uint32 `json:"game_ratings"`
 	// DiscNumber is the disc number for multi-disc games.
@@ -110,25 +110,25 @@ type XBEInfo struct {
 	Version uint32 `json:"version"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *XBEInfo) GamePlatform() core.Platform { return core.PlatformXbox }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformXbox }
 
-// GameTitle implements identify.GameInfo.
-func (i *XBEInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo. Returns serial in "XX-###" format.
-func (i *XBEInfo) GameSerial() string {
+// GameSerial implements core.GameInfo. Returns serial in "XX-###" format.
+func (i *Info) GameSerial() string {
 	return fmt.Sprintf("%s-%03d", i.PublisherCode, i.GameNumber)
 }
 
-// ParseXBE extracts game information from an XBE file.
-func ParseXBE(r io.ReaderAt, size int64) (*XBEInfo, error) {
+// Parse extracts game information from an XBE file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	return parseXBEAt(r, 0, size)
 }
 
 // parseXBEAt extracts game information from an XBE file at the given offset.
 // This is useful when the XBE is embedded within another file (e.g., in an XISO).
-func parseXBEAt(r io.ReaderAt, xbeOffset int64, size int64) (*XBEInfo, error) {
+func parseXBEAt(r io.ReaderAt, xbeOffset int64, size int64) (*Info, error) {
 	// Validate minimum size
 	if size < xbeHeaderSize {
 		return nil, fmt.Errorf("file too small for XBE header: %d bytes (need at least %d)", size, xbeHeaderSize)
@@ -184,7 +184,7 @@ func parseXBEAt(r io.ReaderAt, xbeOffset int64, size int64) (*XBEInfo, error) {
 	// Decode title ID into publisher code and game number
 	publisherCode, gameNumber := decodeTitleID(titleID)
 
-	return &XBEInfo{
+	return &Info{
 		TitleID:           titleID,
 		TitleIDHex:        fmt.Sprintf("%08X", titleID),
 		PublisherCode:     publisherCode,
@@ -192,8 +192,8 @@ func parseXBEAt(r io.ReaderAt, xbeOffset int64, size int64) (*XBEInfo, error) {
 		Title:             title,
 		Timestamp:         timestamp,
 		AlternateTitleIDs: altTitleIDs,
-		AllowedMediaTypes: XboxMediaType(mediaTypes),
-		RegionFlags:       XboxRegion(regionFlags),
+		AllowedMediaTypes: MediaType(mediaTypes),
+		RegionFlags:       Region(regionFlags),
 		GameRatings:       gameRatings,
 		DiscNumber:        discNumber,
 		Version:           version,

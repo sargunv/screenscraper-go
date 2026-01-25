@@ -85,14 +85,14 @@ func makeSyntheticRVZ(magic string, gcmData []byte, discType DiscType, compressi
 	return header
 }
 
-func TestParseRVZ_WIA(t *testing.T) {
+func TestParse_WIA(t *testing.T) {
 	gcmData := makeSyntheticGCMData(gcm.SystemCodeGameCube, "MK", gcm.RegionNorthAmerica, "Test Game", false)
 	header := makeSyntheticRVZ("WIA\x01", gcmData, DiscTypeGameCube, CompressionZstandard)
 	reader := bytes.NewReader(header)
 
-	info, err := ParseRVZ(reader, int64(len(header)))
+	info, err := Parse(reader, int64(len(header)))
 	if err != nil {
-		t.Fatalf("ParseRVZ() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.GCM == nil {
@@ -109,14 +109,14 @@ func TestParseRVZ_WIA(t *testing.T) {
 	}
 }
 
-func TestParseRVZ_RVZ(t *testing.T) {
+func TestParse_RVZ(t *testing.T) {
 	gcmData := makeSyntheticGCMData(gcm.SystemCodeWii, "SM", gcm.RegionJapan, "Wii Game", true)
 	header := makeSyntheticRVZ("RVZ\x01", gcmData, DiscTypeWii, CompressionLZMA2)
 	reader := bytes.NewReader(header)
 
-	info, err := ParseRVZ(reader, int64(len(header)))
+	info, err := Parse(reader, int64(len(header)))
 	if err != nil {
-		t.Fatalf("ParseRVZ() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.GCM == nil {
@@ -133,24 +133,24 @@ func TestParseRVZ_RVZ(t *testing.T) {
 	}
 }
 
-func TestParseRVZ_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	gcmData := makeSyntheticGCMData(gcm.SystemCodeGameCube, "MK", gcm.RegionNorthAmerica, "Test", false)
 	header := makeSyntheticRVZ("BAD\x01", gcmData, DiscTypeGameCube, CompressionNone)
 	reader := bytes.NewReader(header)
 
-	_, err := ParseRVZ(reader, int64(len(header)))
+	_, err := Parse(reader, int64(len(header)))
 	if err == nil {
-		t.Error("ParseRVZ() expected error for invalid magic, got nil")
+		t.Error("Parse() expected error for invalid magic, got nil")
 	}
 }
 
-func TestParseRVZ_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	header := make([]byte, 64) // Less than totalHeaderSize
 	reader := bytes.NewReader(header)
 
-	_, err := ParseRVZ(reader, int64(len(header)))
+	_, err := Parse(reader, int64(len(header)))
 	if err == nil {
-		t.Error("ParseRVZ() expected error for too small file, got nil")
+		t.Error("Parse() expected error for too small file, got nil")
 	}
 }
 
@@ -159,9 +159,9 @@ func TestRVZInfo_GameInfo(t *testing.T) {
 	header := makeSyntheticRVZ("RVZ\x01", gcmData, DiscTypeGameCube, CompressionZstandard)
 	reader := bytes.NewReader(header)
 
-	info, err := ParseRVZ(reader, int64(len(header)))
+	info, err := Parse(reader, int64(len(header)))
 	if err != nil {
-		t.Fatalf("ParseRVZ() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// Verify GameInfo interface methods delegate to GCM

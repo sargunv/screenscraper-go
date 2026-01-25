@@ -55,13 +55,13 @@ func identifyISO9660(r io.ReaderAt, size int64) (core.GameInfo, core.Hashes, err
 	// Try to read system area (sector 0) for Sega CD/Saturn/Dreamcast identification
 	systemArea := make([]byte, 2048)
 	if _, err := reader.ReadAt(systemArea, 0); err == nil {
-		if info, err := md.ParseSegaCD(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
+		if info, err := md.ParseCD(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
 			return info, nil, nil
 		}
-		if info, err := saturn.ParseSaturn(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
+		if info, err := saturn.Parse(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
 			return info, nil, nil
 		}
-		if info, err := dreamcast.ParseDreamcast(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
+		if info, err := dreamcast.Parse(bytes.NewReader(systemArea), int64(len(systemArea))); err == nil {
 			return info, nil, nil
 		}
 	}

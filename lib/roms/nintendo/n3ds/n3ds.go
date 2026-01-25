@@ -94,34 +94,34 @@ const (
 	mediaUnitSize = 0x200 // 512 bytes per media unit
 )
 
-// N3DSContentType represents the type of NCCH content.
-type N3DSContentType byte
+// ContentType represents the type of NCCH content.
+type ContentType byte
 
-// N3DSContentType values per 3dbrew.
+// ContentType values per 3dbrew.
 const (
-	N3DSContentTypeApplication  N3DSContentType = 0x00 // Application (game)
-	N3DSContentTypeSystemUpdate N3DSContentType = 0x01 // System update
-	N3DSContentTypeManual       N3DSContentType = 0x02 // Manual
-	N3DSContentTypeDLPChild     N3DSContentType = 0x03 // Download Play child
-	N3DSContentTypeTrial        N3DSContentType = 0x04 // Trial
+	ContentTypeApplication  ContentType = 0x00 // Application (game)
+	ContentTypeSystemUpdate ContentType = 0x01 // System update
+	ContentTypeManual       ContentType = 0x02 // Manual
+	ContentTypeDLPChild     ContentType = 0x03 // Download Play child
+	ContentTypeTrial        ContentType = 0x04 // Trial
 )
 
-// N3DSRegion represents the target region from the product code.
-type N3DSRegion byte
+// Region represents the target region from the product code.
+type Region byte
 
-// N3DSRegion values from product code.
+// Region values from product code.
 const (
-	N3DSRegionJapan     N3DSRegion = 'J'
-	N3DSRegionUSA       N3DSRegion = 'E'
-	N3DSRegionEurope    N3DSRegion = 'P'
-	N3DSRegionAustralia N3DSRegion = 'U'
-	N3DSRegionChina     N3DSRegion = 'C'
-	N3DSRegionKorea     N3DSRegion = 'K'
-	N3DSRegionTaiwan    N3DSRegion = 'T'
+	RegionJapan     Region = 'J'
+	RegionUSA       Region = 'E'
+	RegionEurope    Region = 'P'
+	RegionAustralia Region = 'U'
+	RegionChina     Region = 'C'
+	RegionKorea     Region = 'K'
+	RegionTaiwan    Region = 'T'
 )
 
-// N3DSInfo contains metadata extracted from a 3DS CCI/NCSD file.
-type N3DSInfo struct {
+// Info contains metadata extracted from a 3DS CCI/NCSD file.
+type Info struct {
 	// MediaID is the unique media identifier from the NCSD header (0x108).
 	MediaID uint64 `json:"media_id"`
 	// ImageSize is the total image size in bytes.
@@ -139,29 +139,29 @@ type N3DSInfo struct {
 	Version uint16 `json:"version"`
 
 	// ContentType indicates the type of content from NCCH flags[5].
-	ContentType N3DSContentType `json:"content_type"`
+	ContentType ContentType `json:"content_type"`
 	// IsNew3DSExclusive indicates if this is a New 3DS exclusive title (NCCH flags[4] bit 1).
 	IsNew3DSExclusive bool `json:"is_new3ds_exclusive"`
 	// Region is the target region from the product code.
-	Region N3DSRegion `json:"region"`
+	Region Region `json:"region"`
 
 	// platform is the target platform (internal, used by GamePlatform).
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *N3DSInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo.
+// GameTitle implements core.GameInfo.
 // 3DS CCI format does not contain a title field in the header.
-func (i *N3DSInfo) GameTitle() string { return "" }
+func (i *Info) GameTitle() string { return "" }
 
-// GameSerial implements identify.GameInfo.
+// GameSerial implements core.GameInfo.
 // Returns the product code (e.g., "CTR-P-ALGE").
-func (i *N3DSInfo) GameSerial() string { return i.ProductCode }
+func (i *Info) GameSerial() string { return i.ProductCode }
 
-// ParseN3DS extracts game information from a 3DS CCI/NCSD file.
-func ParseN3DS(r io.ReaderAt, size int64) (*N3DSInfo, error) {
+// Parse extracts game information from a 3DS CCI/NCSD file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < ncsdHeaderSize {
 		return nil, fmt.Errorf("file too small for NCSD header: %d bytes", size)
 	}
@@ -231,14 +231,14 @@ func ParseN3DS(r io.ReaderAt, size int64) (*N3DSInfo, error) {
 
 	// Parse flags
 	flags := ncchHeader[ncchFlagsOffset : ncchFlagsOffset+8]
-	contentType := N3DSContentType(flags[5] & 0x07) // Lower 3 bits
-	isNew3DSExclusive := (flags[4] & 0x02) != 0     // Bit 1 of flags[4]
+	contentType := ContentType(flags[5] & 0x07) // Lower 3 bits
+	isNew3DSExclusive := (flags[4] & 0x02) != 0 // Bit 1 of flags[4]
 
 	// Determine region from product code (last character of game code)
 	// Format: CTR-P-XXXR where R is region
-	var region N3DSRegion
+	var region Region
 	if len(productCode) >= 10 {
-		region = N3DSRegion(productCode[9])
+		region = Region(productCode[9])
 	}
 
 	// Determine platform
@@ -249,7 +249,7 @@ func ParseN3DS(r io.ReaderAt, size int64) (*N3DSInfo, error) {
 		platform = core.Platform3DS
 	}
 
-	return &N3DSInfo{
+	return &Info{
 		MediaID:           mediaID,
 		ImageSize:         imageSize,
 		PartitionCount:    partCount,

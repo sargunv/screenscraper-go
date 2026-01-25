@@ -104,8 +104,8 @@ const (
 	mdMinParseSize = md32XHeaderOffset + md32XMagicLen // 0x3C4
 )
 
-// MDInfo contains metadata extracted from a Mega Drive/Genesis ROM file.
-type MDInfo struct {
+// Info contains metadata extracted from a Mega Drive/Genesis ROM file.
+type Info struct {
 	// SourceFormat indicates whether the ROM was in MD or SMD format.
 	SourceFormat Format `json:"source_format"`
 	// SystemType identifies the console (e.g., "SEGA MEGA DRIVE", "SEGA GENESIS").
@@ -144,28 +144,28 @@ type MDInfo struct {
 	Is32X bool `json:"is_32x,omitempty"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *MDInfo) GamePlatform() core.Platform {
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform {
 	if i.Is32X {
 		return core.Platform32X
 	}
 	return core.PlatformMD
 }
 
-// GameTitle implements identify.GameInfo. Returns overseas title if available, otherwise domestic.
-func (i *MDInfo) GameTitle() string {
+// GameTitle implements core.GameInfo. Returns overseas title if available, otherwise domestic.
+func (i *Info) GameTitle() string {
 	if i.OverseasTitle != "" {
 		return i.OverseasTitle
 	}
 	return i.DomesticTitle
 }
 
-// GameSerial implements identify.GameInfo.
-func (i *MDInfo) GameSerial() string { return i.SerialNumber }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.SerialNumber }
 
 // Parse extracts game information from a Mega Drive ROM file.
 // It automatically detects and handles both native MD and SMD formats.
-func Parse(r io.ReaderAt, size int64) (*MDInfo, error) {
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if isSMDROM(r, size) {
 		return parseSMD(r, size)
 	}
@@ -173,7 +173,7 @@ func Parse(r io.ReaderAt, size int64) (*MDInfo, error) {
 }
 
 // parseMD extracts game information from a native Mega Drive ROM.
-func parseMD(r io.ReaderAt, size int64) (*MDInfo, error) {
+func parseMD(r io.ReaderAt, size int64) (*Info, error) {
 	if size < mdHeaderStart+mdHeaderSize {
 		return nil, fmt.Errorf("file too small for Mega Drive header: %d bytes", size)
 	}
@@ -195,7 +195,7 @@ func parseMD(r io.ReaderAt, size int64) (*MDInfo, error) {
 	return info, nil
 }
 
-func parseMDBytes(data []byte) (*MDInfo, error) {
+func parseMDBytes(data []byte) (*Info, error) {
 	// Extract system type and verify
 	systemType := util.ExtractASCII(data[mdSystemTypeOffset : mdSystemTypeOffset+mdSystemTypeLen])
 	if !strings.Contains(systemType, "SEGA") {
@@ -243,7 +243,7 @@ func parseMDBytes(data []byte) (*MDInfo, error) {
 		}
 	}
 
-	return &MDInfo{
+	return &Info{
 		SystemType:    systemType,
 		Copyright:     copyright,
 		DomesticTitle: domesticTitle,
