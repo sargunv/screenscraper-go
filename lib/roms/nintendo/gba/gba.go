@@ -50,46 +50,46 @@ const (
 	gbaChecksumOffset   = 0xBD
 )
 
-// GBAGameType represents the cartridge/hardware type from the first byte of the game code.
-type GBAGameType byte
+// GameType represents the cartridge/hardware type from the first byte of the game code.
+type GameType byte
 
-// GBAGameType values indicate cartridge features and hardware generation.
+// GameType values indicate cartridge features and hardware generation.
 const (
-	GBAGameTypeNormalOld    GBAGameType = 'A' // Normal game (2001-2003)
-	GBAGameTypeNormalNew    GBAGameType = 'B' // Normal game (2003+)
-	GBAGameTypeNormalUnused GBAGameType = 'C' // Normal game (unused)
-	GBAGameTypeFamicom      GBAGameType = 'F' // Classic NES Series (Famicom Mini)
-	GBAGameTypeAcceleration GBAGameType = 'K' // Acceleration sensor (tilt)
-	GBAGameTypeEReader      GBAGameType = 'P' // e-Reader
-	GBAGameTypeRumbleGyro   GBAGameType = 'R' // Rumble + gyro sensor (WarioWare Twisted)
-	GBAGameTypeRTCSolar     GBAGameType = 'U' // RTC + solar sensor (Boktai series)
-	GBAGameTypeRumble       GBAGameType = 'V' // Rumble only (Drill Dozer)
+	GameTypeNormalOld    GameType = 'A' // Normal game (2001-2003)
+	GameTypeNormalNew    GameType = 'B' // Normal game (2003+)
+	GameTypeNormalUnused GameType = 'C' // Normal game (unused)
+	GameTypeFamicom      GameType = 'F' // Classic NES Series (Famicom Mini)
+	GameTypeAcceleration GameType = 'K' // Acceleration sensor (tilt)
+	GameTypeEReader      GameType = 'P' // e-Reader
+	GameTypeRumbleGyro   GameType = 'R' // Rumble + gyro sensor (WarioWare Twisted)
+	GameTypeRTCSolar     GameType = 'U' // RTC + solar sensor (Boktai series)
+	GameTypeRumble       GameType = 'V' // Rumble only (Drill Dozer)
 )
 
-// GBADestination represents the target region from the fourth byte of the game code.
-type GBADestination byte
+// Destination represents the target region from the fourth byte of the game code.
+type Destination byte
 
-// GBADestination values indicate the target region for the game.
+// Destination values indicate the target region for the game.
 const (
-	GBADestinationJapan   GBADestination = 'J'
-	GBADestinationUSA     GBADestination = 'E'
-	GBADestinationEurope  GBADestination = 'P'
-	GBADestinationFrance  GBADestination = 'F'
-	GBADestinationSpain   GBADestination = 'S'
-	GBADestinationGermany GBADestination = 'D'
-	GBADestinationItaly   GBADestination = 'I'
+	DestinationJapan   Destination = 'J'
+	DestinationUSA     Destination = 'E'
+	DestinationEurope  Destination = 'P'
+	DestinationFrance  Destination = 'F'
+	DestinationSpain   Destination = 'S'
+	DestinationGermany Destination = 'D'
+	DestinationItaly   Destination = 'I'
 )
 
-// GBAInfo contains metadata extracted from a GBA ROM file.
-type GBAInfo struct {
+// Info contains metadata extracted from a GBA ROM file.
+type Info struct {
 	// Title is the game title (0xA0-0xAB, up to 12 uppercase ASCII characters).
 	Title string `json:"title,omitempty"`
 	// GameCode is the full 4-character game code (0xAC-0xAF).
 	GameCode string `json:"game_code,omitempty"`
 	// GameType is the cartridge/hardware type from byte 0 of GameCode.
-	GameType GBAGameType `json:"game_type"`
+	GameType GameType `json:"game_type"`
 	// Destination is the target region from byte 3 of GameCode.
-	Destination GBADestination `json:"destination"`
+	Destination Destination `json:"destination"`
 	// MakerCode is the 2-character manufacturer code (0xB0-0xB1).
 	MakerCode string `json:"maker_code,omitempty"`
 	// MainUnitCode indicates the target hardware (0xB3, 0x00 for GBA).
@@ -102,17 +102,17 @@ type GBAInfo struct {
 	HeaderChecksum byte `json:"header_checksum"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *GBAInfo) GamePlatform() core.Platform { return core.PlatformGBA }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformGBA }
 
-// GameTitle implements identify.GameInfo.
-func (i *GBAInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo.
-func (i *GBAInfo) GameSerial() string { return i.GameCode }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.GameCode }
 
-// ParseGBA extracts game information from a GBA ROM file.
-func ParseGBA(r io.ReaderAt, size int64) (*GBAInfo, error) {
+// Parse extracts game information from a GBA ROM file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < gbaHeaderSize {
 		return nil, fmt.Errorf("file too small for GBA header: %d bytes", size)
 	}
@@ -135,11 +135,11 @@ func ParseGBA(r io.ReaderAt, size int64) (*GBAInfo, error) {
 	gameCode := util.ExtractASCII(header[gbaGameCodeOffset : gbaGameCodeOffset+gbaGameCodeLen])
 
 	// Parse game code components
-	var gameType GBAGameType
-	var destination GBADestination
+	var gameType GameType
+	var destination Destination
 	if len(gameCode) >= 4 {
-		gameType = GBAGameType(gameCode[0])
-		destination = GBADestination(gameCode[3])
+		gameType = GameType(gameCode[0])
+		destination = Destination(gameCode[3])
 	}
 
 	// Extract maker code
@@ -155,7 +155,7 @@ func ParseGBA(r io.ReaderAt, size int64) (*GBAInfo, error) {
 	// Extract header checksum
 	headerChecksum := header[gbaChecksumOffset]
 
-	return &GBAInfo{
+	return &Info{
 		Title:          title,
 		GameCode:       gameCode,
 		GameType:       gameType,

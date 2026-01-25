@@ -41,8 +41,8 @@ const (
 	VideoModePAL  VideoMode = "PAL"
 )
 
-// CNFInfo contains metadata extracted from a PlayStation SYSTEM.CNF file.
-type CNFInfo struct {
+// Info contains metadata extracted from a PlayStation SYSTEM.CNF file.
+type Info struct {
 	// BootPath is the raw boot path from BOOT/BOOT2 line (e.g., "cdrom0:\SLUS_123.45;1").
 	BootPath string `json:"boot_path,omitempty"`
 	// DiscID is the game identifier extracted from the boot path (e.g., "SLUS_123.45").
@@ -55,17 +55,17 @@ type CNFInfo struct {
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *CNFInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo. CNF files don't contain titles.
-func (i *CNFInfo) GameTitle() string { return "" }
+// GameTitle implements core.GameInfo. CNF files don't contain titles.
+func (i *Info) GameTitle() string { return "" }
 
-// GameSerial implements identify.GameInfo.
-func (i *CNFInfo) GameSerial() string { return i.DiscID }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.DiscID }
 
 // Parse parses PlayStation SYSTEM.CNF content from a reader.
-func Parse(r io.ReaderAt, size int64) (*CNFInfo, error) {
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	data := make([]byte, size)
 	if _, err := r.ReadAt(data, 0); err != nil {
 		return nil, fmt.Errorf("failed to read SYSTEM.CNF: %w", err)
@@ -74,8 +74,8 @@ func Parse(r io.ReaderAt, size int64) (*CNFInfo, error) {
 	return parseCNFBytes(data)
 }
 
-func parseCNFBytes(data []byte) (*CNFInfo, error) {
-	info := &CNFInfo{}
+func parseCNFBytes(data []byte) (*Info, error) {
+	info := &Info{}
 
 	scanner := bufio.NewScanner(bytes.NewReader(data))
 	for scanner.Scan() {

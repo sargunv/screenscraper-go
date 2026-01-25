@@ -64,13 +64,13 @@ const (
 	metadataSFOInfo     = 0x0E
 )
 
-// PKGType indicates the target platform category.
-type PKGType uint16
+// Type indicates the target platform category.
+type Type uint16
 
-// PKGType values per PSDevWiki.
+// Type values per PSDevWiki.
 const (
-	PKGTypePS3     PKGType = 0x0001 // PS3 packages
-	PKGTypePSPVita PKGType = 0x0002 // PSP and PS Vita packages
+	TypePS3     Type = 0x0001 // PS3 packages
+	TypePSPVita Type = 0x0002 // PSP and PS Vita packages
 )
 
 // ContentType indicates the type of content in the package.
@@ -98,8 +98,9 @@ const (
 	ContentTypePSVitaTheme ContentType = 0x1F // PS Vita Theme
 )
 
-// PKGInfo contains metadata extracted from a PlayStation PKG file.
-type PKGInfo struct {
+// Info contains metadata extracted from a PlayStation PKG file.
+// Info implements core.GameInfo.
+type Info struct {
 	// ContentID is the package content identifier (e.g., "UP0001-NPUA80472_00-LITTLEBIGPLAN001").
 	ContentID string `json:"content_id,omitempty"`
 	// Title is the game title from embedded PARAM.SFO.
@@ -107,7 +108,7 @@ type PKGInfo struct {
 	// Platform is the detected platform (psp, psvita, psm, playstation3).
 	Platform core.Platform `json:"platform"`
 	// Type is the PKG type (0x0001=PS3, 0x0002=PSP/Vita).
-	Type PKGType `json:"pkg_type"`
+	Type Type `json:"pkg_type"`
 	// ContentType indicates the content category (determines platform).
 	ContentType ContentType `json:"content_type,omitempty"`
 	// TotalSize is the total package file size in bytes.
@@ -115,25 +116,25 @@ type PKGInfo struct {
 	// ItemCount is the number of items in the package.
 	ItemCount uint32 `json:"item_count"`
 	// SFO contains the parsed PARAM.SFO data if available.
-	SFO *sfo.SFOInfo `json:"sfo,omitempty"`
+	SFO *sfo.Info `json:"sfo,omitempty"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *PKGInfo) GamePlatform() core.Platform { return i.Platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.Platform }
 
-// GameTitle implements identify.GameInfo.
-func (i *PKGInfo) GameTitle() string {
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string {
 	if i.SFO != nil && i.SFO.Title != "" {
 		return i.SFO.Title
 	}
 	return i.Title
 }
 
-// GameSerial implements identify.GameInfo. Returns the full Content ID.
-func (i *PKGInfo) GameSerial() string { return i.ContentID }
+// GameSerial implements core.GameInfo. Returns the full Content ID.
+func (i *Info) GameSerial() string { return i.ContentID }
 
-// ParsePKG extracts game information from a PlayStation PKG file.
-func ParsePKG(r io.ReaderAt, size int64) (*PKGInfo, error) {
+// Parse extracts game information from a PlayStation PKG file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < pkgHeaderSize {
 		return nil, fmt.Errorf("file too small for PKG header: need %d bytes, got %d", pkgHeaderSize, size)
 	}
@@ -149,7 +150,7 @@ func ParsePKG(r io.ReaderAt, size int64) (*PKGInfo, error) {
 	}
 
 	// Parse header fields (big-endian)
-	pkgType := PKGType(binary.BigEndian.Uint16(header[pkgTypeOffset:]))
+	pkgType := Type(binary.BigEndian.Uint16(header[pkgTypeOffset:]))
 	metadataOffset := binary.BigEndian.Uint32(header[pkgMetadataOffOffset:])
 	metadataCount := binary.BigEndian.Uint32(header[pkgMetadataCountOff:])
 	itemCount := binary.BigEndian.Uint32(header[pkgItemCountOffset:])
@@ -174,7 +175,7 @@ func ParsePKG(r io.ReaderAt, size int64) (*PKGInfo, error) {
 
 	// Read extended header key ID for PSP/Vita disambiguation
 	var extKeyID uint32
-	if pkgType == PKGTypePSPVita && size >= pkgExtHeaderOffset+pkgExtKeyIDOffset+4 {
+	if pkgType == TypePSPVita && size >= pkgExtHeaderOffset+pkgExtKeyIDOffset+4 {
 		extHeader := make([]byte, pkgExtKeyIDOffset+4)
 		if _, err := r.ReadAt(extHeader, pkgExtHeaderOffset); err == nil {
 			// Check for extended header magic
@@ -187,7 +188,7 @@ func ParsePKG(r io.ReaderAt, size int64) (*PKGInfo, error) {
 	// Detect platform
 	platform := detectPlatform(pkgType, contentType, extKeyID)
 
-	info := &PKGInfo{
+	info := &Info{
 		ContentID:   contentID,
 		Platform:    platform,
 		Type:        pkgType,
@@ -263,7 +264,7 @@ func parseMetadata(r io.ReaderAt, offset uint32, count uint32, fileSize int64) (
 }
 
 // detectPlatform determines the PlayStation platform from PKG metadata.
-func detectPlatform(pkgType PKGType, contentType ContentType, extKeyID uint32) core.Platform {
+func detectPlatform(pkgType Type, contentType ContentType, extKeyID uint32) core.Platform {
 	// Primary: content type
 	switch contentType {
 	case ContentTypePSVitaGame, ContentTypePSVitaDLC, ContentTypePSVitaLA, ContentTypePSVitaTheme:
@@ -277,14 +278,14 @@ func detectPlatform(pkgType PKGType, contentType ContentType, extKeyID uint32) c
 		return core.PlatformPS3
 	case ContentTypePS1Emu:
 		// Could be PS3 or PSP hosting PS1
-		if pkgType == PKGTypePSPVita {
+		if pkgType == TypePSPVita {
 			return core.PlatformPSP
 		}
 		return core.PlatformPS3
 	}
 
 	// Secondary: pkg_type + extended header key_id
-	if pkgType == PKGTypePS3 {
+	if pkgType == TypePS3 {
 		return core.PlatformPS3
 	}
 

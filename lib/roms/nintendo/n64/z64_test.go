@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestParseN64_Z64(t *testing.T) {
+func TestParse_Z64(t *testing.T) {
 	romPath := "testdata/flames.z64"
 
 	file, err := os.Open(romPath)
@@ -20,17 +20,17 @@ func TestParseN64_Z64(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseN64(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseN64() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
-	if info.ByteOrder != N64BigEndian {
-		t.Errorf("ByteOrder = %s, want %s", info.ByteOrder, N64BigEndian)
+	if info.ByteOrder != ByteOrderBigEndian {
+		t.Errorf("ByteOrder = %s, want %s", info.ByteOrder, ByteOrderBigEndian)
 	}
 }
 
-func TestParseN64_Z64_Fields(t *testing.T) {
+func TestParse_Z64_Fields(t *testing.T) {
 	romPath := "testdata/flames.z64"
 
 	file, err := os.Open(romPath)
@@ -44,9 +44,9 @@ func TestParseN64_Z64_Fields(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseN64(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseN64() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// flames.z64 is a homebrew demo
@@ -54,8 +54,8 @@ func TestParseN64_Z64_Fields(t *testing.T) {
 	if info.Title != expectedTitle {
 		t.Errorf("Title = %q, want %q", info.Title, expectedTitle)
 	}
-	if info.ByteOrder != N64BigEndian {
-		t.Errorf("ByteOrder = %s, want %s", info.ByteOrder, N64BigEndian)
+	if info.ByteOrder != ByteOrderBigEndian {
+		t.Errorf("ByteOrder = %s, want %s", info.ByteOrder, ByteOrderBigEndian)
 	}
 	// Verify CheckCode was extracted (non-zero for this ROM)
 	if info.CheckCode == 0 {
@@ -65,7 +65,7 @@ func TestParseN64_Z64_Fields(t *testing.T) {
 
 // syntheticN64Options holds parameters for creating a synthetic N64 ROM.
 type syntheticN64Options struct {
-	byteOrder       N64ByteOrder
+	byteOrder       ByteOrder
 	title           string
 	gameCode        string
 	version         byte
@@ -135,25 +135,25 @@ func makeSyntheticN64(opts syntheticN64Options) []byte {
 
 	// Convert from big-endian to requested byte order
 	switch opts.byteOrder {
-	case N64ByteSwapped:
+	case ByteOrderByteSwapped:
 		swapBytes16(header)
-	case N64LittleEndian:
+	case ByteOrderLittleEndian:
 		swapBytes32(header)
 	}
 
 	return header
 }
 
-func TestParseN64_Synthetic(t *testing.T) {
+func TestParse_Synthetic(t *testing.T) {
 	tests := []struct {
 		name                string
 		opts                syntheticN64Options
 		wantTitle           string
 		wantGameCode        string
-		wantCategoryCode    N64CategoryCode
-		wantDestination     N64Destination
+		wantCategoryCode    CategoryCode
+		wantDestination     Destination
 		wantVersion         int
-		wantByteOrder       N64ByteOrder
+		wantByteOrder       ByteOrder
 		wantPIBSDConfig     uint32
 		wantClockRate       uint32
 		wantBootAddress     uint32
@@ -162,7 +162,7 @@ func TestParseN64_Synthetic(t *testing.T) {
 		{
 			name: "Z64 format USA game",
 			opts: syntheticN64Options{
-				byteOrder:       N64BigEndian,
+				byteOrder:       ByteOrderBigEndian,
 				title:           "TEST GAME",
 				gameCode:        "NTGE",
 				version:         1,
@@ -173,10 +173,10 @@ func TestParseN64_Synthetic(t *testing.T) {
 			},
 			wantTitle:           "TEST GAME",
 			wantGameCode:        "NTGE",
-			wantCategoryCode:    N64CategoryGamePak,
-			wantDestination:     N64DestinationNorthAmerica,
+			wantCategoryCode:    CategoryGamePak,
+			wantDestination:     DestinationNorthAmerica,
 			wantVersion:         1,
-			wantByteOrder:       N64BigEndian,
+			wantByteOrder:       ByteOrderBigEndian,
 			wantPIBSDConfig:     0x371240,
 			wantClockRate:       0x0000000F,
 			wantBootAddress:     0x80000400,
@@ -185,7 +185,7 @@ func TestParseN64_Synthetic(t *testing.T) {
 		{
 			name: "V64 format Japan game",
 			opts: syntheticN64Options{
-				byteOrder:       N64ByteSwapped,
+				byteOrder:       ByteOrderByteSwapped,
 				title:           "JAPANESE GAME",
 				gameCode:        "NJPJ",
 				version:         0,
@@ -196,10 +196,10 @@ func TestParseN64_Synthetic(t *testing.T) {
 			},
 			wantTitle:           "JAPANESE GAME",
 			wantGameCode:        "NJPJ",
-			wantCategoryCode:    N64CategoryGamePak,
-			wantDestination:     N64DestinationJapan,
+			wantCategoryCode:    CategoryGamePak,
+			wantDestination:     DestinationJapan,
 			wantVersion:         0,
-			wantByteOrder:       N64ByteSwapped,
+			wantByteOrder:       ByteOrderByteSwapped,
 			wantPIBSDConfig:     0x371240,
 			wantClockRate:       0x0000000F,
 			wantBootAddress:     0x80001000,
@@ -208,7 +208,7 @@ func TestParseN64_Synthetic(t *testing.T) {
 		{
 			name: "N64 format Europe game",
 			opts: syntheticN64Options{
-				byteOrder:       N64LittleEndian,
+				byteOrder:       ByteOrderLittleEndian,
 				title:           "EURO GAME",
 				gameCode:        "NEUP",
 				version:         2,
@@ -219,10 +219,10 @@ func TestParseN64_Synthetic(t *testing.T) {
 			},
 			wantTitle:           "EURO GAME",
 			wantGameCode:        "NEUP",
-			wantCategoryCode:    N64CategoryGamePak,
-			wantDestination:     N64DestinationEurope,
+			wantCategoryCode:    CategoryGamePak,
+			wantDestination:     DestinationEurope,
 			wantVersion:         2,
-			wantByteOrder:       N64LittleEndian,
+			wantByteOrder:       ByteOrderLittleEndian,
 			wantPIBSDConfig:     0x801240,
 			wantClockRate:       0x00000000,
 			wantBootAddress:     0x80000400,
@@ -231,7 +231,7 @@ func TestParseN64_Synthetic(t *testing.T) {
 		{
 			name: "64DD disk",
 			opts: syntheticN64Options{
-				byteOrder:       N64BigEndian,
+				byteOrder:       ByteOrderBigEndian,
 				title:           "DD GAME",
 				gameCode:        "DDDJ",
 				version:         0,
@@ -242,10 +242,10 @@ func TestParseN64_Synthetic(t *testing.T) {
 			},
 			wantTitle:           "DD GAME",
 			wantGameCode:        "DDDJ",
-			wantCategoryCode:    N64Category64DD,
-			wantDestination:     N64DestinationJapan,
+			wantCategoryCode:    Category64DD,
+			wantDestination:     DestinationJapan,
 			wantVersion:         0,
-			wantByteOrder:       N64BigEndian,
+			wantByteOrder:       ByteOrderBigEndian,
 			wantPIBSDConfig:     0x371240,
 			wantClockRate:       0x0000000F,
 			wantBootAddress:     0x80000400,
@@ -258,9 +258,9 @@ func TestParseN64_Synthetic(t *testing.T) {
 			rom := makeSyntheticN64(tc.opts)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseN64(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseN64() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.Title != tc.wantTitle {
@@ -301,22 +301,22 @@ func TestParseN64_Synthetic(t *testing.T) {
 	}
 }
 
-func TestParseN64_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	// File smaller than header
 	data := make([]byte, 32)
 	data[0] = n64ReservedByte
 	reader := bytes.NewReader(data)
 
-	_, err := ParseN64(reader, int64(len(data)))
+	_, err := Parse(reader, int64(len(data)))
 	if err == nil {
-		t.Error("ParseN64() expected error for too small file, got nil")
+		t.Error("Parse() expected error for too small file, got nil")
 	}
 }
 
-func TestParseN64_NewFields(t *testing.T) {
+func TestParse_NewFields(t *testing.T) {
 	// Test that all new header fields are correctly extracted across byte orders
 	opts := syntheticN64Options{
-		byteOrder:       N64BigEndian,
+		byteOrder:       ByteOrderBigEndian,
 		title:           "FIELD TEST",
 		gameCode:        "NFTE",
 		version:         3,
@@ -326,15 +326,15 @@ func TestParseN64_NewFields(t *testing.T) {
 		libultraVersion: 0xDEADBEEF,
 	}
 
-	for _, byteOrder := range []N64ByteOrder{N64BigEndian, N64ByteSwapped, N64LittleEndian} {
+	for _, byteOrder := range []ByteOrder{ByteOrderBigEndian, ByteOrderByteSwapped, ByteOrderLittleEndian} {
 		t.Run(string(byteOrder), func(t *testing.T) {
 			opts.byteOrder = byteOrder
 			rom := makeSyntheticN64(opts)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseN64(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseN64() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.PIBSDConfig != 0xABCDEF {
@@ -356,7 +356,7 @@ func TestParseN64_NewFields(t *testing.T) {
 	}
 }
 
-func TestParseN64_InvalidByteOrder(t *testing.T) {
+func TestParse_InvalidByteOrder(t *testing.T) {
 	// Valid size but no 0x80 marker in expected positions
 	header := make([]byte, N64HeaderSize)
 	header[0] = 0x00
@@ -365,16 +365,16 @@ func TestParseN64_InvalidByteOrder(t *testing.T) {
 	header[3] = 0x00
 	reader := bytes.NewReader(header)
 
-	_, err := ParseN64(reader, int64(len(header)))
+	_, err := Parse(reader, int64(len(header)))
 	if err == nil {
-		t.Error("ParseN64() expected error for invalid byte order, got nil")
+		t.Error("Parse() expected error for invalid byte order, got nil")
 	}
 }
 
-func TestParseN64_UniqueCode(t *testing.T) {
+func TestParse_UniqueCode(t *testing.T) {
 	// Test that unique code is extracted correctly
 	rom := makeSyntheticN64(syntheticN64Options{
-		byteOrder:   N64BigEndian,
+		byteOrder:   ByteOrderBigEndian,
 		title:       "UNIQUE TEST",
 		gameCode:    "NMKE",
 		version:     0,
@@ -382,9 +382,9 @@ func TestParseN64_UniqueCode(t *testing.T) {
 	})
 	reader := bytes.NewReader(rom)
 
-	info, err := ParseN64(reader, int64(len(rom)))
+	info, err := Parse(reader, int64(len(rom)))
 	if err != nil {
-		t.Fatalf("ParseN64() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.UniqueCode != "MK" {

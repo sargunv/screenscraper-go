@@ -19,12 +19,12 @@ func TestParseV64(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseN64(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseN64() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
-	if info.ByteOrder != N64ByteSwapped {
+	if info.ByteOrder != ByteOrderByteSwapped {
 		t.Errorf("Expected byte order v64, got %s", info.ByteOrder)
 	}
 }

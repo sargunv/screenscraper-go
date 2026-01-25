@@ -19,7 +19,7 @@ func (r readerAt) ReadAt(p []byte, off int64) (n int, err error) {
 
 // makeTestXBE creates a minimal XBE file with a certificate.
 // The XBE has a base address of 0x10000 and certificate at offset xbeHeaderSize.
-func makeTestXBE(title string, titleID uint32, regionFlags XboxRegion, discNumber, version uint32) readerAt {
+func makeTestXBE(title string, titleID uint32, regionFlags Region, discNumber, version uint32) readerAt {
 	// Create buffer large enough for header + certificate
 	bufSize := xbeHeaderSize + xbeCertSize
 	buf := make([]byte, bufSize)
@@ -54,7 +54,7 @@ func makeTestXBE(title string, titleID uint32, regionFlags XboxRegion, discNumbe
 	}
 
 	// Media types at 0x9C
-	binary.LittleEndian.PutUint32(buf[certOffset+xbeCertMediaTypesOff:], uint32(XboxMediaDVDX2|XboxMediaDVD5RO))
+	binary.LittleEndian.PutUint32(buf[certOffset+xbeCertMediaTypesOff:], uint32(MediaDVDX2|MediaDVD5RO))
 
 	// Region flags at 0xA0
 	binary.LittleEndian.PutUint32(buf[certOffset+xbeCertRegionOff:], uint32(regionFlags))
@@ -71,7 +71,7 @@ func makeTestXBE(title string, titleID uint32, regionFlags XboxRegion, discNumbe
 	return buf
 }
 
-func TestParseXBE(t *testing.T) {
+func TestParse(t *testing.T) {
 	romPath := "testdata/default.xbe"
 
 	file, err := os.Open(romPath)
@@ -85,9 +85,9 @@ func TestParseXBE(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseXBE(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseXBE() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.Title != "Xromwell" {
@@ -95,12 +95,12 @@ func TestParseXBE(t *testing.T) {
 	}
 }
 
-func TestParseXBE_Synthetic(t *testing.T) {
-	rom := makeTestXBE("Test Game", 0x4D530001, XboxRegionNA, 1, 2)
+func TestParse_Synthetic(t *testing.T) {
+	rom := makeTestXBE("Test Game", 0x4D530001, RegionNA, 1, 2)
 
-	info, err := ParseXBE(rom, int64(len(rom)))
+	info, err := Parse(rom, int64(len(rom)))
 	if err != nil {
-		t.Fatalf("ParseXBE() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.Title != "Test Game" {
@@ -118,8 +118,8 @@ func TestParseXBE_Synthetic(t *testing.T) {
 	if info.GameNumber != 1 {
 		t.Errorf("GameNumber = %d, want 1", info.GameNumber)
 	}
-	if info.RegionFlags != XboxRegionNA {
-		t.Errorf("RegionFlags = %v, want %v", info.RegionFlags, XboxRegionNA)
+	if info.RegionFlags != RegionNA {
+		t.Errorf("RegionFlags = %v, want %v", info.RegionFlags, RegionNA)
 	}
 	if info.DiscNumber != 1 {
 		t.Errorf("DiscNumber = %d, want 1", info.DiscNumber)
@@ -130,28 +130,28 @@ func TestParseXBE_Synthetic(t *testing.T) {
 	if info.Timestamp != 0x12345678 {
 		t.Errorf("Timestamp = 0x%08X, want 0x12345678", info.Timestamp)
 	}
-	expectedMedia := XboxMediaDVDX2 | XboxMediaDVD5RO
+	expectedMedia := MediaDVDX2 | MediaDVD5RO
 	if info.AllowedMediaTypes != expectedMedia {
 		t.Errorf("AllowedMediaTypes = 0x%08X, want 0x%08X", info.AllowedMediaTypes, expectedMedia)
 	}
 }
 
-func TestParseXBE_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	rom := make([]byte, xbeHeaderSize+xbeCertSize)
 	copy(rom[0:], "NOTX")
 
-	_, err := ParseXBE(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseXBE() expected error for invalid magic, got nil")
+		t.Error("Parse() expected error for invalid magic, got nil")
 	}
 }
 
-func TestParseXBE_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	rom := make([]byte, xbeHeaderSize-1)
 
-	_, err := ParseXBE(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseXBE() expected error for small file, got nil")
+		t.Error("Parse() expected error for small file, got nil")
 	}
 }
 

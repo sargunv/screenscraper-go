@@ -62,8 +62,8 @@ const (
 	titleSize        = 112
 )
 
-// SaturnInfo contains metadata extracted from a Saturn disc header.
-type SaturnInfo struct {
+// Info contains metadata extracted from a Saturn disc header.
+type Info struct {
 	// Title is the game title (space-padded, up to 112 characters).
 	Title string `json:"title,omitempty"`
 	// MakerID identifies the publisher (e.g., "SEGA ENTERPRISES").
@@ -83,18 +83,18 @@ type SaturnInfo struct {
 	Peripherals string `json:"peripherals,omitempty"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *SaturnInfo) GamePlatform() core.Platform { return core.PlatformSaturn }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformSaturn }
 
-// GameTitle implements identify.GameInfo.
-func (i *SaturnInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo.
-func (i *SaturnInfo) GameSerial() string { return i.ProductNumber }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.ProductNumber }
 
-// ParseSaturn parses Saturn metadata from a reader.
+// Parse parses Saturn metadata from a reader.
 // The reader should contain the ISO 9660 system area data.
-func ParseSaturn(r io.ReaderAt, size int64) (*SaturnInfo, error) {
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < headerSize {
 		return nil, fmt.Errorf("file too small for Saturn header: need %d bytes, got %d", headerSize, size)
 	}
@@ -107,7 +107,7 @@ func ParseSaturn(r io.ReaderAt, size int64) (*SaturnInfo, error) {
 	return parseSaturnBytes(data)
 }
 
-func parseSaturnBytes(data []byte) (*SaturnInfo, error) {
+func parseSaturnBytes(data []byte) (*Info, error) {
 	// Validate magic
 	if string(data[:len(magic)]) != magic {
 		return nil, fmt.Errorf("not a valid Saturn disc: invalid magic")
@@ -120,7 +120,7 @@ func parseSaturnBytes(data []byte) (*SaturnInfo, error) {
 	// Parse area codes
 	area := parseAreaSymbols(data[areaOffset : areaOffset+areaSize])
 
-	info := &SaturnInfo{
+	info := &Info{
 		Title:         util.ExtractShiftJIS(data[titleOffset : titleOffset+titleSize]),
 		MakerID:       util.ExtractASCII(data[makerOffset : makerOffset+makerSize]),
 		ProductNumber: util.ExtractASCII(data[productOffset : productOffset+productSize]),

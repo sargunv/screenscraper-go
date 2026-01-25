@@ -40,98 +40,98 @@ const (
 // iNES magic bytes: "NES" + 0x1A
 var nesMagic = []byte{0x4E, 0x45, 0x53, 0x1A}
 
-// NESMirroring indicates the nametable mirroring mode.
-type NESMirroring byte
+// Mirroring indicates the nametable mirroring mode.
+type Mirroring byte
 
 const (
-	// NESMirroringHorizontal indicates horizontal nametable arrangement (vertical mirroring).
-	NESMirroringHorizontal NESMirroring = 0
-	// NESMirroringVertical indicates vertical nametable arrangement (horizontal mirroring).
-	NESMirroringVertical NESMirroring = 1
+	// MirroringHorizontal indicates horizontal nametable arrangement (vertical mirroring).
+	MirroringHorizontal Mirroring = 0
+	// MirroringVertical indicates vertical nametable arrangement (horizontal mirroring).
+	MirroringVertical Mirroring = 1
 )
 
-// NESConsoleType indicates the target console from flags 7 bits 0-1.
-type NESConsoleType byte
+// ConsoleType indicates the target console from flags 7 bits 0-1.
+type ConsoleType byte
 
 const (
-	// NESConsoleNES indicates NES/Famicom console.
-	NESConsoleNES NESConsoleType = 0
-	// NESConsoleVsSystem indicates Vs. System arcade hardware.
-	NESConsoleVsSystem NESConsoleType = 1
-	// NESConsolePlayChoice indicates PlayChoice-10 arcade hardware.
-	NESConsolePlayChoice NESConsoleType = 2
-	// NESConsoleExtended indicates extended console type (check ExtendedConsoleType field).
-	NESConsoleExtended NESConsoleType = 3
+	// ConsoleNES indicates NES/Famicom console.
+	ConsoleNES ConsoleType = 0
+	// ConsoleVsSystem indicates Vs. System arcade hardware.
+	ConsoleVsSystem ConsoleType = 1
+	// ConsolePlayChoice indicates PlayChoice-10 arcade hardware.
+	ConsolePlayChoice ConsoleType = 2
+	// ConsoleExtended indicates extended console type (check ExtendedConsoleType field).
+	ConsoleExtended ConsoleType = 3
 )
 
-// NESTimingMode indicates the CPU/PPU timing region.
-type NESTimingMode byte
+// TimingMode indicates the CPU/PPU timing region.
+type TimingMode byte
 
 const (
-	// NESTimingNTSC indicates RP2C02 PPU (NTSC NES).
-	NESTimingNTSC NESTimingMode = 0
-	// NESTimingPAL indicates RP2C07 PPU (licensed PAL NES).
-	NESTimingPAL NESTimingMode = 1
-	// NESTimingMulti indicates multiple-region support.
-	NESTimingMulti NESTimingMode = 2
-	// NESTimingDendy indicates UA6538 PPU (Dendy clone).
-	NESTimingDendy NESTimingMode = 3
+	// TimingNTSC indicates RP2C02 PPU (NTSC NES).
+	TimingNTSC TimingMode = 0
+	// TimingPAL indicates RP2C07 PPU (licensed PAL NES).
+	TimingPAL TimingMode = 1
+	// TimingMulti indicates multiple-region support.
+	TimingMulti TimingMode = 2
+	// TimingDendy indicates UA6538 PPU (Dendy clone).
+	TimingDendy TimingMode = 3
 )
 
-// NESVsPPUType indicates the Vs. System PPU variant.
-type NESVsPPUType byte
+// VsPPUType indicates the Vs. System PPU variant.
+type VsPPUType byte
 
 const (
-	NESVsPPURP2C03B     NESVsPPUType = 0x00 // RP2C03B
-	NESVsPPURP2C03G     NESVsPPUType = 0x01 // RP2C03G
-	NESVsPPURP2C04_0001 NESVsPPUType = 0x02 // RP2C04-0001
-	NESVsPPURP2C04_0002 NESVsPPUType = 0x03 // RP2C04-0002
-	NESVsPPURP2C04_0003 NESVsPPUType = 0x04 // RP2C04-0003
-	NESVsPPURP2C04_0004 NESVsPPUType = 0x05 // RP2C04-0004
-	NESVsPPURC2C03B     NESVsPPUType = 0x06 // RC2C03B
-	NESVsPPURC2C03C     NESVsPPUType = 0x07 // RC2C03C
-	NESVsPPURC2C05_01   NESVsPPUType = 0x08 // RC2C05-01
-	NESVsPPURC2C05_02   NESVsPPUType = 0x09 // RC2C05-02
-	NESVsPPURC2C05_03   NESVsPPUType = 0x0A // RC2C05-03
-	NESVsPPURC2C05_04   NESVsPPUType = 0x0B // RC2C05-04
-	NESVsPPURC2C05_05   NESVsPPUType = 0x0C // RC2C05-05
+	VsPPURP2C03B     VsPPUType = 0x00 // RP2C03B
+	VsPPURP2C03G     VsPPUType = 0x01 // RP2C03G
+	VsPPURP2C04_0001 VsPPUType = 0x02 // RP2C04-0001
+	VsPPURP2C04_0002 VsPPUType = 0x03 // RP2C04-0002
+	VsPPURP2C04_0003 VsPPUType = 0x04 // RP2C04-0003
+	VsPPURP2C04_0004 VsPPUType = 0x05 // RP2C04-0004
+	VsPPURC2C03B     VsPPUType = 0x06 // RC2C03B
+	VsPPURC2C03C     VsPPUType = 0x07 // RC2C03C
+	VsPPURC2C05_01   VsPPUType = 0x08 // RC2C05-01
+	VsPPURC2C05_02   VsPPUType = 0x09 // RC2C05-02
+	VsPPURC2C05_03   VsPPUType = 0x0A // RC2C05-03
+	VsPPURC2C05_04   VsPPUType = 0x0B // RC2C05-04
+	VsPPURC2C05_05   VsPPUType = 0x0C // RC2C05-05
 )
 
-// NESVsHardwareType indicates the Vs. System hardware configuration.
-type NESVsHardwareType byte
+// VsHardwareType indicates the Vs. System hardware configuration.
+type VsHardwareType byte
 
 const (
-	NESVsHardwareUnisystemNormal      NESVsHardwareType = 0x00 // Vs. Unisystem (normal)
-	NESVsHardwareUnisystemRBI         NESVsHardwareType = 0x01 // Vs. Unisystem (RBI Baseball protection)
-	NESVsHardwareUnisystemTKO         NESVsHardwareType = 0x02 // Vs. Unisystem (TKO Boxing protection)
-	NESVsHardwareUnisystemSuperXevius NESVsHardwareType = 0x03 // Vs. Unisystem (Super Xevious protection)
-	NESVsHardwareUnisystemIceClimber  NESVsHardwareType = 0x04 // Vs. Unisystem (Vs. Ice Climber Japan protection)
-	NESVsHardwareDualsystemNormal     NESVsHardwareType = 0x05 // Vs. Dualsystem (normal)
-	NESVsHardwareDualsystemRaid       NESVsHardwareType = 0x06 // Vs. Dualsystem (Raid on Bungeling Bay protection)
+	VsHardwareUnisystemNormal      VsHardwareType = 0x00 // Vs. Unisystem (normal)
+	VsHardwareUnisystemRBI         VsHardwareType = 0x01 // Vs. Unisystem (RBI Baseball protection)
+	VsHardwareUnisystemTKO         VsHardwareType = 0x02 // Vs. Unisystem (TKO Boxing protection)
+	VsHardwareUnisystemSuperXevius VsHardwareType = 0x03 // Vs. Unisystem (Super Xevious protection)
+	VsHardwareUnisystemIceClimber  VsHardwareType = 0x04 // Vs. Unisystem (Vs. Ice Climber Japan protection)
+	VsHardwareDualsystemNormal     VsHardwareType = 0x05 // Vs. Dualsystem (normal)
+	VsHardwareDualsystemRaid       VsHardwareType = 0x06 // Vs. Dualsystem (Raid on Bungeling Bay protection)
 )
 
-// NESExtendedConsoleType indicates extended console types (NES 2.0 only).
-type NESExtendedConsoleType byte
+// ExtendedConsoleType indicates extended console types (NES 2.0 only).
+type ExtendedConsoleType byte
 
 const (
-	NESExtendedRegularNES     NESExtendedConsoleType = 0x00 // Regular NES/Famicom/Dendy
-	NESExtendedVsSystem       NESExtendedConsoleType = 0x01 // Vs. System
-	NESExtendedPlayChoice     NESExtendedConsoleType = 0x02 // PlayChoice-10
-	NESExtendedFamiclone      NESExtendedConsoleType = 0x03 // Famiclone with Decimal Mode
-	NESExtendedNESEPSM        NESExtendedConsoleType = 0x04 // NES/Famicom with EPSM module
-	NESExtendedVT01           NESExtendedConsoleType = 0x05 // VT01 with red/cyan STN palette
-	NESExtendedVT02           NESExtendedConsoleType = 0x06 // VT02
-	NESExtendedVT03           NESExtendedConsoleType = 0x07 // VT03
-	NESExtendedVT09           NESExtendedConsoleType = 0x08 // VT09
-	NESExtendedVT32           NESExtendedConsoleType = 0x09 // VT32
-	NESExtendedVT369          NESExtendedConsoleType = 0x0A // VT369
-	NESExtendedUM6578         NESExtendedConsoleType = 0x0B // UM6578
-	NESExtendedFamicomNetwork NESExtendedConsoleType = 0x0C // Famicom Network System
+	ExtendedRegularNES     ExtendedConsoleType = 0x00 // Regular NES/Famicom/Dendy
+	ExtendedVsSystem       ExtendedConsoleType = 0x01 // Vs. System
+	ExtendedPlayChoice     ExtendedConsoleType = 0x02 // PlayChoice-10
+	ExtendedFamiclone      ExtendedConsoleType = 0x03 // Famiclone with Decimal Mode
+	ExtendedNESEPSM        ExtendedConsoleType = 0x04 // NES/Famicom with EPSM module
+	ExtendedVT01           ExtendedConsoleType = 0x05 // VT01 with red/cyan STN palette
+	ExtendedVT02           ExtendedConsoleType = 0x06 // VT02
+	ExtendedVT03           ExtendedConsoleType = 0x07 // VT03
+	ExtendedVT09           ExtendedConsoleType = 0x08 // VT09
+	ExtendedVT32           ExtendedConsoleType = 0x09 // VT32
+	ExtendedVT369          ExtendedConsoleType = 0x0A // VT369
+	ExtendedUM6578         ExtendedConsoleType = 0x0B // UM6578
+	ExtendedFamicomNetwork ExtendedConsoleType = 0x0C // Famicom Network System
 )
 
-// NESInfo contains metadata extracted from an NES ROM file.
+// Info contains metadata extracted from an NES ROM file.
 // Designed for NES 2.0 headers; iNES 1.0 headers populate a subset of fields.
-type NESInfo struct {
+type Info struct {
 	// PRGROMSize is the PRG-ROM size in bytes.
 	PRGROMSize int `json:"prg_rom_size"`
 	// CHRROMSize is the CHR-ROM size in bytes. Zero indicates CHR-RAM.
@@ -152,7 +152,7 @@ type NESInfo struct {
 	Submapper int `json:"submapper"`
 
 	// Mirroring indicates the nametable mirroring mode.
-	Mirroring NESMirroring `json:"mirroring"`
+	Mirroring Mirroring `json:"mirroring"`
 	// FourScreen indicates four-screen VRAM layout (overrides Mirroring).
 	FourScreen bool `json:"four_screen"`
 
@@ -162,19 +162,19 @@ type NESInfo struct {
 	HasTrainer bool `json:"has_trainer"`
 
 	// ConsoleType indicates the target console.
-	ConsoleType NESConsoleType `json:"console_type"`
+	ConsoleType ConsoleType `json:"console_type"`
 	// TimingMode indicates the CPU/PPU timing region.
-	TimingMode NESTimingMode `json:"timing_mode"`
+	TimingMode TimingMode `json:"timing_mode"`
 	// ExpansionDevice is the default expansion device (NES 2.0 only, raw byte).
 	ExpansionDevice byte `json:"expansion_device"`
 
-	// VsPPUType indicates the Vs. System PPU variant (only valid when ConsoleType == NESConsoleVsSystem).
-	VsPPUType NESVsPPUType `json:"vs_ppu_type"`
-	// VsHardwareType indicates the Vs. System hardware configuration (only valid when ConsoleType == NESConsoleVsSystem).
-	VsHardwareType NESVsHardwareType `json:"vs_hardware_type"`
+	// VsPPUType indicates the Vs. System PPU variant (only valid when ConsoleType == ConsoleVsSystem).
+	VsPPUType VsPPUType `json:"vs_ppu_type"`
+	// VsHardwareType indicates the Vs. System hardware configuration (only valid when ConsoleType == ConsoleVsSystem).
+	VsHardwareType VsHardwareType `json:"vs_hardware_type"`
 
-	// ExtendedConsoleType indicates the extended console variant (only valid when ConsoleType == NESConsoleExtended).
-	ExtendedConsoleType NESExtendedConsoleType `json:"extended_console_type"`
+	// ExtendedConsoleType indicates the extended console variant (only valid when ConsoleType == ConsoleExtended).
+	ExtendedConsoleType ExtendedConsoleType `json:"extended_console_type"`
 
 	// MiscROMs indicates the number of miscellaneous ROM chips (NES 2.0 only).
 	MiscROMs int `json:"misc_roms"`
@@ -183,17 +183,17 @@ type NESInfo struct {
 	IsNES20 bool `json:"is_nes20"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *NESInfo) GamePlatform() core.Platform { return core.PlatformNES }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return core.PlatformNES }
 
-// GameTitle implements identify.GameInfo. NES ROMs don't have embedded titles.
-func (i *NESInfo) GameTitle() string { return "" }
+// GameTitle implements core.GameInfo. NES ROMs don't have embedded titles.
+func (i *Info) GameTitle() string { return "" }
 
-// GameSerial implements identify.GameInfo. NES ROMs don't have serial numbers.
-func (i *NESInfo) GameSerial() string { return "" }
+// GameSerial implements core.GameInfo. NES ROMs don't have serial numbers.
+func (i *Info) GameSerial() string { return "" }
 
-// ParseNES extracts information from an NES ROM file (iNES or NES 2.0 format).
-func ParseNES(r io.ReaderAt, size int64) (*NESInfo, error) {
+// Parse extracts information from an NES ROM file (iNES or NES 2.0 format).
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < nesHeaderSize {
 		return nil, fmt.Errorf("file too small for NES header: %d bytes", size)
 	}
@@ -215,15 +215,15 @@ func ParseNES(r io.ReaderAt, size int64) (*NESInfo, error) {
 	isNES20 := (flags7 & 0x0C) == 0x08
 
 	// Extract common fields from flags 6
-	mirroring := NESMirroring(flags6 & 0x01)
+	mirroring := Mirroring(flags6 & 0x01)
 	hasBattery := (flags6 & 0x02) != 0
 	hasTrainer := (flags6 & 0x04) != 0
 	fourScreen := (flags6 & 0x08) != 0
 
 	// Console type (bits 0-1 of flags7)
-	consoleType := NESConsoleType(flags7 & 0x03)
+	consoleType := ConsoleType(flags7 & 0x03)
 
-	info := &NESInfo{
+	info := &Info{
 		Mirroring:   mirroring,
 		HasBattery:  hasBattery,
 		HasTrainer:  hasTrainer,
@@ -242,7 +242,7 @@ func ParseNES(r io.ReaderAt, size int64) (*NESInfo, error) {
 }
 
 // parseNES20 parses NES 2.0 specific fields.
-func parseNES20(header []byte, info *NESInfo) {
+func parseNES20(header []byte, info *Info) {
 	flags6 := header[6]
 	flags7 := header[7]
 	byte8 := header[8]
@@ -290,15 +290,15 @@ func parseNES20(header []byte, info *NESInfo) {
 	info.CHRNVRAMSize = calculateNES20RAMSize(chrNVRAMShift)
 
 	// CPU/PPU timing mode (byte 12, bits 0-1)
-	info.TimingMode = NESTimingMode(byte12 & 0x03)
+	info.TimingMode = TimingMode(byte12 & 0x03)
 
 	// System type specifics (byte 13)
 	switch info.ConsoleType {
-	case NESConsoleVsSystem:
-		info.VsPPUType = NESVsPPUType(byte13 & 0x0F)
-		info.VsHardwareType = NESVsHardwareType((byte13 >> 4) & 0x0F)
-	case NESConsoleExtended:
-		info.ExtendedConsoleType = NESExtendedConsoleType(byte13 & 0x0F)
+	case ConsoleVsSystem:
+		info.VsPPUType = VsPPUType(byte13 & 0x0F)
+		info.VsHardwareType = VsHardwareType((byte13 >> 4) & 0x0F)
+	case ConsoleExtended:
+		info.ExtendedConsoleType = ExtendedConsoleType(byte13 & 0x0F)
 	}
 
 	// Miscellaneous ROMs (byte 14, bits 0-1)
@@ -309,7 +309,7 @@ func parseNES20(header []byte, info *NESInfo) {
 }
 
 // parseINES parses iNES 1.0 specific fields.
-func parseINES(header []byte, info *NESInfo) {
+func parseINES(header []byte, info *Info) {
 	flags6 := header[6]
 	flags7 := header[7]
 	flags9 := header[9]
@@ -335,9 +335,9 @@ func parseINES(header []byte, info *NESInfo) {
 	// TV system (bit 0 of flags9)
 	// iNES 1.0 only supports NTSC/PAL distinction
 	if (flags9 & 0x01) != 0 {
-		info.TimingMode = NESTimingPAL
+		info.TimingMode = TimingPAL
 	} else {
-		info.TimingMode = NESTimingNTSC
+		info.TimingMode = TimingNTSC
 	}
 }
 

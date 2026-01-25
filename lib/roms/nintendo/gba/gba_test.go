@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestParseGBA(t *testing.T) {
+func TestParse(t *testing.T) {
 	romPath := "testdata/AGB_Rogue.gba"
 
 	file, err := os.Open(romPath)
@@ -20,9 +20,9 @@ func TestParseGBA(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseGBA(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseGBA() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.Title != "ROGUE" {
@@ -33,11 +33,11 @@ func TestParseGBA(t *testing.T) {
 		t.Errorf("Expected game code 'AAAA', got '%s'", info.GameCode)
 	}
 
-	if info.GameType != GBAGameTypeNormalOld {
-		t.Errorf("Expected game type 'A' (0x%02X), got 0x%02X", GBAGameTypeNormalOld, info.GameType)
+	if info.GameType != GameTypeNormalOld {
+		t.Errorf("Expected game type 'A' (0x%02X), got 0x%02X", GameTypeNormalOld, info.GameType)
 	}
 
-	if info.Destination != GBADestination('A') {
+	if info.Destination != Destination('A') {
 		t.Errorf("Expected destination 'A' (0x%02X), got 0x%02X", 'A', info.Destination)
 	}
 
@@ -89,60 +89,60 @@ func makeSyntheticGBA(title, gameCode, makerCode string, mainUnit, deviceType, v
 	return header
 }
 
-func TestParseGBASyntheticGameTypes(t *testing.T) {
+func TestParseSyntheticGameTypes(t *testing.T) {
 	tests := []struct {
 		name         string
 		gameCode     string
-		wantGameType GBAGameType
-		wantDest     GBADestination
+		wantGameType GameType
+		wantDest     Destination
 	}{
 		{
 			name:         "Normal old (A)",
 			gameCode:     "AMGE",
-			wantGameType: GBAGameTypeNormalOld,
-			wantDest:     GBADestinationUSA,
+			wantGameType: GameTypeNormalOld,
+			wantDest:     DestinationUSA,
 		},
 		{
 			name:         "Normal new (B)",
 			gameCode:     "BPEJ",
-			wantGameType: GBAGameTypeNormalNew,
-			wantDest:     GBADestinationJapan,
+			wantGameType: GameTypeNormalNew,
+			wantDest:     DestinationJapan,
 		},
 		{
 			name:         "Famicom Mini (F)",
 			gameCode:     "FMRP",
-			wantGameType: GBAGameTypeFamicom,
-			wantDest:     GBADestinationEurope,
+			wantGameType: GameTypeFamicom,
+			wantDest:     DestinationEurope,
 		},
 		{
 			name:         "Acceleration sensor (K)",
 			gameCode:     "KYGE",
-			wantGameType: GBAGameTypeAcceleration,
-			wantDest:     GBADestinationUSA,
+			wantGameType: GameTypeAcceleration,
+			wantDest:     DestinationUSA,
 		},
 		{
 			name:         "e-Reader (P)",
 			gameCode:     "PSAE",
-			wantGameType: GBAGameTypeEReader,
-			wantDest:     GBADestinationUSA,
+			wantGameType: GameTypeEReader,
+			wantDest:     DestinationUSA,
 		},
 		{
 			name:         "Rumble + gyro (R)",
 			gameCode:     "RZWJ",
-			wantGameType: GBAGameTypeRumbleGyro,
-			wantDest:     GBADestinationJapan,
+			wantGameType: GameTypeRumbleGyro,
+			wantDest:     DestinationJapan,
 		},
 		{
 			name:         "RTC + solar (U)",
 			gameCode:     "U3IJ",
-			wantGameType: GBAGameTypeRTCSolar,
-			wantDest:     GBADestinationJapan,
+			wantGameType: GameTypeRTCSolar,
+			wantDest:     DestinationJapan,
 		},
 		{
 			name:         "Rumble only (V)",
 			gameCode:     "V49J",
-			wantGameType: GBAGameTypeRumble,
-			wantDest:     GBADestinationJapan,
+			wantGameType: GameTypeRumble,
+			wantDest:     DestinationJapan,
 		},
 	}
 
@@ -151,9 +151,9 @@ func TestParseGBASyntheticGameTypes(t *testing.T) {
 			rom := makeSyntheticGBA("TEST", tt.gameCode, "01", 0x00, 0x00, 0, 0)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseGBA(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseGBA() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.GameType != tt.wantGameType {
@@ -166,19 +166,19 @@ func TestParseGBASyntheticGameTypes(t *testing.T) {
 	}
 }
 
-func TestParseGBASyntheticDestinations(t *testing.T) {
+func TestParseSyntheticDestinations(t *testing.T) {
 	tests := []struct {
 		name     string
 		destCode byte
-		wantDest GBADestination
+		wantDest Destination
 	}{
-		{"Japan", 'J', GBADestinationJapan},
-		{"USA", 'E', GBADestinationUSA},
-		{"Europe", 'P', GBADestinationEurope},
-		{"France", 'F', GBADestinationFrance},
-		{"Spain", 'S', GBADestinationSpain},
-		{"Germany", 'D', GBADestinationGermany},
-		{"Italy", 'I', GBADestinationItaly},
+		{"Japan", 'J', DestinationJapan},
+		{"USA", 'E', DestinationUSA},
+		{"Europe", 'P', DestinationEurope},
+		{"France", 'F', DestinationFrance},
+		{"Spain", 'S', DestinationSpain},
+		{"Germany", 'D', DestinationGermany},
+		{"Italy", 'I', DestinationItaly},
 	}
 
 	for _, tt := range tests {
@@ -187,9 +187,9 @@ func TestParseGBASyntheticDestinations(t *testing.T) {
 			rom := makeSyntheticGBA("TEST", gameCode, "01", 0x00, 0x00, 0, 0)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseGBA(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseGBA() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.Destination != tt.wantDest {
@@ -199,7 +199,7 @@ func TestParseGBASyntheticDestinations(t *testing.T) {
 	}
 }
 
-func TestParseGBASyntheticHardwareFields(t *testing.T) {
+func TestParseSyntheticHardwareFields(t *testing.T) {
 	tests := []struct {
 		name           string
 		mainUnit       byte
@@ -251,9 +251,9 @@ func TestParseGBASyntheticHardwareFields(t *testing.T) {
 			rom := makeSyntheticGBA("TEST", "AXXX", "01", tt.mainUnit, tt.deviceType, tt.version, tt.checksum)
 			reader := bytes.NewReader(rom)
 
-			info, err := ParseGBA(reader, int64(len(rom)))
+			info, err := Parse(reader, int64(len(rom)))
 			if err != nil {
-				t.Fatalf("ParseGBA() error = %v", err)
+				t.Fatalf("Parse() error = %v", err)
 			}
 
 			if info.MainUnitCode != tt.wantMainUnit {
@@ -272,12 +272,12 @@ func TestParseGBASyntheticHardwareFields(t *testing.T) {
 	}
 }
 
-func TestParseGBAErrors(t *testing.T) {
+func TestParseErrors(t *testing.T) {
 	t.Run("file too small", func(t *testing.T) {
 		rom := make([]byte, gbaHeaderSize-1)
 		reader := bytes.NewReader(rom)
 
-		_, err := ParseGBA(reader, int64(len(rom)))
+		_, err := Parse(reader, int64(len(rom)))
 		if err == nil {
 			t.Error("Expected error for file too small, got nil")
 		}
@@ -288,7 +288,7 @@ func TestParseGBAErrors(t *testing.T) {
 		rom[gbaFixedOffset] = 0x00 // Invalid, should be 0x96
 		reader := bytes.NewReader(rom)
 
-		_, err := ParseGBA(reader, int64(len(rom)))
+		_, err := Parse(reader, int64(len(rom)))
 		if err == nil {
 			t.Error("Expected error for invalid fixed byte, got nil")
 		}

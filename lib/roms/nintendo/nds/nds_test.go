@@ -8,7 +8,7 @@ import (
 	"github.com/sargunv/rom-tools/lib/core"
 )
 
-func TestParseNDS(t *testing.T) {
+func TestParse(t *testing.T) {
 	romPath := "testdata/MixedCubes.nds"
 
 	file, err := os.Open(romPath)
@@ -22,9 +22,9 @@ func TestParseNDS(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseNDS(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseNDS() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	// Verify platform
@@ -36,14 +36,14 @@ func TestParseNDS(t *testing.T) {
 	if info.GameCode != "AXXE" {
 		t.Errorf("GameCode = %q, want %q", info.GameCode, "AXXE")
 	}
-	if info.GameType != NDSGameTypeNDS {
-		t.Errorf("GameType = %c, want %c", info.GameType, NDSGameTypeNDS)
+	if info.GameType != GameTypeNDS {
+		t.Errorf("GameType = %c, want %c", info.GameType, GameTypeNDS)
 	}
 	if info.UniqueCode != "XX" {
 		t.Errorf("UniqueCode = %q, want %q", info.UniqueCode, "XX")
 	}
-	if info.Destination != NDSDestinationUSA {
-		t.Errorf("Destination = %c, want %c", info.Destination, NDSDestinationUSA)
+	if info.Destination != DestinationUSA {
+		t.Errorf("Destination = %c, want %c", info.Destination, DestinationUSA)
 	}
 
 	// Verify serial (GameSerial returns GameCode)
@@ -52,13 +52,13 @@ func TestParseNDS(t *testing.T) {
 	}
 
 	// Verify unit code (NDS only)
-	if info.UnitCode != NDSUnitCodeNDS {
-		t.Errorf("UnitCode = %d, want %d", info.UnitCode, NDSUnitCodeNDS)
+	if info.UnitCode != UnitCodeNDS {
+		t.Errorf("UnitCode = %d, want %d", info.UnitCode, UnitCodeNDS)
 	}
 
 	// Verify NDS region (Normal/worldwide)
-	if info.NDSRegion != NDSRegionNormal {
-		t.Errorf("NDSRegion = %d, want %d", info.NDSRegion, NDSRegionNormal)
+	if info.Region != RegionNormal {
+		t.Errorf("NDSRegion = %d, want %d", info.Region, RegionNormal)
 	}
 
 	// Verify ROM size calculation (DeviceCapacity=0 means 128KB)
@@ -76,13 +76,13 @@ func TestParseNDS(t *testing.T) {
 	}
 }
 
-func TestParseNDS_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	// Create a reader with less than header size
 	data := make([]byte, 100)
 	r := bytes.NewReader(data)
 
-	_, err := ParseNDS(r, int64(len(data)))
+	_, err := Parse(r, int64(len(data)))
 	if err == nil {
-		t.Error("ParseNDS() expected error for file too small, got nil")
+		t.Error("Parse() expected error for file too small, got nil")
 	}
 }

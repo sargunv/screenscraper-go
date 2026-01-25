@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParseSaturn(t *testing.T) {
+func TestParse(t *testing.T) {
 	// Create a synthetic valid Saturn header
 	data := make([]byte, 256)
 
@@ -28,9 +28,9 @@ func TestParseSaturn(t *testing.T) {
 	// Title
 	copy(data[0x60:], "NIGHTS INTO DREAMS...")
 
-	info, err := ParseSaturn(bytes.NewReader(data), int64(len(data)))
+	info, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSaturn failed: %v", err)
+		t.Fatalf("Parse failed: %v", err)
 	}
 
 	// Verify all fields
@@ -61,34 +61,34 @@ func TestParseSaturn(t *testing.T) {
 	}
 }
 
-func TestParseSaturn_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	data := make([]byte, 256)
 	copy(data, "INVALID MAGIC   ")
 
-	_, err := ParseSaturn(bytes.NewReader(data), int64(len(data)))
+	_, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err == nil {
 		t.Error("expected error for invalid magic, got nil")
 	}
 }
 
-func TestParseSaturn_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	data := make([]byte, 100)
 
-	_, err := ParseSaturn(bytes.NewReader(data), int64(len(data)))
+	_, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err == nil {
 		t.Error("expected error for too-small input, got nil")
 	}
 }
 
-func TestParseSaturn_InvalidDate(t *testing.T) {
+func TestParse_InvalidDate(t *testing.T) {
 	// Create a valid header but with invalid date
 	data := make([]byte, 256)
 	copy(data[0:16], "SEGA SEGASATURN ")
 	copy(data[0x30:0x38], "BADDATE!") // Invalid date format
 
-	info, err := ParseSaturn(bytes.NewReader(data), int64(len(data)))
+	info, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSaturn failed: %v", err)
+		t.Fatalf("Parse failed: %v", err)
 	}
 
 	// Invalid date should result in zero time
@@ -97,15 +97,15 @@ func TestParseSaturn_InvalidDate(t *testing.T) {
 	}
 }
 
-func TestParseSaturn_AllAreas(t *testing.T) {
+func TestParse_AllAreas(t *testing.T) {
 	// Test all area codes
 	data := make([]byte, 256)
 	copy(data[0:16], "SEGA SEGASATURN ")
 	copy(data[0x40:], "JTUBKAEL        ") // All areas
 
-	info, err := ParseSaturn(bytes.NewReader(data), int64(len(data)))
+	info, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSaturn failed: %v", err)
+		t.Fatalf("Parse failed: %v", err)
 	}
 
 	expectedArea := AreaJapan | AreaAsiaNTSC | AreaNorthAmerica | AreaBrazil |

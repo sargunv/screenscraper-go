@@ -49,61 +49,61 @@ const (
 
 var smsMagic = []byte("TMR SEGA")
 
-// SMSRegion represents the region code from the SMS/GG header.
-type SMSRegion byte
+// Region represents the region code from the SMS/GG header.
+type Region byte
 
-// SMSRegion values
+// Region values
 const (
-	SMSRegionJapanSMS  SMSRegion = 0x3
-	SMSRegionExportSMS SMSRegion = 0x4
-	SMSRegionJapanGG   SMSRegion = 0x5
-	SMSRegionExportGG  SMSRegion = 0x6
-	SMSRegionIntlGG    SMSRegion = 0x7
+	RegionJapanSMS  Region = 0x3
+	RegionExportSMS Region = 0x4
+	RegionJapanGG   Region = 0x5
+	RegionExportGG  Region = 0x6
+	RegionIntlGG    Region = 0x7
 )
 
-// SMSROMSize represents the ROM size code from the SMS/GG header.
-type SMSROMSize byte
+// ROMSize represents the ROM size code from the SMS/GG header.
+type ROMSize byte
 
-// SMSROMSize values
+// ROMSize values
 const (
-	SMSROMSize8KB   SMSROMSize = 0xA
-	SMSROMSize16KB  SMSROMSize = 0xB
-	SMSROMSize32KB  SMSROMSize = 0xC
-	SMSROMSize48KB  SMSROMSize = 0xD
-	SMSROMSize64KB  SMSROMSize = 0xE
-	SMSROMSize128KB SMSROMSize = 0xF
-	SMSROMSize256KB SMSROMSize = 0x0
-	SMSROMSize512KB SMSROMSize = 0x1
-	SMSROMSize1MB   SMSROMSize = 0x2
+	ROMSize8KB   ROMSize = 0xA
+	ROMSize16KB  ROMSize = 0xB
+	ROMSize32KB  ROMSize = 0xC
+	ROMSize48KB  ROMSize = 0xD
+	ROMSize64KB  ROMSize = 0xE
+	ROMSize128KB ROMSize = 0xF
+	ROMSize256KB ROMSize = 0x0
+	ROMSize512KB ROMSize = 0x1
+	ROMSize1MB   ROMSize = 0x2
 )
 
-// SMSInfo contains metadata extracted from a Master System or Game Gear ROM file.
-type SMSInfo struct {
+// Info contains metadata extracted from a Master System or Game Gear ROM file.
+type Info struct {
 	// ProductCode is the BCD-decoded product code (e.g., "7670").
 	ProductCode string `json:"product_code,omitempty"`
 	// Version is the version number (0-15).
 	Version int `json:"version"`
 	// Region is the region code indicating platform and region.
-	Region SMSRegion `json:"region"`
+	Region Region `json:"region"`
 	// ROMSize is the ROM size code.
-	ROMSize SMSROMSize `json:"rom_size"`
+	ROMSize ROMSize `json:"rom_size"`
 	// Checksum is the ROM checksum (little-endian).
 	Checksum uint16 `json:"checksum"`
 	// platform is the detected platform (SMS or Game Gear) based on region code (internal, used by GamePlatform).
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *SMSInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo. SMS/GG ROMs don't have embedded titles.
-func (i *SMSInfo) GameTitle() string { return "" }
+// GameTitle implements core.GameInfo. SMS/GG ROMs don't have embedded titles.
+func (i *Info) GameTitle() string { return "" }
 
-// GameSerial implements identify.GameInfo.
-func (i *SMSInfo) GameSerial() string { return i.ProductCode }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.ProductCode }
 
-// ParseSMS extracts game information from a Master System or Game Gear ROM file.
-func ParseSMS(r io.ReaderAt, size int64) (*SMSInfo, error) {
+// Parse extracts game information from a Master System or Game Gear ROM file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < smsMinROMSize {
 		return nil, fmt.Errorf("file too small for SMS/GG header: %d bytes (need at least %d)", size, smsMinROMSize)
 	}
@@ -133,15 +133,15 @@ func ParseSMS(r io.ReaderAt, size int64) (*SMSInfo, error) {
 	version := int(header[smsProductVerOffset] & 0x0F)
 
 	// Extract region code (upper nibble of byte 0x0F)
-	region := SMSRegion(header[smsRegionSizeOffset] >> 4)
+	region := Region(header[smsRegionSizeOffset] >> 4)
 
 	// Extract ROM size code (lower nibble of byte 0x0F)
-	romSize := SMSROMSize(header[smsRegionSizeOffset] & 0x0F)
+	romSize := ROMSize(header[smsRegionSizeOffset] & 0x0F)
 
 	// Determine platform from region code
 	platform := determinePlatform(region)
 
-	return &SMSInfo{
+	return &Info{
 		ProductCode: productCode,
 		Version:     version,
 		Region:      region,
@@ -162,11 +162,11 @@ func decodeBCDProductCode(low, high, extra byte) string {
 }
 
 // determinePlatform returns the platform based on the region code.
-func determinePlatform(region SMSRegion) core.Platform {
+func determinePlatform(region Region) core.Platform {
 	switch region {
-	case SMSRegionJapanSMS, SMSRegionExportSMS:
+	case RegionJapanSMS, RegionExportSMS:
 		return core.PlatformMS
-	case SMSRegionJapanGG, SMSRegionExportGG, SMSRegionIntlGG:
+	case RegionJapanGG, RegionExportGG, RegionIntlGG:
 		return core.PlatformGameGear
 	default:
 		// Unknown region code - default to Master System

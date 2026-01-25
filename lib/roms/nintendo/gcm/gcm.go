@@ -107,8 +107,8 @@ const (
 	gcMagicWord  = 0xC2339F3D
 )
 
-// GCMInfo contains metadata extracted from a GameCube/Wii disc header.
-type GCMInfo struct {
+// Info contains metadata extracted from a GameCube/Wii disc header.
+type Info struct {
 	// SystemCode is the console/platform identifier (G=GameCube, R/S=Wii, etc.).
 	SystemCode SystemCode `json:"system_code"`
 	// GameCode is the 2-character unique game identifier.
@@ -127,19 +127,19 @@ type GCMInfo struct {
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *GCMInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo.
-func (i *GCMInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo. Returns the full game ID (SystemCode + GameCode + Region).
-func (i *GCMInfo) GameSerial() string {
+// GameSerial implements core.GameInfo. Returns the full game ID (SystemCode + GameCode + Region).
+func (i *Info) GameSerial() string {
 	return fmt.Sprintf("%c%s%c", i.SystemCode, i.GameCode, i.Region)
 }
 
-// ParseGCM parses a GameCube/Wii disc header from a reader.
-func ParseGCM(r io.ReaderAt, size int64) (*GCMInfo, error) {
+// Parse parses a GameCube/Wii disc header from a reader.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < discHeaderSize {
 		return nil, fmt.Errorf("file too small for disc header: need %d bytes, got %d", discHeaderSize, size)
 	}
@@ -152,7 +152,7 @@ func ParseGCM(r io.ReaderAt, size int64) (*GCMInfo, error) {
 	return parseGCMBytes(header)
 }
 
-func parseGCMBytes(header []byte) (*GCMInfo, error) {
+func parseGCMBytes(header []byte) (*Info, error) {
 	// Check magic words to determine platform and validate
 	wiiMagic := binary.BigEndian.Uint32(header[wiiMagicOffset:])
 	gcMagic := binary.BigEndian.Uint32(header[gcMagicOffset:])
@@ -182,7 +182,7 @@ func parseGCMBytes(header []byte) (*GCMInfo, error) {
 	version := int(header[discVersionOffset])
 	title := util.ExtractASCII(header[titleOffset : titleOffset+titleLen])
 
-	return &GCMInfo{
+	return &Info{
 		SystemCode: systemCode,
 		GameCode:   gameCode,
 		Region:     region,

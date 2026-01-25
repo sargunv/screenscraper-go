@@ -54,8 +54,8 @@ var (
 	}
 )
 
-// SegaCDInfo contains metadata extracted from a Sega CD disc header.
-type SegaCDInfo struct {
+// CDInfo contains metadata extracted from a Sega CD disc header.
+type CDInfo struct {
 	// DiscID is the 16-byte disc identifier.
 	DiscID string `json:"disc_id,omitempty"`
 	// DiscType indicates whether the disc is bootable.
@@ -76,23 +76,23 @@ type SegaCDInfo struct {
 	Region Region `json:"region,omitempty"`
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *SegaCDInfo) GamePlatform() core.Platform { return core.PlatformSegaCD }
+// GamePlatform implements core.GameInfo.
+func (i *CDInfo) GamePlatform() core.Platform { return core.PlatformSegaCD }
 
-// GameTitle implements identify.GameInfo. Returns overseas title if available, otherwise domestic.
-func (i *SegaCDInfo) GameTitle() string {
+// GameTitle implements core.GameInfo. Returns overseas title if available, otherwise domestic.
+func (i *CDInfo) GameTitle() string {
 	if i.OverseasTitle != "" {
 		return i.OverseasTitle
 	}
 	return i.DomesticTitle
 }
 
-// GameSerial implements identify.GameInfo.
-func (i *SegaCDInfo) GameSerial() string { return i.SerialNumber }
+// GameSerial implements core.GameInfo.
+func (i *CDInfo) GameSerial() string { return i.SerialNumber }
 
-// ParseSegaCD parses Sega CD metadata from a reader.
+// ParseCD parses Sega CD metadata from a reader.
 // The reader should contain the ISO 9660 system area data.
-func ParseSegaCD(r io.ReaderAt, size int64) (*SegaCDInfo, error) {
+func ParseCD(r io.ReaderAt, size int64) (*CDInfo, error) {
 	if size < segaCDHeaderSize {
 		return nil, fmt.Errorf("data too small for Sega CD header: %d bytes", size)
 	}
@@ -102,10 +102,10 @@ func ParseSegaCD(r io.ReaderAt, size int64) (*SegaCDInfo, error) {
 		return nil, fmt.Errorf("failed to read Sega CD header: %w", err)
 	}
 
-	return parseSegaCDBytes(data)
+	return parseCDBytes(data)
 }
 
-func parseSegaCDBytes(data []byte) (*SegaCDInfo, error) {
+func parseCDBytes(data []byte) (*CDInfo, error) {
 	// Validate disc identifier
 	discID := string(data[discIDOffset : discIDOffset+discIDLen])
 	discType := getDiscType(discID)
@@ -121,7 +121,7 @@ func parseSegaCDBytes(data []byte) (*SegaCDInfo, error) {
 	regionData := data[mdRegionOffset : mdRegionOffset+mdRegionLen]
 	region := parseRegionCodes(regionData)
 
-	info := &SegaCDInfo{
+	info := &CDInfo{
 		DiscID:        strings.TrimSpace(discID),
 		DiscType:      discType,
 		SystemType:    util.ExtractASCII(data[mdSystemTypeOffset : mdSystemTypeOffset+mdSystemTypeLen]),

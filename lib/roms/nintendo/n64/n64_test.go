@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParseN64LittleEndian(t *testing.T) {
+func TestParseLittleEndian(t *testing.T) {
 	romPath := "testdata/flames.n64"
 
 	file, err := os.Open(romPath)
@@ -19,12 +19,12 @@ func TestParseN64LittleEndian(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseN64(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseN64() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
-	if info.ByteOrder != N64LittleEndian {
+	if info.ByteOrder != ByteOrderLittleEndian {
 		t.Errorf("Expected byte order n64, got %s", info.ByteOrder)
 	}
 }

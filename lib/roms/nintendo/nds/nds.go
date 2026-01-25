@@ -66,98 +66,98 @@ const (
 	ndsHeaderChecksumOffset = 0x15E
 )
 
-// NDSUnitCode indicates the target platform for the ROM.
-type NDSUnitCode byte
+// UnitCode indicates the target platform for the ROM.
+type UnitCode byte
 
-// NDSUnitCode values per GBATEK.
+// UnitCode values per GBATEK.
 const (
-	NDSUnitCodeNDS    NDSUnitCode = 0x00 // NDS only
-	NDSUnitCodeNDSDSi NDSUnitCode = 0x02 // NDS + DSi enhanced
-	NDSUnitCodeDSi    NDSUnitCode = 0x03 // DSi only
+	UnitCodeNDS    UnitCode = 0x00 // NDS only
+	UnitCodeNDSDSi UnitCode = 0x02 // NDS + DSi enhanced
+	UnitCodeDSi    UnitCode = 0x03 // DSi only
 )
 
-// NDSRegion indicates the region lockout setting.
-type NDSRegion byte
+// Region indicates the region lockout setting.
+type Region byte
 
-// NDSRegion values per GBATEK.
+// Region values per GBATEK.
 const (
-	NDSRegionNormal NDSRegion = 0x00 // Normal (worldwide/no region lock)
-	NDSRegionKorea  NDSRegion = 0x40 // Korea
-	NDSRegionChina  NDSRegion = 0x80 // China
+	RegionNormal Region = 0x00 // Normal (worldwide/no region lock)
+	RegionKorea  Region = 0x40 // Korea
+	RegionChina  Region = 0x80 // China
 )
 
-// NDSGameType represents the category from the first byte of the game code.
-type NDSGameType byte
+// GameType represents the category from the first byte of the game code.
+type GameType byte
 
-// NDSGameType values per GBATEK.
+// GameType values per GBATEK.
 const (
-	NDSGameTypeNDS          NDSGameType = 'A' // NDS common (older titles)
-	NDSGameTypeNDSB         NDSGameType = 'B' // NDS common (newer titles)
-	NDSGameTypeNDSC         NDSGameType = 'C' // NDS common
-	NDSGameTypeDSiExclusive NDSGameType = 'D' // DSi-exclusive
-	NDSGameTypeDSiWareUtil  NDSGameType = 'H' // DSiWare (system utilities)
-	NDSGameTypeNDSInfrared  NDSGameType = 'I' // NDS+DSi with infrared
-	NDSGameTypeDSiWare      NDSGameType = 'K' // DSiWare (games)
-	NDSGameTypeNDSDemo      NDSGameType = 'N' // NDS demos (Nintendo Channel)
-	NDSGameTypeNDST         NDSGameType = 'T' // NDS common
-	NDSGameTypeNDSSpecial   NDSGameType = 'U' // NDS with extra hardware
-	NDSGameTypeDSiEnhanced  NDSGameType = 'V' // DSi-enhanced
-	NDSGameTypeNDSY         NDSGameType = 'Y' // NDS common
+	GameTypeNDS          GameType = 'A' // NDS common (older titles)
+	GameTypeNDSB         GameType = 'B' // NDS common (newer titles)
+	GameTypeNDSC         GameType = 'C' // NDS common
+	GameTypeDSiExclusive GameType = 'D' // DSi-exclusive
+	GameTypeDSiWareUtil  GameType = 'H' // DSiWare (system utilities)
+	GameTypeNDSInfrared  GameType = 'I' // NDS+DSi with infrared
+	GameTypeDSiWare      GameType = 'K' // DSiWare (games)
+	GameTypeNDSDemo      GameType = 'N' // NDS demos (Nintendo Channel)
+	GameTypeNDST         GameType = 'T' // NDS common
+	GameTypeNDSSpecial   GameType = 'U' // NDS with extra hardware
+	GameTypeDSiEnhanced  GameType = 'V' // DSi-enhanced
+	GameTypeNDSY         GameType = 'Y' // NDS common
 )
 
-// NDSDestination represents the target region from the fourth byte of the game code.
-type NDSDestination byte
+// Destination represents the target region from the fourth byte of the game code.
+type Destination byte
 
-// NDSDestination values per GBATEK.
+// Destination values per GBATEK.
 const (
-	NDSDestinationAsia         NDSDestination = 'A'
-	NDSDestinationChina        NDSDestination = 'C'
-	NDSDestinationGermany      NDSDestination = 'D'
-	NDSDestinationUSA          NDSDestination = 'E'
-	NDSDestinationFrance       NDSDestination = 'F'
-	NDSDestinationNetherlands  NDSDestination = 'H'
-	NDSDestinationItaly        NDSDestination = 'I'
-	NDSDestinationJapan        NDSDestination = 'J'
-	NDSDestinationKorea        NDSDestination = 'K'
-	NDSDestinationUSA2         NDSDestination = 'L'
-	NDSDestinationSweden       NDSDestination = 'M'
-	NDSDestinationNorway       NDSDestination = 'N'
-	NDSDestinationIntl         NDSDestination = 'O'
-	NDSDestinationEurope       NDSDestination = 'P'
-	NDSDestinationDenmark      NDSDestination = 'Q'
-	NDSDestinationRussia       NDSDestination = 'R'
-	NDSDestinationSpain        NDSDestination = 'S'
-	NDSDestinationUSAAustralia NDSDestination = 'T'
-	NDSDestinationAustralia    NDSDestination = 'U'
-	NDSDestinationEurAustralia NDSDestination = 'V'
-	NDSDestinationEuropeW      NDSDestination = 'W'
-	NDSDestinationEuropeX      NDSDestination = 'X'
-	NDSDestinationEuropeY      NDSDestination = 'Y'
-	NDSDestinationEuropeZ      NDSDestination = 'Z'
+	DestinationAsia         Destination = 'A'
+	DestinationChina        Destination = 'C'
+	DestinationGermany      Destination = 'D'
+	DestinationUSA          Destination = 'E'
+	DestinationFrance       Destination = 'F'
+	DestinationNetherlands  Destination = 'H'
+	DestinationItaly        Destination = 'I'
+	DestinationJapan        Destination = 'J'
+	DestinationKorea        Destination = 'K'
+	DestinationUSA2         Destination = 'L'
+	DestinationSweden       Destination = 'M'
+	DestinationNorway       Destination = 'N'
+	DestinationIntl         Destination = 'O'
+	DestinationEurope       Destination = 'P'
+	DestinationDenmark      Destination = 'Q'
+	DestinationRussia       Destination = 'R'
+	DestinationSpain        Destination = 'S'
+	DestinationUSAAustralia Destination = 'T'
+	DestinationAustralia    Destination = 'U'
+	DestinationEurAustralia Destination = 'V'
+	DestinationEuropeW      Destination = 'W'
+	DestinationEuropeX      Destination = 'X'
+	DestinationEuropeY      Destination = 'Y'
+	DestinationEuropeZ      Destination = 'Z'
 )
 
-// NDSInfo contains metadata extracted from an NDS ROM file.
-type NDSInfo struct {
+// Info contains metadata extracted from an NDS ROM file.
+type Info struct {
 	// Title is the game title (0x000, up to 12 uppercase ASCII characters).
 	Title string `json:"title,omitempty"`
 	// GameCode is the full 4-character game code (0x00C).
 	GameCode string `json:"game_code,omitempty"`
 	// GameType is the category from byte 0 of GameCode.
-	GameType NDSGameType `json:"game_type"`
+	GameType GameType `json:"game_type"`
 	// UniqueCode is the 2-character game identifier from bytes 1-2 of GameCode.
 	UniqueCode string `json:"unique_code,omitempty"`
 	// Destination is the target region from byte 3 of GameCode.
-	Destination NDSDestination `json:"destination"`
+	Destination Destination `json:"destination"`
 	// MakerCode is the 2-character manufacturer code (0x010).
 	MakerCode string `json:"maker_code,omitempty"`
 	// UnitCode indicates the target platform (0x012).
-	UnitCode NDSUnitCode `json:"unit_code"`
+	UnitCode UnitCode `json:"unit_code"`
 	// DeviceCapacity is the raw capacity value (0x014). ROM size = 128KB << DeviceCapacity.
 	DeviceCapacity byte `json:"device_capacity"`
 	// ROMSize is the calculated ROM size in bytes (128KB << DeviceCapacity).
 	ROMSize int `json:"rom_size"`
-	// NDSRegion is the region lockout setting (0x01D).
-	NDSRegion NDSRegion `json:"nds_region"`
+	// Region is the region lockout setting (0x01D).
+	Region Region `json:"region"`
 	// Version is the ROM version number (0x01E).
 	Version int `json:"version"`
 	// HeaderChecksum is the CRC-16 of header bytes 0x000-0x15D (0x15E).
@@ -167,17 +167,17 @@ type NDSInfo struct {
 	platform core.Platform
 }
 
-// GamePlatform implements identify.GameInfo.
-func (i *NDSInfo) GamePlatform() core.Platform { return i.platform }
+// GamePlatform implements core.GameInfo.
+func (i *Info) GamePlatform() core.Platform { return i.platform }
 
-// GameTitle implements identify.GameInfo.
-func (i *NDSInfo) GameTitle() string { return i.Title }
+// GameTitle implements core.GameInfo.
+func (i *Info) GameTitle() string { return i.Title }
 
-// GameSerial implements identify.GameInfo.
-func (i *NDSInfo) GameSerial() string { return i.GameCode }
+// GameSerial implements core.GameInfo.
+func (i *Info) GameSerial() string { return i.GameCode }
 
-// ParseNDS extracts game information from an NDS ROM file.
-func ParseNDS(r io.ReaderAt, size int64) (*NDSInfo, error) {
+// Parse extracts game information from an NDS ROM file.
+func Parse(r io.ReaderAt, size int64) (*Info, error) {
 	if size < ndsHeaderSize {
 		return nil, fmt.Errorf("file too small for NDS header: %d bytes", size)
 	}
@@ -194,25 +194,25 @@ func ParseNDS(r io.ReaderAt, size int64) (*NDSInfo, error) {
 	gameCode := util.ExtractASCII(header[ndsGameCodeOffset : ndsGameCodeOffset+ndsGameCodeLen])
 
 	// Parse game code components
-	var gameType NDSGameType
+	var gameType GameType
 	var uniqueCode string
-	var destination NDSDestination
+	var destination Destination
 	if len(gameCode) >= 4 {
-		gameType = NDSGameType(gameCode[0])
+		gameType = GameType(gameCode[0])
 		uniqueCode = gameCode[1:3]
-		destination = NDSDestination(gameCode[3])
+		destination = Destination(gameCode[3])
 	}
 
 	// Extract maker code
 	makerCode := util.ExtractASCII(header[ndsMakerCodeOffset : ndsMakerCodeOffset+ndsMakerCodeLen])
 
 	// Extract unit code
-	unitCode := NDSUnitCode(header[ndsUnitCodeOffset])
+	unitCode := UnitCode(header[ndsUnitCodeOffset])
 
 	// Determine platform based on unit code
 	var platform core.Platform
 	switch unitCode {
-	case NDSUnitCodeDSi:
+	case UnitCodeDSi:
 		platform = core.PlatformDSi
 	default:
 		platform = core.PlatformNDS
@@ -226,7 +226,7 @@ func ParseNDS(r io.ReaderAt, size int64) (*NDSInfo, error) {
 	}
 
 	// Extract NDS region
-	ndsRegion := NDSRegion(header[ndsRegionOffset])
+	region := Region(header[ndsRegionOffset])
 
 	// Extract software version
 	version := int(header[ndsVersionOffset])
@@ -234,7 +234,7 @@ func ParseNDS(r io.ReaderAt, size int64) (*NDSInfo, error) {
 	// Extract header checksum (little-endian)
 	headerChecksum := binary.LittleEndian.Uint16(header[ndsHeaderChecksumOffset:])
 
-	return &NDSInfo{
+	return &Info{
 		Title:          title,
 		GameCode:       gameCode,
 		GameType:       gameType,
@@ -244,7 +244,7 @@ func ParseNDS(r io.ReaderAt, size int64) (*NDSInfo, error) {
 		UnitCode:       unitCode,
 		DeviceCapacity: deviceCapacity,
 		ROMSize:        romSize,
-		NDSRegion:      ndsRegion,
+		Region:         region,
 		Version:        version,
 		HeaderChecksum: headerChecksum,
 		platform:       platform,

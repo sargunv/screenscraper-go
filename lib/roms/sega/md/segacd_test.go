@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParseSegaCD(t *testing.T) {
+func TestParseCD(t *testing.T) {
 	// Create a synthetic valid Sega CD header
 	data := make([]byte, 0x200)
 
@@ -26,9 +26,9 @@ func TestParseSegaCD(t *testing.T) {
 	// Region at 0x1F0
 	copy(data[0x1F0:], "JUE")
 
-	info, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+	info, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSegaCD failed: %v", err)
+		t.Fatalf("ParseCD failed: %v", err)
 	}
 
 	// Verify all fields
@@ -62,14 +62,14 @@ func TestParseSegaCD(t *testing.T) {
 	}
 }
 
-func TestParseSegaCD_BootDiscID(t *testing.T) {
+func TestParseCD_BootDiscID(t *testing.T) {
 	data := make([]byte, 0x200)
 	copy(data[0x00:], "SEGABOOTDISC    ")
 	copy(data[0x100:], "SEGA MEGA DRIVE ")
 
-	info, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+	info, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSegaCD failed: %v", err)
+		t.Fatalf("ParseCD failed: %v", err)
 	}
 
 	if info.DiscID != "SEGABOOTDISC" {
@@ -80,7 +80,7 @@ func TestParseSegaCD_BootDiscID(t *testing.T) {
 	}
 }
 
-func TestParseSegaCD_NonBootableDiscID(t *testing.T) {
+func TestParseCD_NonBootableDiscID(t *testing.T) {
 	testCases := []struct {
 		discID string
 		want   string
@@ -95,9 +95,9 @@ func TestParseSegaCD_NonBootableDiscID(t *testing.T) {
 			copy(data[0x00:], tc.discID)
 			copy(data[0x100:], "SEGA MEGA DRIVE ")
 
-			info, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+			info, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 			if err != nil {
-				t.Fatalf("ParseSegaCD failed: %v", err)
+				t.Fatalf("ParseCD failed: %v", err)
 			}
 
 			if info.DiscID != tc.want {
@@ -110,26 +110,26 @@ func TestParseSegaCD_NonBootableDiscID(t *testing.T) {
 	}
 }
 
-func TestParseSegaCD_InvalidDiscID(t *testing.T) {
+func TestParseCD_InvalidDiscID(t *testing.T) {
 	data := make([]byte, 0x200)
 	copy(data[0x00:], "INVALID         ")
 
-	_, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+	_, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 	if err == nil {
 		t.Error("expected error for invalid disc ID, got nil")
 	}
 }
 
-func TestParseSegaCD_TooSmall(t *testing.T) {
+func TestParseCD_TooSmall(t *testing.T) {
 	data := make([]byte, 100)
 
-	_, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+	_, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 	if err == nil {
 		t.Error("expected error for too-small input, got nil")
 	}
 }
 
-func TestParseSegaCD_HexRegionCode(t *testing.T) {
+func TestParseCD_HexRegionCode(t *testing.T) {
 	// Test new-style hex region code (single digit bitfield)
 	data := make([]byte, 0x200)
 	copy(data[0x00:], "SEGADISCSYSTEM  ")
@@ -137,9 +137,9 @@ func TestParseSegaCD_HexRegionCode(t *testing.T) {
 	// '5' = 0101 binary = Japan (bit 0) + USA (bit 2)
 	data[0x1F0] = '5'
 
-	info, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+	info, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSegaCD failed: %v", err)
+		t.Fatalf("ParseCD failed: %v", err)
 	}
 
 	expectedRegion := RegionDomestic60Hz | RegionOverseas60Hz
@@ -148,15 +148,15 @@ func TestParseSegaCD_HexRegionCode(t *testing.T) {
 	}
 }
 
-func TestParseSegaCD_AllDevices(t *testing.T) {
+func TestParseCD_AllDevices(t *testing.T) {
 	data := make([]byte, 0x200)
 	copy(data[0x00:], "SEGADISCSYSTEM  ")
 	copy(data[0x100:], "SEGA MEGA DRIVE ")
 	copy(data[0x190:], "J6KMTLPA40")
 
-	info, err := ParseSegaCD(bytes.NewReader(data), int64(len(data)))
+	info, err := ParseCD(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseSegaCD failed: %v", err)
+		t.Fatalf("ParseCD failed: %v", err)
 	}
 
 	expectedDevices := []Device{

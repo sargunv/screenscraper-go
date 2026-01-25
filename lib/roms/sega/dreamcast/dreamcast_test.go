@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-func TestParseDreamcast(t *testing.T) {
+func TestParse(t *testing.T) {
 	data, err := os.ReadFile("testdata/jet_set_radio_jp.bin")
 	if err != nil {
 		t.Fatalf("failed to read test data: %v", err)
 	}
 
-	info, err := ParseDreamcast(bytes.NewReader(data), int64(len(data)))
+	info, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseDreamcast failed: %v", err)
+		t.Fatalf("Parse failed: %v", err)
 	}
 
 	// Verify all fields
@@ -52,34 +52,34 @@ func TestParseDreamcast(t *testing.T) {
 	}
 }
 
-func TestParseDreamcast_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	data := make([]byte, 256)
 	copy(data, "INVALID MAGIC   ")
 
-	_, err := ParseDreamcast(bytes.NewReader(data), int64(len(data)))
+	_, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err == nil {
 		t.Error("expected error for invalid magic, got nil")
 	}
 }
 
-func TestParseDreamcast_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	data := make([]byte, 100)
 
-	_, err := ParseDreamcast(bytes.NewReader(data), int64(len(data)))
+	_, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err == nil {
 		t.Error("expected error for too-small input, got nil")
 	}
 }
 
-func TestParseDreamcast_InvalidDate(t *testing.T) {
+func TestParse_InvalidDate(t *testing.T) {
 	// Create a valid header but with invalid date
 	data := make([]byte, 256)
 	copy(data[0:16], "SEGA SEGAKATANA ")
 	copy(data[0x50:0x58], "BADDATE!") // Invalid date format
 
-	info, err := ParseDreamcast(bytes.NewReader(data), int64(len(data)))
+	info, err := Parse(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("ParseDreamcast failed: %v", err)
+		t.Fatalf("Parse failed: %v", err)
 	}
 
 	// Invalid date should result in zero time

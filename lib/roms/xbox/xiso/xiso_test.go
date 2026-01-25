@@ -13,7 +13,7 @@ func (r readerAt) ReadAt(p []byte, off int64) (n int, err error) {
 	return bytes.NewReader(r).ReadAt(p, off)
 }
 
-func TestParseXISO(t *testing.T) {
+func TestParse(t *testing.T) {
 	romPath := "testdata/xromwell.xiso.iso"
 
 	file, err := os.Open(romPath)
@@ -27,9 +27,9 @@ func TestParseXISO(t *testing.T) {
 		t.Fatalf("Failed to stat file: %v", err)
 	}
 
-	info, err := ParseXISO(file, stat.Size())
+	info, err := Parse(file, stat.Size())
 	if err != nil {
-		t.Fatalf("ParseXISO() error = %v", err)
+		t.Fatalf("Parse() error = %v", err)
 	}
 
 	if info.Title != "Xromwell" {
@@ -37,28 +37,28 @@ func TestParseXISO(t *testing.T) {
 	}
 }
 
-func TestParseXISO_TooSmall(t *testing.T) {
+func TestParse_TooSmall(t *testing.T) {
 	// XISO needs at least xisoVolumeDescOffset + 32 bytes
 	rom := make([]byte, xisoVolumeDescOffset)
 
-	_, err := ParseXISO(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseXISO() expected error for small file, got nil")
+		t.Error("Parse() expected error for small file, got nil")
 	}
 }
 
-func TestParseXISO_InvalidMagic(t *testing.T) {
+func TestParse_InvalidMagic(t *testing.T) {
 	// Create a buffer large enough but with invalid magic
 	rom := make([]byte, xisoVolumeDescOffset+64)
 	copy(rom[xisoVolumeDescOffset:], "INVALID*MAGIC*HERE!!")
 
-	_, err := ParseXISO(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseXISO() expected error for invalid magic, got nil")
+		t.Error("Parse() expected error for invalid magic, got nil")
 	}
 }
 
-func TestParseXISO_MissingDefaultXBE(t *testing.T) {
+func TestParse_MissingDefaultXBE(t *testing.T) {
 	// Create a minimal valid XISO structure but with empty directory
 	rom := make([]byte, xisoVolumeDescOffset+2048+128)
 
@@ -96,8 +96,8 @@ func TestParseXISO_MissingDefaultXBE(t *testing.T) {
 	// Filename = "test.txt"
 	copy(rom[dirOffset+14:], "test.txt")
 
-	_, err := ParseXISO(readerAt(rom), int64(len(rom)))
+	_, err := Parse(readerAt(rom), int64(len(rom)))
 	if err == nil {
-		t.Error("ParseXISO() expected error for missing default.xbe, got nil")
+		t.Error("Parse() expected error for missing default.xbe, got nil")
 	}
 }
